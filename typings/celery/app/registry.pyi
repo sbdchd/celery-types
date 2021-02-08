@@ -1,0 +1,3 @@
+from typing import Any, Dict
+
+class TaskRegistry(Dict[str, Any]): ...
