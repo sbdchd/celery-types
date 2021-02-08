@@ -1,8 +1,31 @@
 [tool.poetry]
 name = "celery-types"
 version = "0.1.0"
-description = ""
+description = "Type stubs for Celery and its related packages"
+repository = "https://github.com/sbdchd/celery-types"
+readme = "README.md"
 authors = ["Steve Dignam <steve@dignam.xyz>"]
+keywords = [
+  "celery",
+  "kombu",
+  "vine",
+  "amqp",
+  "billiard",
+  "django_celery_results",
+  "types",
+  "mypy",
+  "stubs"
+]
+
+packages = [
+  { include = "amqp-stubs" },
+  { include = "billiard-stubs" },
+  { include = "celery-stubs" },
+  { include = "django_celery_results-stubs" },
+  { include = "ephem-stubs" },
+  { include = "kombu-stubs" },
+  { include = "vine-stubs" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.7"
@@ -19,5 +42,5 @@ django = "^3.1"
 mypy = "^0.800.0"
 
 [build-system]
-requires = ["poetry>=0.12"]
+requires = ["poetry>=0.12", "setuptools"]
 build-backend = "poetry.masonry.api"
