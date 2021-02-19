@@ -1,10 +1,17 @@
 import celery
 from celery import shared_task
 
+app = celery.Celery()
+
 
 @shared_task(name="main.add")
 def add(x: int, y: int) -> int:
     return x + y
+
+
+@app.task(name="main.sub")
+def sub(x: int, y: int) -> int:
+    return x - y
 
 
 def test_celery_calling_task() -> None:
@@ -20,6 +27,8 @@ def test_celery_calling_task() -> None:
 
     foo = add.s(10, 10) | add.s(10)
     print(foo)
+
+    sub.chunks([], 10).apply_async()
 
 
 def test_celery_top_level_exports() -> None:
