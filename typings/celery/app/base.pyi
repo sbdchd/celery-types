@@ -97,9 +97,9 @@ class Celery:
     def close(self) -> None: ...
     def start(self, argv: Optional[List[str]] = ...) -> NoReturn: ...
     def worker_main(self, argv: Optional[List[str]] = ...) -> NoReturn: ...
-    # TODO(sbdchd): copy the params from @shared_task
     def task(
         self,
+        *,
         name: str = ...,
         serializer: str = ...,
         bind: bool = ...,
@@ -130,7 +130,7 @@ class Celery:
         resultrepr_maxsize: int = ...,
         request_stack: _LocalStack = ...,
         abstract: bool = ...,
-    ) -> CeleryTask: ...
+    ) -> Callable[[Callable[..., Any]], CeleryTask]: ...
     def register_task(self, task: CeleryTask) -> CeleryTask: ...
     def gen_task_name(self, name: str, module: object) -> str: ...
     def finalize(self, auto: bool = ...) -> None: ...
@@ -192,7 +192,7 @@ class Celery:
         task_type: Optional[Any] = ...,
         # options
         ignore_result: bool = ...,
-        **options: Any
+        **options: Any,
     ) -> celery.result.AsyncResult: ...
     def connection_for_read(
         self, url: Optional[str] = ..., **kwargs: Any
@@ -214,7 +214,7 @@ class Celery:
         heartbeat: Optional[int] = ...,
         login_method: Optional[int] = ...,
         failover_strategy: Optional[Union[str, Callable[[], Any]]] = ...,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> kombu.Connection: ...
     broker_connection = connection
     def connection_or_acquire(
@@ -238,7 +238,7 @@ class Celery:
         args: Tuple[Any, ...] = ...,
         kwargs: Dict[str, Any] = ...,
         name: Optional[str] = ...,
-        **opts: Any
+        **opts: Any,
     ) -> str: ...
     def __enter__(self) -> Celery: ...
     def __exit__(self, *exc_info: Any) -> None: ...
