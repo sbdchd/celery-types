@@ -34,7 +34,7 @@ def shared_task(
     track_started: bool = ...,
     acks_on_failure_or_timeout: bool = ...,
     reject_on_worker_lost: bool = ...,
-    throws: Tuple[Exception, ...] = ...,
+    throws: Tuple[Type[Exception], ...] = ...,
     expires: Optional[Union[float, datetime]] = ...,
     priority: Optional[int] = ...,
     resultrepr_maxsize: int = ...,
