@@ -14,6 +14,15 @@ def sub(x: int, y: int) -> int:
     return x - y
 
 
+class HttpNotFound(Exception):
+    ...
+
+
+@app.task(throws=(KeyError, HttpNotFound))
+def foo() -> None:
+    print("foo")
+
+
 def test_celery_calling_task() -> None:
 
     bar = add(x=10, y=100)
