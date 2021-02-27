@@ -28,3 +28,9 @@ s/lint
 poetry publish --build
 ```
 
+## related
+
+- <https://github.com/sbdchd/django-types>
+- <https://github.com/sbdchd/djangorestframework-types>
+- <https://github.com/sbdchd/mongo-types>
+- <https://github.com/sbdchd/msgpack-types>
