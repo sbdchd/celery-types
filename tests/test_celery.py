@@ -1,5 +1,6 @@
 import celery
-from celery import shared_task
+from celery import shared_task, signature
+from celery.canvas import Signature
 
 app = celery.Celery()
 
@@ -24,6 +25,9 @@ def foo() -> None:
 
 
 def test_celery_calling_task() -> None:
+    signature("tasks.add", args=(2, 2), countdown=10)
+
+    Signature("tasks.add")
 
     bar = add(x=10, y=100)
     print(bar)
