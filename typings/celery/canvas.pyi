@@ -24,7 +24,7 @@ _F = TypeVar("_F", bound=Callable[..., Any])
 class Signature(Dict[str, Any]):
     def __init__(
         self,
-        task: Optional[Task] = ...,
+        task: Task | str | None = ...,
         args: Optional[Tuple[Any, ...]] = ...,
         kwargs: Optional[Dict[str, Any]] = ...,
         options: Optional[Dict[str, Any]] = ...,
@@ -361,7 +361,7 @@ class chord(Signature):
     def __or__(self, other: Signature) -> chord: ...
 
 def signature(
-    varies: Union[Signature, Dict[str, Any]], *args: Any, **kwargs: Any
+    varies: Signature | str | Dict[str, Any], *args: Any, **kwargs: Any
 ) -> Signature: ...
 
 subtask = signature
