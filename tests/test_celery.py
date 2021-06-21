@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Any
-
 import celery
 from celery import Celery, shared_task, signature
 from celery.canvas import Signature
@@ -53,7 +51,7 @@ def test_celery_signals() -> None:
     app = Celery()
 
     @app.on_after_configure.connect
-    def setup_periodic_tasks(sender: Any, **kwargs: Any) -> None:
+    def setup_periodic_tasks(sender: Celery, **kwargs: object) -> None:
         # Calls test('hello') every 10 seconds.
         sender.add_periodic_task(10.0, test.s("hello"), name="add every 10")
 

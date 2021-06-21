@@ -238,7 +238,7 @@ class Celery:
     def signature(self, *args: Any, **kwargs: Any) -> Signature: ...
     def add_periodic_task(
         self,
-        schedule: BaseSchedule,
+        schedule: BaseSchedule | float,
         sig: Signature,
         args: Tuple[Any, ...] = ...,
         kwargs: Dict[str, Any] = ...,
