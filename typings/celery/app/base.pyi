@@ -29,11 +29,16 @@ from celery.backends.base import Backend
 from celery.canvas import Signature, chord
 from celery.loaders.base import BaseLoader
 from celery.schedules import BaseSchedule
+from celery.utils.dispatch import Signal
 from celery.utils.objects import FallbackContext
 from celery.utils.threads import _LocalStack
 from celery.worker import WorkController as CeleryWorkController
 
 class Celery:
+    on_configure: Signal
+    on_after_configure: Signal
+    on_after_finalize: Signal
+    on_after_fork: Signal
     def __init__(
         self,
         main: Optional[str] = ...,
@@ -233,7 +238,7 @@ class Celery:
     def signature(self, *args: Any, **kwargs: Any) -> Signature: ...
     def add_periodic_task(
         self,
-        schedule: BaseSchedule,
+        schedule: BaseSchedule | float,
         sig: Signature,
         args: Tuple[Any, ...] = ...,
         kwargs: Dict[str, Any] = ...,
