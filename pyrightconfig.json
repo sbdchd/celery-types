@@ -2,5 +2,6 @@
   "typeCheckingMode": "strict",
   "ignore": ["typings/django_celery_results*"],
   "reportPrivateUsage": false,
-  "reportMissingModuleSource": false
+  "reportMissingModuleSource": false,
+  "reportUnusedFunction": false
 }

@@ -32,8 +32,13 @@ from celery.schedules import BaseSchedule
 from celery.utils.objects import FallbackContext
 from celery.utils.threads import _LocalStack
 from celery.worker import WorkController as CeleryWorkController
+from celery.utils.dispatch import Signal
 
 class Celery:
+    on_configure: Signal
+    on_after_configure: Signal
+    on_after_finalize: Signal
+    on_after_fork: Signal
     def __init__(
         self,
         main: Optional[str] = ...,

@@ -1,6 +1,10 @@
+from __future__ import annotations
+from typing import Any
 import celery
 from celery import shared_task, signature
 from celery.canvas import Signature
+from celery import Celery
+from celery.schedules import crontab
 
 app = celery.Celery()
 
@@ -42,6 +46,35 @@ def test_celery_calling_task() -> None:
     print(foo)
 
     sub.chunks([], 10).apply_async()
+
+
+def test_celery_signals() -> None:
+    app = Celery()
+
+    @app.on_after_configure.connect
+    def setup_periodic_tasks(sender: Any, **kwargs: Any) -> None:
+        # Calls test('hello') every 10 seconds.
+        sender.add_periodic_task(10.0, test.s("hello"), name="add every 10")
+
+        # Calls test('world') every 30 seconds
+        sender.add_periodic_task(30.0, test.s("world"), expires=10)
+
+        # Executes every Monday morning at 7:30 a.m.
+        sender.add_periodic_task(
+            crontab(hour=7, minute=30, day_of_week=1),
+            test.s("Happy Mondays!"),
+        )
+
+    @app.task()
+    def test(arg: object) -> None:
+        print(arg)
+
+    @app.task()
+    def add(x: int, y: int) -> None:
+        z = x + y
+        print(z)
+
+    add.delay(1, 2)
 
 
 def test_celery_top_level_exports() -> None:
