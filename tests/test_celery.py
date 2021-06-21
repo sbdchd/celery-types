@@ -1,9 +1,10 @@
 from __future__ import annotations
+
 from typing import Any
+
 import celery
-from celery import shared_task, signature
+from celery import Celery, shared_task, signature
 from celery.canvas import Signature
-from celery import Celery
 from celery.schedules import crontab
 
 app = celery.Celery()

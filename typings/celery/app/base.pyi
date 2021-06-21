@@ -29,10 +29,10 @@ from celery.backends.base import Backend
 from celery.canvas import Signature, chord
 from celery.loaders.base import BaseLoader
 from celery.schedules import BaseSchedule
+from celery.utils.dispatch import Signal
 from celery.utils.objects import FallbackContext
 from celery.utils.threads import _LocalStack
 from celery.worker import WorkController as CeleryWorkController
-from celery.utils.dispatch import Signal
 
 class Celery:
     on_configure: Signal
