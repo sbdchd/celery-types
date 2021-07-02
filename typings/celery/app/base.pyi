@@ -169,7 +169,7 @@ class Celery:
     def send_task(
         self,
         name: str,
-        args: Optional[Tuple[Any]] = ...,
+        args: Optional[Sequence[Any]] = ...,
         kwargs: Optional[Dict[str, Any]] = ...,
         countdown: Optional[float] = ...,
         eta: Optional[datetime.datetime] = ...,

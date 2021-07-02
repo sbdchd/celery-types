@@ -31,6 +31,10 @@ class HttpNotFound(Exception):
     ...
 
 
+app.send_task(name="main.add", args=(1, 2))
+app.send_task(name="main.add", args=[1, 2])
+
+
 @app.task(throws=(KeyError, HttpNotFound))
 def foo() -> None:
     print("foo")
