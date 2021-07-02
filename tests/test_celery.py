@@ -2,10 +2,19 @@ from __future__ import annotations
 
 import celery
 from celery import Celery, shared_task, signature
+from celery.app.task import Task
 from celery.canvas import Signature
 from celery.schedules import crontab
+from celery.utils.log import get_task_logger
 
 app = celery.Celery()
+
+logger = get_task_logger(__name__)
+
+
+@app.task(bind=True)
+def add_2(self: Task, x: int, y: int) -> None:
+    logger.info(self.request.id)
 
 
 @shared_task(name="main.add")
