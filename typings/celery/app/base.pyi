@@ -10,7 +10,9 @@ from typing import (
     Set,
     Tuple,
     Type,
+    TypeVar,
     Union,
+    overload,
 )
 
 import celery
@@ -33,6 +35,8 @@ from celery.utils.dispatch import Signal
 from celery.utils.objects import FallbackContext
 from celery.utils.threads import _LocalStack
 from celery.worker import WorkController as CeleryWorkController
+
+_T = TypeVar("_T", bound=CeleryTask)
 
 class Celery:
     on_configure: Signal
@@ -102,6 +106,7 @@ class Celery:
     def close(self) -> None: ...
     def start(self, argv: Optional[List[str]] = ...) -> NoReturn: ...
     def worker_main(self, argv: Optional[List[str]] = ...) -> NoReturn: ...
+    @overload
     def task(
         self,
         *,
@@ -115,7 +120,42 @@ class Celery:
         ignore_result: bool = ...,
         soft_time_limit: int = ...,
         time_limit: int = ...,
-        base: Optional[CeleryTask] = ...,
+        base: Type[_T],
+        retry_kwargs: Dict[str, Any] = ...,
+        retry_backoff: bool = ...,
+        retry_backoff_max: int = ...,
+        retry_jitter: bool = ...,
+        typing: bool = ...,
+        rate_limit: Optional[str] = ...,
+        trail: bool = ...,
+        send_events: bool = ...,
+        store_errors_even_if_ignored: bool = ...,
+        autoregister: bool = ...,
+        track_started: bool = ...,
+        acks_on_failure_or_timeout: bool = ...,
+        reject_on_worker_lost: bool = ...,
+        throws: Tuple[Type[Exception], ...] = ...,
+        expires: Optional[Union[float, datetime.datetime]] = ...,
+        priority: Optional[int] = ...,
+        resultrepr_maxsize: int = ...,
+        request_stack: _LocalStack = ...,
+        abstract: bool = ...,
+    ) -> Callable[[Callable[..., Any]], _T]: ...
+    @overload
+    def task(
+        self,
+        *,
+        name: str = ...,
+        serializer: str = ...,
+        bind: bool = ...,
+        autoretry_for: Tuple[Type[Exception], ...] = ...,
+        max_retries: int = ...,
+        default_retry_delay: int = ...,
+        acks_late: bool = ...,
+        ignore_result: bool = ...,
+        soft_time_limit: int = ...,
+        time_limit: int = ...,
+        base: None = ...,
         retry_kwargs: Dict[str, Any] = ...,
         retry_backoff: bool = ...,
         retry_backoff_max: int = ...,
