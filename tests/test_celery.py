@@ -40,6 +40,27 @@ def foo() -> None:
     print("foo")
 
 
+app_2 = celery.Celery("worker")
+
+
+class MyTask(celery.Task):
+    def on_failure(
+        self, exc: Exception, task_id: str, args: object, kwargs: object, einfo: object
+    ) -> None:
+        print("{0!r} failed: {1!r}".format(task_id, exc))
+
+    def foo(self) -> None:
+        print("foo")
+
+
+@app_2.task(base=MyTask)
+def add_3(x: int, y: int) -> None:
+    raise KeyError
+
+
+add_3.foo()
+
+
 def test_celery_calling_task() -> None:
     signature("tasks.add", args=(2, 2), countdown=10)
 

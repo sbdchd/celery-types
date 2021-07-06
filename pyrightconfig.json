@@ -3,5 +3,6 @@
   "ignore": ["typings/django_celery_results*"],
   "reportPrivateUsage": false,
   "reportMissingModuleSource": false,
+  "reportIncompatibleMethodOverride": false,
   "reportUnusedFunction": false
 }
