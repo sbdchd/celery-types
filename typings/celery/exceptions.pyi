@@ -8,6 +8,7 @@ from billiard.exceptions import (
     TimeLimitExceeded,
     WorkerLostError,
 )
+from celery.canvas import Signature
 from kombu.exceptions import OperationalError
 
 __all__ = [
@@ -61,6 +62,8 @@ class Retry(TaskPredicate):
         message: Optional[str] = ...,
         exc: Optional[Exception] = ...,
         when: Optional[Union[numbers.Real, datetime]] = ...,
+        is_eager: bool = ...,
+        sig: Signature | None = ...,
         **kwargs: object
     ) -> None: ...
     def humanize(self) -> str: ...
@@ -71,7 +74,7 @@ class Ignore(TaskPredicate): ...
 
 class Reject(TaskPredicate):
     def __init__(
-        self, reason: Optional[str] = ..., requeue: Optional[str] = ...
+        self, reason: Exception | str | None = ..., requeue: bool | None = ...
     ) -> None: ...
 
 class ImproperlyConfigured(CeleryError): ...

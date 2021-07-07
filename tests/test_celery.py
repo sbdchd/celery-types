@@ -1,9 +1,14 @@
 from __future__ import annotations
 
+import errno
+import sys
+from typing import Iterator, Protocol
+
 import celery
 from celery import Celery, shared_task, signature
 from celery.app.task import Task
 from celery.canvas import Signature
+from celery.exceptions import Reject
 from celery.schedules import crontab
 from celery.utils.log import get_task_logger
 
@@ -27,8 +32,64 @@ def sub(x: int, y: int) -> int:
     return x - y
 
 
+class Table(Protocol):
+    def all(self) -> Iterator[dict[str, object]]:
+        ...
+
+
+class DB(Protocol):
+    @property
+    def table(self) -> Table:
+        ...
+
+
+class DatabaseTask(Task):
+    @property
+    def db(self) -> DB:
+        ...
+
+
+@app.task(base=DatabaseTask)
+def process_rows() -> None:
+    for row in process_rows.db.table.all():
+        print(row)
+
+
+@app.task(bind=True, default_retry_delay=10)
+def send_twitter_status(self: Task, oauth: str, tweet: str) -> None:
+    try:
+        print("fetch stuff")
+    except KeyError as exc:
+        raise self.retry(exc=exc, countdown=10)
+    except ValueError as exc:
+        raise Reject(exc, requeue=False)
+    except OSError as exc:
+        if exc.errno == errno.ENOMEM:
+            raise Reject(exc, requeue=False)
+
+        if not self.request.delivery_info["redelivered"]:
+            raise Reject("no reason", requeue=True)
+
+    self.update_state(state="SUCCESS", meta={"foo": "bar"})
+
+
 class HttpNotFound(Exception):
     ...
+
+
+logger = get_task_logger(__name__)
+
+
+@app.task(bind=True)
+def add_5(self: Task, x: int, y: int) -> int:
+    old_outs = sys.stdout, sys.stderr
+    rlevel = self.app.conf.worker_redirect_stdouts_level
+    try:
+        self.app.log.redirect_stdouts_to_logger(logger, rlevel)
+        print("Adding {0} + {1}".format(x, y))
+        return x + y
+    finally:
+        sys.stdout, sys.stderr = old_outs
 
 
 app.send_task(name="main.add", args=(1, 2))
@@ -40,7 +101,11 @@ def foo() -> None:
     print("foo")
 
 
+foo.name
+
 app_2 = celery.Celery("worker")
+
+add.chunks(zip(range(100), range(100)), 10).group().skew(start=1, stop=10)()
 
 
 class MyTask(celery.Task):

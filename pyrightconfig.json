@@ -4,5 +4,6 @@
   "reportPrivateUsage": false,
   "reportMissingModuleSource": false,
   "reportIncompatibleMethodOverride": false,
+  "reportTypedDictNotRequiredAccess": false,
   "reportUnusedFunction": false
 }
