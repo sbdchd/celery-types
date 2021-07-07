@@ -289,6 +289,7 @@ class chunks(Signature):
         publisher: kombu.Producer = ...,
         headers: Dict[str, str] = ...,
     ) -> None: ...
+    def group(self) -> _group: ...
 
 class group(Signature):
     def __init__(
@@ -322,7 +323,12 @@ class group(Signature):
         publisher: kombu.Producer = ...,
         headers: Dict[str, str] = ...,
     ) -> None: ...
+    def skew(
+        self, start: float = ..., stop: float | None = ..., step: float = ...
+    ) -> group: ...
     def __or__(self, other: Signature) -> chord: ...
+
+_group = group
 
 class chord(Signature):
     def __init__(

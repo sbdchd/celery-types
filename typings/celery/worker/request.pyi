@@ -7,11 +7,11 @@ from celery.concurrency.base import TaskPool
 from celery.result import AsyncResult
 from typing_extensions import Literal, TypedDict
 
-class _DeliveryInfo(TypedDict):
-    exchange: Any | None
-    routing_key: Any | None
-    priority: Any | None
-    redelivered: Any | None
+class _DeliveryInfo(TypedDict, total=False):
+    exchange: str | None
+    routing_key: str | None
+    priority: int | None
+    redelivered: bool | None
 
 class _InfoDict(TypedDict):
     id: str
