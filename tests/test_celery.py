@@ -55,6 +55,12 @@ def process_rows() -> None:
         print(row)
 
 
+@shared_task(base=DatabaseTask)
+def process_rows_2() -> None:
+    for row in process_rows_2.db.table.all():
+        print(row)
+
+
 @app.task(bind=True, default_retry_delay=10)
 def send_twitter_status(self: Task, oauth: str, tweet: str) -> None:
     try:
