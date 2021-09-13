@@ -1,8 +1,8 @@
 from typing import Any, Callable, Iterable, Mapping, Sequence, Tuple, Union
-from kombu.pidbox import Mailbox as KombuMailbox
-from kombu import Connection
 
 from celery.app.base import Celery
+from kombu import Connection
+from kombu.pidbox import Mailbox as KombuMailbox
 
 _Reply = Any
 
