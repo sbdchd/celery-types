@@ -151,6 +151,8 @@ def test_celery_calling_task() -> None:
 
     sub.chunks([], 10).apply_async()
 
+    app.control.broadcast("ping")
+
 
 def test_celery_signals() -> None:
     app = Celery()
