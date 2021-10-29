@@ -157,6 +157,9 @@ def test_celery_calling_task() -> None:
 def test_celery_signals() -> None:
     app = Celery()
 
+    app.autodiscover_tasks(packages=["foo", "bar"])
+    app.autodiscover_tasks(packages=lambda: ["foo", "bar"])
+
     @app.on_after_configure.connect
     def setup_periodic_tasks(sender: Celery, **kwargs: object) -> None:
         # Calls test('hello') every 10 seconds.
