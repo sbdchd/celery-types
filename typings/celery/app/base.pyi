@@ -202,7 +202,7 @@ class Celery:
     ) -> None: ...
     def autodiscover_tasks(
         self,
-        packages: Optional[List[str]] = ...,
+        packages: List[str] | Callable[[], List[str]] | None = ...,
         related_name: str = ...,
         force: bool = ...,
     ) -> None: ...
