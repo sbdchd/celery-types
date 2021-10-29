@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "celery-types"
-version = "0.8.2"
+version = "0.8.3"
 description = "Type stubs for Celery and its related packages"
 repository = "https://github.com/sbdchd/celery-types"
 readme = "README.md"
