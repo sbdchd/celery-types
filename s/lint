@@ -11,7 +11,7 @@ else
     ./.venv/bin/isort -y
 fi
 
-./node_modules/.bin/pyright .
+./node_modules/.bin/pyright typings tests
 
 # type check code
 ./.venv/bin/mypy tests
