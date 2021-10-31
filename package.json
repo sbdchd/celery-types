@@ -6,6 +6,6 @@
   "author": "Steve Dignam <steve@dignam.xyz>",
   "license": "MIT",
   "devDependencies": {
-    "pyright": "^1.1.109"
+    "pyright": "^1.1.183"
   }
 }
