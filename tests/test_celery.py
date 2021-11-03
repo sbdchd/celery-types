@@ -115,6 +115,8 @@ add.chunks(zip(range(100), range(100)), 10).group().skew(start=1, stop=10)()
 
 
 class MyTask(celery.Task):
+    throws = (ValueError,)
+
     def on_failure(
         self, exc: Exception, task_id: str, args: object, kwargs: object, einfo: object
     ) -> None:
