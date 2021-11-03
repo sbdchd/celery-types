@@ -1,5 +1,16 @@
 from datetime import datetime
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Union, overload
+from typing import (
+    Any,
+    Dict,
+    Iterable,
+    List,
+    Mapping,
+    Optional,
+    Tuple,
+    Type,
+    Union,
+    overload,
+)
 
 import billiard
 import celery
