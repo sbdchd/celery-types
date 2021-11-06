@@ -10,6 +10,7 @@ from typing import (
     Tuple,
     TypeVar,
     Union,
+    overload,
 )
 
 import celery
@@ -292,6 +293,11 @@ class chunks(Signature):
     def group(self) -> _group: ...
 
 class group(Signature):
+    @overload
+    def __init__(
+        self, __tasks: group | abstract.CallableSignature | Iterable[Signature]
+    ) -> None: ...
+    @overload
     def __init__(
         self,
         *tasks: Signature,

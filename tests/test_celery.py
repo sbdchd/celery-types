@@ -155,6 +155,13 @@ def test_celery_calling_task() -> None:
 
     app.control.broadcast("ping")
 
+    job = celery.group(add.s(5, x) for x in range(10))
+    print(job)
+
+    celery.group([add.s(2, 2), add.s(4, 4)])
+
+    celery.group(add.s(1, 1), add.s(1, 2), add.s(1, 3))
+
 
 def test_celery_signals() -> None:
     app = Celery()
