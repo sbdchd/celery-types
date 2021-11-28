@@ -1,6 +1,6 @@
 import numbers
 from datetime import datetime, timedelta
-from typing import Callable, NamedTuple, Optional, Set, Tuple, Union
+from typing import Callable, List, NamedTuple, Optional, Set, Tuple, Union
 
 from celery.app.base import Celery
 from celery.utils.time import ffwd
