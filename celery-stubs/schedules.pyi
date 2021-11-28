@@ -61,11 +61,11 @@ class crontab_parser:
 class crontab(BaseSchedule):
     def __init__(
         self,
-        minute: Union[str, int] = ...,
+        minute: Union[str, int, List[int]] = ...,
         hour: Union[str, int, List[int]] = ...,
-        day_of_week: Union[str, int] = ...,
-        day_of_month: Union[str, int] = ...,
-        month_of_year: Union[str, int] = ...,
+        day_of_week: Union[str, int, List[int]] = ...,
+        day_of_month: Union[str, int, List[int]] = ...,
+        month_of_year: Union[str, int, List[int]] = ...,
         nowfun: Optional[Callable[[], datetime]] = ...,
         app: Optional[Celery] = ...,
     ) -> None: ...
