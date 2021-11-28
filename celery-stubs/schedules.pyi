@@ -62,7 +62,7 @@ class crontab(BaseSchedule):
     def __init__(
         self,
         minute: Union[str, int] = ...,
-        hour: Union[str, int] = ...,
+        hour: Union[str, int, List[int]] = ...,
         day_of_week: Union[str, int] = ...,
         day_of_month: Union[str, int] = ...,
         month_of_year: Union[str, int] = ...,
