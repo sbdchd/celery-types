@@ -1,4 +1,25 @@
-from kombu.abstract import MaybeChannelBound
+from typing import Any, Optional
 
-class Exchange(MaybeChannelBound): ...
-class Queue(MaybeChannelBound): ...
+from kombu.abstract import MaybeChannelBound
+from kombu.transport.base import Channel
+
+class Exchange(MaybeChannelBound):
+    def __init__(
+        self,
+        name: str = ...,
+        type: str = ...,
+        channel: Optional[Channel] = ...,
+        **kwargs: Any,
+    ) -> None: ...
+
+class Queue(MaybeChannelBound):
+    def __init__(
+        self,
+        name: str = ...,
+        exchange: Optional[Exchange] = ...,
+        routing_key: str = ...,
+        channel: Optional[Channel] = ...,
+        bindings: Any = ...,
+        on_declared: Any = ...,
+        **kwargs: Any,
+    ) -> None: ...
