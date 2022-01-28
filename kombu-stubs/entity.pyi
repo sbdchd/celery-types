@@ -1,6 +1,7 @@
+from typing import Any, Optional
+
 from kombu.abstract import MaybeChannelBound
 from kombu.transport.base import Channel
-from typing import Any, Optional
 
 class Exchange(MaybeChannelBound):
     def __init__(

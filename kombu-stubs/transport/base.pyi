@@ -1,4 +1,5 @@
 from typing import Any
+
 from kombu.connection import Connection
 
 class Transport: ...
