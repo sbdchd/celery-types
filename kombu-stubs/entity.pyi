@@ -13,6 +13,8 @@ class Exchange(MaybeChannelBound):
     ) -> None: ...
 
 class Queue(MaybeChannelBound):
+    routing_key: str
+    exchange: Exchange
     def __init__(
         self,
         name: str = ...,
