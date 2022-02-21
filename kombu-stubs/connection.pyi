@@ -1,6 +1,6 @@
 from typing import Any, Callable, Dict, List, Optional
 
-from kombu.transport.base import Transport
+from kombu.transport.base import Channel, Transport
 
 class Connection:
     def __init__(
@@ -32,3 +32,6 @@ class Connection:
         reraise_as_library_errors: bool = ...,
         timeout: Optional[int] = ...,
     ) -> Connection: ...
+    def channel(self) -> Channel: ...
+    def release(self) -> None: ...
+    close = release
