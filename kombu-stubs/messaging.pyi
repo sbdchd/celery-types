@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, Callable, Iterable, Optional, Union
+from typing import Any, Callable, Optional, Sequence, Union
 
 from kombu.connection import Connection
 from kombu.entity import Exchange, Queue
@@ -35,7 +35,7 @@ class Producer:
         exchange: Optional[Union[Exchange, str]] = ...,
         retry: bool = ...,
         retry_policy: Optional[dict[Any, Any]] = ...,
-        declare: Iterable[Union[Exchange, Queue]] = ...,
+        declare: Sequence[Union[Exchange, Queue]] = ...,
         expiration: Optional[float] = ...,
         timeout: Optional[float] = ...,
         **properties: Any
@@ -45,13 +45,13 @@ class Consumer:
     def __init__(
         self,
         channel: Union[Connection, Channel],
-        queues: Optional[Iterable[Queue]] = ...,
+        queues: Optional[Sequence[Queue]] = ...,
         no_ack: Optional[bool] = ...,
         auto_declare: Optional[bool] = ...,
-        callbacks: Optional[Iterable[Callable[[Any, Message], None]]] = ...,
+        callbacks: Optional[Sequence[Callable[[Any, Message], None]]] = ...,
         on_decode_error: Optional[Callable[[Message, Exception], None]] = ...,
         on_message: Optional[Callable[[Message], None]] = ...,
-        accept: Optional[Iterable[str]] = ...,
+        accept: Optional[Sequence[str]] = ...,
         prefetch_count: Optional[int] = ...,
         tag_prefix: Optional[str] = ...,
     ) -> None: ...
