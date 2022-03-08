@@ -2,9 +2,8 @@ from datetime import datetime
 from typing import List, Optional, Tuple
 
 from django.db import models
-from typing_extensions import TypedDict
-
 from django_celery_results.managers import TaskResultManager
+from typing_extensions import TypedDict
 
 ALL_STATES: List[str]
 TASK_STATE_CHOICES: List[Tuple[str, str]]

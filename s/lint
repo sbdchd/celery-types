@@ -8,7 +8,7 @@ if [[ $CI ]]; then
     ./.venv/bin/isort --check-only
 else
     ./.venv/bin/black .
-    ./.venv/bin/isort -y
+    ./.venv/bin/isort .
 fi
 
 ./node_modules/.bin/pyright typings tests
