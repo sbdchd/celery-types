@@ -142,6 +142,7 @@ class Celery:
         resultrepr_maxsize: int = ...,
         request_stack: _LocalStack = ...,
         abstract: bool = ...,
+        queue: str = ...,
     ) -> Callable[[Callable[..., Any]], _T]: ...
     @overload
     def task(
@@ -177,6 +178,7 @@ class Celery:
         resultrepr_maxsize: int = ...,
         request_stack: _LocalStack = ...,
         abstract: bool = ...,
+        queue: str = ...,
     ) -> Callable[[Callable[..., Any]], CeleryTask]: ...
     def register_task(self, task: CeleryTask) -> CeleryTask: ...
     def gen_task_name(self, name: str, module: object) -> str: ...
