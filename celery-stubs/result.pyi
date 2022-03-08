@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from datetime import datetime
 from types import TracebackType
 from typing import Any, Callable, FrozenSet, Iterator, List, Mapping, Optional, Tuple
@@ -8,6 +9,11 @@ from celery.backends.base import Backend
 from celery.utils.graph import DependencyGraph, GraphFormatter
 from typing_extensions import Literal
 from vine import promise
+
+@contextmanager
+def denied_join_result() -> Iterator[None]: ...
+@contextmanager
+def allow_join_result() -> Iterator[None]: ...
 
 class ResultBase:
     parent: Optional[ResultBase]

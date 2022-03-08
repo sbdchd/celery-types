@@ -9,6 +9,7 @@ from celery import Celery, shared_task, signature
 from celery.app.task import Task
 from celery.canvas import Signature
 from celery.exceptions import Reject
+from celery.result import allow_join_result, denied_join_result
 from celery.schedules import crontab
 from celery.utils.log import get_task_logger
 
@@ -193,6 +194,13 @@ def test_celery_signals() -> None:
         print(z)
 
     add.delay(1, 2)
+
+
+with allow_join_result():
+    ...
+
+with denied_join_result():
+    ...
 
 
 def test_celery_top_level_exports() -> None:
