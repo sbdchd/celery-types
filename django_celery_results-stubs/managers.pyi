@@ -4,7 +4,6 @@ from uuid import UUID
 
 from django.db import models
 from django.db.models.query import QuerySet
-
 from django_celery_results.models import TaskResult
 
 class TaskResultManager(models.Manager[TaskResult]):

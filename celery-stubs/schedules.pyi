@@ -2,11 +2,10 @@ import numbers
 from datetime import datetime, timedelta
 from typing import Callable, List, NamedTuple, Optional, Set, Tuple, Union
 
+import ephem
 from celery.app.base import Celery
 from celery.utils.time import ffwd
 from typing_extensions import Literal
-
-import ephem
 
 class schedstate(NamedTuple):
     is_due: bool
