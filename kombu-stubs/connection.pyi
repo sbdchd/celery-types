@@ -32,6 +32,18 @@ class Connection:
         reraise_as_library_errors: bool = ...,
         timeout: Optional[int] = ...,
     ) -> Connection: ...
+    def _ensure_connection(
+        self,
+        errback: Optional[Callable[[Exception, float], None]] = ...,
+        max_retries: int = ...,
+        interval_start: int = ...,
+        interval_step: int = ...,
+        interval_max: int = ...,
+        callback: Optional[Callable[[], None]] = ...,
+        reraise_as_library_errors: bool = ...,
+        timeout: Optional[int] = ...,
+    ) -> Connection: ...
+    def connect(self) -> Connection: ...
     def channel(self) -> Channel: ...
     def release(self) -> None: ...
     close = release
