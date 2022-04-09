@@ -43,6 +43,7 @@ def shared_task(
     resultrepr_maxsize: int = ...,
     request_stack: _LocalStack = ...,
     abstract: bool = ...,
+    queue: str = ...,
 ) -> Callable[[Callable[..., Any]], Task]: ...
 @overload
 def shared_task(
@@ -77,4 +78,5 @@ def shared_task(
     resultrepr_maxsize: int = ...,
     request_stack: _LocalStack = ...,
     abstract: bool = ...,
+    queue: str = ...,
 ) -> Callable[[Callable[..., Any]], _T]: ...
