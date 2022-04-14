@@ -73,7 +73,7 @@ class Celery:
         # options
         autoretry_for: Tuple[Type[Exception], ...] = ...,
         retry_kwargs: Dict[str, Any] = ...,
-        retry_backoff: bool = ...,
+        retry_backoff: Union[bool, int] = ...,
         retry_backoff_max: int = ...,
         retry_jitter: bool = ...,
         # from task
@@ -124,7 +124,7 @@ class Celery:
         time_limit: int = ...,
         base: Type[_T],
         retry_kwargs: Dict[str, Any] = ...,
-        retry_backoff: bool = ...,
+        retry_backoff: Union[bool, int] = ...,
         retry_backoff_max: int = ...,
         retry_jitter: bool = ...,
         typing: bool = ...,
@@ -160,7 +160,7 @@ class Celery:
         time_limit: int = ...,
         base: None = ...,
         retry_kwargs: Dict[str, Any] = ...,
-        retry_backoff: bool = ...,
+        retry_backoff: Union[bool, int] = ...,
         retry_backoff_max: int = ...,
         retry_jitter: bool = ...,
         typing: bool = ...,
