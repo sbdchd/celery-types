@@ -29,6 +29,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.7"
+typing-extensions = ">=3.10.0,<5.0.0"
 
 [tool.poetry.dev-dependencies]
 bpython = "^0.21.0"
@@ -39,7 +40,7 @@ flake8-pyi = "^20.10"
 isort = {version = "5.9.3", allow-prereleases = true}
 django-types = "^0.3.1"
 django = "^3.1"
-mypy = "0.902"
+mypy = "^0.950"
 
 [tool.isort]
 profile="black"

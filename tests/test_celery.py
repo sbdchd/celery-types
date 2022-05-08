@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import errno
 import sys
-from typing import Iterator, Protocol
+from typing import Any, Iterator, Protocol
 
 import celery
 from celery import Celery, shared_task, signature
@@ -19,7 +19,7 @@ logger = get_task_logger(__name__)
 
 
 @app.task(bind=True)
-def add_2(self: Task, x: int, y: int) -> None:
+def add_2(self: Task[Any, Any], x: int, y: int) -> None:
     logger.info(self.request.id)
 
 
@@ -44,7 +44,7 @@ class DB(Protocol):
         ...
 
 
-class DatabaseTask(Task):
+class DatabaseTask(Task[Any, Any]):
     @property
     def db(self) -> DB:
         ...
@@ -63,7 +63,7 @@ def process_rows_2() -> None:
 
 
 @app.task(bind=True, default_retry_delay=10)
-def send_twitter_status(self: Task, oauth: str, tweet: str) -> None:
+def send_twitter_status(self: Task[Any, Any], oauth: str, tweet: str) -> None:
     try:
         print("fetch stuff")
     except KeyError as exc:
@@ -88,7 +88,7 @@ logger = get_task_logger(__name__)
 
 
 @app.task(bind=True)
-def add_5(self: Task, x: int, y: int) -> int:
+def add_5(self: Task[Any, Any], x: int, y: int) -> int:
     old_outs = sys.stdout, sys.stderr
     rlevel = self.app.conf.worker_redirect_stdouts_level
     try:
@@ -115,7 +115,7 @@ app_2 = celery.Celery("worker")
 add.chunks(zip(range(100), range(100)), 10).group().skew(start=1, stop=10)()
 
 
-class MyTask(celery.Task):
+class MyTask(celery.Task[Any, Any]):
     throws = (ValueError,)
 
     def on_failure(
@@ -142,6 +142,7 @@ def test_celery_calling_task() -> None:
 
     bar = add(x=10, y=100)
     print(bar)
+    add.delay(x=10, y=100)
     add.delay(x=10, y=100)
     add.s(10).delay().get()
     add.s(x=10, y=100)
@@ -205,8 +206,8 @@ with denied_join_result():
 
 def test_celery_top_level_exports() -> None:
     celery.Celery
-    celery.Signature
-    celery.Task
+    celery.Signature[Any]
+    celery.Task[Any, Any]
     celery.chain
     celery.chord
     celery.chunks
