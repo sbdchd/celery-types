@@ -2,12 +2,14 @@ from datetime import datetime
 from typing import (
     Any,
     Dict,
+    Generic,
     Iterable,
     List,
     Mapping,
     Optional,
     Tuple,
     Type,
+    TypeVar,
     Union,
     overload,
 )
@@ -23,9 +25,12 @@ from celery.exceptions import Retry
 from celery.result import EagerResult
 from celery.utils.threads import _LocalStack
 from celery.worker.request import Request
-from typing_extensions import Literal
+from typing_extensions import Literal, ParamSpec
 
-class Task:
+_P = ParamSpec("_P")
+_R = TypeVar("_R")
+
+class Task(Generic[_P, _R]):
     name: str
     typing: bool
     max_retries: int
@@ -61,18 +66,20 @@ class Task:
     def add_around(cls, attr: str, around: Any) -> None: ...
     # TODO(sbdchd): might be able to use overloads to handle the case where
     # `bind=True` passes in the first argument.
-    def __call__(self, *args: Any, **kwargs: Any) -> Any: ...
-    def run(self, *args: Any, **kwargs: Any) -> Any: ...
+    def __call__(self, *args: _P.args, **kwargs: _P.kwargs) -> _R: ...
+    def run(self, *args: _P.args, **kwargs: _P.kwargs) -> _R: ...
     def start_strategy(self, app: Celery, consumer: Any, **kwargs: Any) -> Any: ...
-    def delay(self, *args: Any, **kwargs: Any) -> celery.result.AsyncResult: ...
+    def delay(
+        self, *args: _P.args, **kwargs: _P.kwargs
+    ) -> celery.result.AsyncResult[_R]: ...
     def apply_async(
         self,
         args: Optional[Tuple[Any, ...]] = ...,
         kwargs: Optional[Dict[str, Any]] = ...,
         task_id: Optional[str] = ...,
         producer: Optional[kombu.Producer] = ...,
-        link: Optional[Signature] = ...,
-        link_error: Optional[Signature] = ...,
+        link: Optional[Signature[Any]] = ...,
+        link_error: Optional[Signature[Any]] = ...,
         shadow: Optional[str] = ...,
         # options
         countdown: float = ...,
@@ -89,7 +96,7 @@ class Task:
         add_to_parent: bool = ...,
         publisher: kombu.Producer = ...,
         headers: Dict[str, str] = ...,
-    ) -> celery.result.AsyncResult: ...
+    ) -> celery.result.AsyncResult[_R]: ...
     def shadow_name(
         self, args: Tuple[Any, ...], kwargs: Dict[str, Any], options: Dict[str, Any]
     ) -> None: ...
@@ -100,7 +107,7 @@ class Task:
         kwargs: Optional[Dict[str, Any]] = ...,
         queue: Optional[str] = ...,
         **extra_options: Any
-    ) -> Signature: ...
+    ) -> Signature[_R]: ...
     subtask_from_request = signature_from_request  # XXX compat
     def retry(
         self,
@@ -114,8 +121,8 @@ class Task:
         # options
         task_id: Optional[str] = ...,
         producer: Optional[kombu.Producer] = ...,
-        link: Optional[Signature] = ...,
-        link_error: Optional[Signature] = ...,
+        link: Optional[Signature[Any]] = ...,
+        link_error: Optional[Signature[Any]] = ...,
         shadow: Optional[str] = ...,
         expires: Union[float, datetime] = ...,
         retry: bool = ...,
@@ -134,24 +141,26 @@ class Task:
         self,
         args: Optional[Tuple[Any, ...]] = ...,
         kwargs: Optional[Dict[str, Any]] = ...,
-        link: Optional[Signature] = ...,
-        link_error: Optional[Signature] = ...,
+        link: Optional[Signature[Any]] = ...,
+        link_error: Optional[Signature[Any]] = ...,
         task_id: Optional[str] = ...,
         retries: Optional[int] = ...,
         throw: Optional[bool] = ...,
         logfile: Optional[str] = ...,
         loglevel: Optional[str] = ...,
         headers: Optional[Mapping[str, str]] = ...,
-    ) -> EagerResult: ...
-    def AsyncResult(self, task_id: str, **kwargs: Any) -> celery.result.AsyncResult: ...
+    ) -> EagerResult[_R]: ...
+    def AsyncResult(
+        self, task_id: str, **kwargs: Any
+    ) -> celery.result.AsyncResult[_R]: ...
     def signature(
         self, args: Optional[Tuple[Any, ...]] = ..., *starargs: Any, **starkwargs: Any
-    ) -> Signature: ...
+    ) -> Signature[_R]: ...
     def subtask(
         self, args: Optional[Tuple[Any, ...]] = ..., *starargs: Any, **starkwargs: Any
-    ) -> Signature: ...
-    def s(self, *args: Any, **kwargs: Any) -> Signature: ...
-    def si(self, *args: Any, **kwargs: Any) -> Signature: ...
+    ) -> Signature[_R]: ...
+    def s(self, *args: Any, **kwargs: Any) -> Signature[_R]: ...
+    def si(self, *args: Any, **kwargs: Any) -> Signature[_R]: ...
     def chunks(self, it: Iterable[Any], n: int) -> canvas.chunks: ...
     def map(self, it: Iterable[Any]) -> xmap: ...
     def starmap(self, it: Iterable[Any]) -> xstarmap: ...
@@ -162,15 +171,15 @@ class Task:
         retry_policy: Optional[Mapping[str, int]] = ...,
         **fields: Mapping[str, Any]
     ) -> List[Tuple[object, object]]: ...
-    def replace(self, sig: Signature) -> None: ...
+    def replace(self, sig: Signature[Any]) -> None: ...
     @overload
     def add_to_chord(
-        self, sig: Signature, lazy: Literal[True]
-    ) -> celery.result.AsyncResult: ...
+        self, sig: Signature[Any], lazy: Literal[True]
+    ) -> celery.result.AsyncResult[Any]: ...
     @overload
     def add_to_chord(
-        self, sig: Signature, lazy: Literal[False] = ...
-    ) -> EagerResult: ...
+        self, sig: Signature[Any], lazy: Literal[False] = ...
+    ) -> EagerResult[Any]: ...
     def update_state(
         self,
         task_id: Optional[str] = ...,
@@ -207,7 +216,7 @@ class Task:
         einfo: billiard.einfo.ExceptionInfo,
     ) -> None: ...
     def add_trail(self, result: Any) -> Any: ...
-    def push_request(self, *args: Any, **kwargs: Any) -> None: ...
+    def push_request(self, *args: _P.args, **kwargs: _P.kwargs) -> None: ...
     def pop_request(self) -> None: ...
     @property
     def request(self) -> Request: ...

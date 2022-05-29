@@ -3,6 +3,7 @@ from typing import (
     Any,
     Callable,
     Dict,
+    Generic,
     Iterable,
     List,
     Mapping,
@@ -21,11 +22,12 @@ from celery.result import EagerResult
 from celery.utils import abstract
 
 _F = TypeVar("_F", bound=Callable[..., Any])
+_R = TypeVar("_R")
 
-class Signature(Dict[str, Any]):
+class Signature(Dict[str, Any], Generic[_R]):
     def __init__(
         self,
-        task: Task | str | None = ...,
+        task: Task[Any, _R] | str | None = ...,
         args: Optional[Tuple[Any, ...]] = ...,
         kwargs: Optional[Dict[str, Any]] = ...,
         options: Optional[Dict[str, Any]] = ...,
@@ -36,8 +38,8 @@ class Signature(Dict[str, Any]):
         # **ex expanded
         task_id: Optional[str] = ...,
         producer: Optional[kombu.Producer] = ...,
-        link: Optional[Signature] = ...,
-        link_error: Optional[Signature] = ...,
+        link: Optional[Signature[Any]] = ...,
+        link_error: Optional[Signature[Any]] = ...,
         shadow: Optional[str] = ...,
         # apply_async options
         countdown: float = ...,
@@ -55,16 +57,16 @@ class Signature(Dict[str, Any]):
         publisher: kombu.Producer = ...,
         headers: Dict[str, str] = ...,
     ) -> None: ...
-    def __call__(self, *partial_args: Any, **partial_kwargs: Any) -> Any: ...
+    def __call__(self, *partial_args: Any, **partial_kwargs: Any) -> _R: ...
     def delay(
         self, *partial_args: Any, **partial_kwargs: Any
-    ) -> celery.result.AsyncResult: ...
+    ) -> celery.result.AsyncResult[_R]: ...
     def apply(
         self,
         args: Optional[Tuple[Any]] = ...,
         kwargs: Optional[Dict[str, Any]] = ...,
         **options: Dict[str, Any],
-    ) -> EagerResult: ...
+    ) -> EagerResult[_R]: ...
     def apply_async(
         self,
         args: Optional[Tuple[Any]] = ...,
@@ -73,8 +75,8 @@ class Signature(Dict[str, Any]):
         # options
         task_id: Optional[str] = ...,
         producer: Optional[kombu.Producer] = ...,
-        link: Optional[Signature] = ...,
-        link_error: Optional[Signature] = ...,
+        link: Optional[Signature[Any]] = ...,
+        link_error: Optional[Signature[Any]] = ...,
         shadow: Optional[str] = ...,
         # apply_async options
         countdown: float = ...,
@@ -91,7 +93,7 @@ class Signature(Dict[str, Any]):
         add_to_parent: bool = ...,
         publisher: kombu.Producer = ...,
         headers: Dict[str, str] = ...,
-    ) -> celery.result.AsyncResult: ...
+    ) -> celery.result.AsyncResult[_R]: ...
     def clone(
         self,
         args: Optional[Tuple[Any, ...]] = ...,
@@ -99,8 +101,8 @@ class Signature(Dict[str, Any]):
         # **ex expanded
         task_id: Optional[str] = ...,
         producer: Optional[kombu.Producer] = ...,
-        link: Optional[Signature] = ...,
-        link_error: Optional[Signature] = ...,
+        link: Optional[Signature[Any]] = ...,
+        link_error: Optional[Signature[Any]] = ...,
         shadow: Optional[str] = ...,
         # apply_async options
         countdown: float = ...,
@@ -117,7 +119,7 @@ class Signature(Dict[str, Any]):
         add_to_parent: bool = ...,
         publisher: kombu.Producer = ...,
         headers: Dict[str, str] = ...,
-    ) -> Signature: ...
+    ) -> Signature[_R]: ...
     partial = clone
     def freeze(
         self,
@@ -126,21 +128,21 @@ class Signature(Dict[str, Any]):
         chord: Optional[chord] = ...,
         root_id: Optional[str] = ...,
         parent_id: Optional[str] = ...,
-    ) -> celery.result.AsyncResult: ...
+    ) -> celery.result.AsyncResult[_R]: ...
     def replace(
         self,
         args: Optional[Tuple[Any, ...]] = ...,
         kwargs: Optional[Dict[str, Any]] = ...,
         options: Optional[Dict[str, Any]] = ...,
-    ) -> Signature: ...
+    ) -> Signature[_R]: ...
     def set(
         self,
         immutable: Optional[bool] = ...,
         # **options expanded
         task_id: Optional[str] = ...,
         producer: Optional[kombu.Producer] = ...,
-        link: Optional[Signature] = ...,
-        link_error: Optional[Signature] = ...,
+        link: Optional[Signature[Any]] = ...,
+        link_error: Optional[Signature[Any]] = ...,
         shadow: Optional[str] = ...,
         # apply_async options
         countdown: float = ...,
@@ -157,24 +159,24 @@ class Signature(Dict[str, Any]):
         add_to_parent: bool = ...,
         publisher: kombu.Producer = ...,
         headers: Dict[str, str] = ...,
-    ) -> Signature: ...
+    ) -> Signature[_R]: ...
     def set_immutable(self, immutable: bool) -> None: ...
     def append_to_list_option(self, key: str, value: Any) -> Any: ...
     def extend_list_option(self, key: str, value: Any) -> None: ...
     def link(self, callback: _F) -> _F: ...
-    def link_error(self, errback: Callable[..., Any]) -> Signature: ...
+    def link_error(self, errback: Callable[..., Any]) -> Signature[_R]: ...
     def on_error(self, errback: _F) -> _F: ...
-    def flatten_links(self) -> List[Signature]: ...
+    def flatten_links(self) -> List[Signature[Any]]: ...
     # TODO(sbdchd): use overloads to properly type this
-    def __or__(self, other: Signature) -> Signature: ...
-    def election(self) -> celery.result.AsyncResult: ...
+    def __or__(self, other: Signature[Any]) -> Signature[Any]: ...
+    def election(self) -> celery.result.AsyncResult[_R]: ...
     @property
     def name(self) -> str: ...
     @property
     def type(self) -> Any: ...
     @property
     def app(self) -> Celery: ...
-    def AsyncResult(self) -> celery.result.AsyncResult: ...
+    def AsyncResult(self) -> celery.result.AsyncResult[_R]: ...
     id: Optional[str]
     parent_id: Optional[str]
     root_id: Optional[str]
@@ -186,10 +188,10 @@ class Signature(Dict[str, Any]):
     chord_size: Optional[int]
     immutable: bool
 
-class _chain(Signature):
+class _chain(Signature[Any]):
     def __init__(
         self,
-        *tasks: Signature,
+        *tasks: Signature[Any],
         # Signature extras
         options: Optional[Dict[str, Any]] = ...,
         type: Optional[Any] = ...,
@@ -198,8 +200,8 @@ class _chain(Signature):
         app: Optional[Celery] = ...,
         task_id: Optional[str] = ...,
         producer: Optional[kombu.Producer] = ...,
-        link: Optional[Signature] = ...,
-        link_error: Optional[Signature] = ...,
+        link: Optional[Signature[Any]] = ...,
+        link_error: Optional[Signature[Any]] = ...,
         shadow: Optional[str] = ...,
         countdown: float = ...,
         eta: datetime | None = ...,
@@ -219,10 +221,10 @@ class _chain(Signature):
 
 class chain(_chain): ...
 
-class _basemap(Signature):
+class _basemap(Signature[Any]):
     def __init__(
         self,
-        task: Optional[Task],
+        task: Optional[Task[Any, Any]],
         it: Iterable[Any],
         # Signature extras
         args: Optional[Tuple[Any, ...]] = ...,
@@ -234,8 +236,8 @@ class _basemap(Signature):
         app: Optional[Celery] = ...,
         task_id: Optional[str] = ...,
         producer: Optional[kombu.Producer] = ...,
-        link: Optional[Signature] = ...,
-        link_error: Optional[Signature] = ...,
+        link: Optional[Signature[Any]] = ...,
+        link_error: Optional[Signature[Any]] = ...,
         shadow: Optional[str] = ...,
         countdown: float = ...,
         eta: datetime | None = ...,
@@ -256,10 +258,10 @@ class _basemap(Signature):
 class xmap(_basemap): ...
 class xstarmap(_basemap): ...
 
-class chunks(Signature):
+class chunks(Signature[Any]):
     def __init__(
         self,
-        task: Optional[Task],
+        task: Optional[Task[Any, Any]],
         it: Iterable[Any],
         n: int,
         # Signature extras
@@ -272,8 +274,8 @@ class chunks(Signature):
         app: Optional[Celery] = ...,
         task_id: Optional[str] = ...,
         producer: Optional[kombu.Producer] = ...,
-        link: Optional[Signature] = ...,
-        link_error: Optional[Signature] = ...,
+        link: Optional[Signature[Any]] = ...,
+        link_error: Optional[Signature[Any]] = ...,
         shadow: Optional[str] = ...,
         countdown: float = ...,
         eta: datetime | None = ...,
@@ -292,15 +294,15 @@ class chunks(Signature):
     ) -> None: ...
     def group(self) -> _group: ...
 
-class group(Signature):
+class group(Signature[Any]):
     @overload
     def __init__(
-        self, __tasks: group | abstract.CallableSignature | Iterable[Signature]
+        self, __tasks: group | abstract.CallableSignature | Iterable[Signature[Any]]
     ) -> None: ...
     @overload
     def __init__(
         self,
-        *tasks: Signature,
+        *tasks: Signature[Any],
         # Signature extras
         args: Optional[Tuple[Any, ...]] = ...,
         kwargs: Optional[Dict[str, Any]] = ...,
@@ -311,8 +313,8 @@ class group(Signature):
         app: Optional[Celery] = ...,
         task_id: Optional[str] = ...,
         producer: Optional[kombu.Producer] = ...,
-        link: Optional[Signature] = ...,
-        link_error: Optional[Signature] = ...,
+        link: Optional[Signature[Any]] = ...,
+        link_error: Optional[Signature[Any]] = ...,
         shadow: Optional[str] = ...,
         countdown: float = ...,
         eta: datetime | None = ...,
@@ -332,11 +334,11 @@ class group(Signature):
     def skew(
         self, start: float = ..., stop: float | None = ..., step: float = ...
     ) -> group: ...
-    def __or__(self, other: Signature) -> chord: ...
+    def __or__(self, other: Signature[Any]) -> chord: ...
 
 _group = group
 
-class chord(Signature):
+class chord(Signature[Any]):
     def __init__(
         self,
         header: Any,
@@ -352,8 +354,8 @@ class chord(Signature):
         immutable: bool = ...,
         task_id: Optional[str] = ...,
         producer: Optional[kombu.Producer] = ...,
-        link: Optional[Signature] = ...,
-        link_error: Optional[Signature] = ...,
+        link: Optional[Signature[Any]] = ...,
+        link_error: Optional[Signature[Any]] = ...,
         shadow: Optional[str] = ...,
         countdown: float = ...,
         eta: datetime | None = ...,
@@ -370,11 +372,11 @@ class chord(Signature):
         publisher: kombu.Producer = ...,
         headers: Dict[str, str] = ...,
     ) -> None: ...
-    def __or__(self, other: Signature) -> chord: ...
+    def __or__(self, other: Signature[Any]) -> chord: ...
 
 def signature(
-    varies: Signature | str | Dict[str, Any], *args: Any, **kwargs: Any
-) -> Signature: ...
+    varies: Signature[Any] | str | Dict[str, Any], *args: Any, **kwargs: Any
+) -> Signature[Any]: ...
 
 subtask = signature
 

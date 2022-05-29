@@ -1,7 +1,18 @@
 from contextlib import contextmanager
 from datetime import datetime
 from types import TracebackType
-from typing import Any, Callable, FrozenSet, Iterator, List, Mapping, Optional, Tuple
+from typing import (
+    Any,
+    Callable,
+    FrozenSet,
+    Generic,
+    Iterator,
+    List,
+    Mapping,
+    Optional,
+    Tuple,
+    TypeVar,
+)
 
 import kombu
 from celery.app.base import Celery
@@ -20,7 +31,9 @@ class ResultBase:
 
 _State = Literal["PENDING", "STARTED", "RETRY", "FAILURE", "SUCCESS"]
 
-class AsyncResult(ResultBase):
+_R = TypeVar("_R")
+
+class AsyncResult(ResultBase, Generic[_R]):
     app: Celery
     id: str
     backend: Backend
@@ -56,7 +69,6 @@ class AsyncResult(ResultBase):
         wait: bool = ...,
         timeout: Optional[float] = ...,
     ) -> None: ...
-    # TODO(sbdchd): make more strict, use `object`
     def get(
         self,
         timeout: Optional[float] = ...,
@@ -70,14 +82,14 @@ class AsyncResult(ResultBase):
         disable_sync_subtasks: bool = ...,
         EXCEPTION_STATES: FrozenSet[str] = ...,
         PROPAGATE_STATES: FrozenSet[str] = ...,
-    ) -> Any: ...
+    ) -> _R: ...
     def collect(
         self, intermediate: bool = ..., **kwargs: Any
-    ) -> Iterator[Tuple[AsyncResult, object]]: ...
+    ) -> Iterator[Tuple[AsyncResult[Any], object]]: ...
     def get_leaf(self) -> object: ...
     def iterdeps(
         self, intermediate: bool = ...
-    ) -> Iterator[Tuple[Optional[AsyncResult], AsyncResult]]: ...
+    ) -> Iterator[Tuple[Optional[AsyncResult[Any]], AsyncResult[Any]]]: ...
     def ready(self) -> bool: ...
     def successful(self) -> bool: ...
     def failed(self) -> bool: ...
@@ -98,9 +110,8 @@ class AsyncResult(ResultBase):
     ) -> Optional[
         List[Tuple[int, Optional[Tuple[int, Optional[Any], None]], None]]
     ]: ...
-    # TODO(sbdchd): make these more strict, like `Exception | object`
     @property
-    def result(self) -> Any: ...
+    def result(self) -> _R | BaseException: ...
     @property
     def info(self) -> Any: ...
     @property
@@ -130,6 +141,6 @@ class AsyncResult(ResultBase):
     @property
     def queue(self) -> Optional[str]: ...
 
-class EagerResult(AsyncResult): ...
+class EagerResult(AsyncResult[_R]): ...
 class ResultSet(ResultBase): ...
 class GroupResult(ResultSet): ...

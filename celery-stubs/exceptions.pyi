@@ -63,7 +63,7 @@ class Retry(TaskPredicate):
         exc: Optional[Exception] = ...,
         when: Optional[Union[numbers.Real, datetime]] = ...,
         is_eager: bool = ...,
-        sig: Signature | None = ...,
+        sig: Signature[Any] | None = ...,
         **kwargs: object
     ) -> None: ...
     def humanize(self) -> str: ...
