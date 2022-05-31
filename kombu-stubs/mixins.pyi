@@ -8,8 +8,8 @@ from kombu.transport.base import Channel
 from kombu.utils.limits import TokenBucket
 
 class ConsumerMixin:
-    connect_max_retries = Optional[int]
-    should_stop = bool
+    connect_max_retries: Optional[int]
+    should_stop: bool
     def get_consumers(
         self, Consumer: Callable[..., MessagingConsumer], channel: Channel
     ) -> Sequence[MessagingConsumer]: ...
