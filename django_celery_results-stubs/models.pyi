@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Optional, Tuple
 
 from django.db import models
-from django_celery_results.managers import TaskResultManager
+from django_celery_results.managers import GroupResultManager, TaskResultManager
 from typing_extensions import TypedDict
 
 ALL_STATES: List[str]
@@ -34,3 +34,18 @@ class TaskResult(models.Model):
     meta: models.TextField[Optional[str]]
     objects: TaskResultManager
     def as_dict(self) -> TaskResultDict: ...
+
+class GroupResultDict(TypedDict):
+    group_id: str
+    result: Optional[str]
+    date_done: datetime
+
+class GroupResult(models.Model):
+    group_id: models.CharField[str]
+    date_created: models.DateTimeField[datetime]
+    date_done: models.DateTimeField[datetime]
+    content_type: models.CharField[str]
+    content_encoding: models.CharField[str]
+    result: models.TextField[Optional[str]]
+    objects: GroupResultManager
+    def as_dict(self) -> GroupResultDict: ...
