@@ -1,2 +1,2 @@
-def  bar( ) :
-    print( 123 )
+def bar():
+    print(123)
