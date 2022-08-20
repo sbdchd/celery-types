@@ -197,6 +197,26 @@ def test_celery_signals() -> None:
     add.delay(1, 2)
 
 
+def test_link() -> None:
+    @app.task()
+    def foo() -> None:
+        pass
+
+    @app.task()
+    def bar() -> None:
+        pass
+
+    @app.task()
+    def baz() -> None:
+        pass
+
+    foo.apply_async(link=bar.s(), link_error=bar.s())
+    foo.apply(link=bar.s(), link_error=bar.s())
+
+    foo.apply_async(link=[bar.s(), baz.s()], link_error=[bar.s(), baz.s()])
+    foo.apply(link=[bar.s(), baz.s()], link_error=[bar.s(), baz.s()])
+
+
 with allow_join_result():
     ...
 
