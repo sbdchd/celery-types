@@ -3,9 +3,9 @@ from typing import Any, Callable, Sequence
 
 from celery.app.base import Celery
 from celery.app.task import Task
+from celery.canvas import chord as chord_type
 from celery.concurrency.base import TaskPool
 from celery.result import AsyncResult
-from celery.canvas import chord as chord_type
 from typing_extensions import Literal, TypedDict
 
 class _DeliveryInfo(TypedDict, total=False):

@@ -9,7 +9,7 @@ from celery import Celery, shared_task, signature
 from celery.app.task import Task
 from celery.canvas import Signature, chord
 from celery.exceptions import Reject
-from celery.result import allow_join_result, denied_join_result, AsyncResult
+from celery.result import AsyncResult, allow_join_result, denied_join_result
 from celery.schedules import crontab
 from celery.utils.log import get_task_logger
 
