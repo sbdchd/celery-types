@@ -373,6 +373,11 @@ class chord(Signature[Any]):
         headers: Dict[str, str] = ...,
     ) -> None: ...
     def __or__(self, other: Signature[Any]) -> chord: ...
+    def __call__(  # type: ignore[override]
+        self,
+        body: Optional[Signature[Any]] = ...,
+        **options: Any,
+    ) -> celery.result.AsyncResult[Any]: ...
 
 def signature(
     varies: Signature[Any] | str | Dict[str, Any], *args: Any, **kwargs: Any

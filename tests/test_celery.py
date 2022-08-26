@@ -7,9 +7,9 @@ from typing import Any, Iterator, Protocol
 import celery
 from celery import Celery, shared_task, signature
 from celery.app.task import Task
-from celery.canvas import Signature
+from celery.canvas import Signature, chord
 from celery.exceptions import Reject
-from celery.result import allow_join_result, denied_join_result
+from celery.result import AsyncResult, allow_join_result, denied_join_result
 from celery.schedules import crontab
 from celery.utils.log import get_task_logger
 
@@ -215,6 +215,23 @@ def test_link() -> None:
 
     foo.apply_async(link=[bar.s(), baz.s()], link_error=[bar.s(), baz.s()])
     foo.apply(link=[bar.s(), baz.s()], link_error=[bar.s(), baz.s()])
+
+
+def run_chord() -> AsyncResult[Any]:
+    @app.task()
+    def foo() -> None:
+        pass
+
+    @app.task()
+    def bar() -> None:
+        pass
+
+    @app.task()
+    def baz() -> None:
+        pass
+
+    result = chord([foo.s(), bar.s()])(baz.si())
+    return result
 
 
 with allow_join_result():
