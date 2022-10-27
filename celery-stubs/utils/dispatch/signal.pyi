@@ -5,7 +5,7 @@ _F = TypeVar("_F", bound=Callable[..., Any])
 class Signal:
     def connect(
         self,
-        receiver: Callable[..., Any] = ...,
+        receiver: _F = ...,
         sender: Optional[Any] = ...,
         weak: bool = ...,
         dispatch_uid: str = ...,
