@@ -12,7 +12,6 @@ class Signal:
         dispatch_uid: str = ...,
         retry: bool = ...,
     ) -> _F: ...
-
     @overload
     def connect(
         self,
