@@ -32,7 +32,6 @@ python = "^3.7"
 typing-extensions = ">=3.10.0,<5.0.0"
 
 [tool.poetry.dev-dependencies]
-bpython = "^0.21.0"
 celery = "^5.0"
 black = {version = "21.9b0", allow-prereleases = true}
 flake8 = "^3.8"
