@@ -33,7 +33,7 @@ _R = TypeVar("_R")
 class Task(Generic[_P, _R]):
     name: str
     typing: bool
-    max_retries: int
+    max_retries: Optional[int]
     default_retry_delay: int
     rate_limit: Optional[str]
     ignore_result: bool
