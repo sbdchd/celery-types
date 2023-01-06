@@ -81,6 +81,7 @@ class Task(Generic[_P, _R]):
         link: Optional[Union[Signature[Any], List[Signature[Any]]]] = ...,
         link_error: Optional[Union[Signature[Any], List[Signature[Any]]]] = ...,
         shadow: Optional[str] = ...,
+        *,
         # options
         countdown: float = ...,
         eta: datetime = ...,
@@ -96,6 +97,9 @@ class Task(Generic[_P, _R]):
         add_to_parent: bool = ...,
         publisher: kombu.Producer = ...,
         headers: Dict[str, str] = ...,
+        ignore_result: bool = ...,
+        time_limit: int = ...,
+        soft_time_limit: int = ...,
     ) -> celery.result.AsyncResult[_R]: ...
     def shadow_name(
         self, args: Tuple[Any, ...], kwargs: Dict[str, Any], options: Dict[str, Any]
@@ -118,6 +122,7 @@ class Task(Generic[_P, _R]):
         eta: Optional[datetime] = ...,
         countdown: Optional[float] = ...,
         max_retries: Optional[int] = ...,
+        *,
         # options
         task_id: Optional[str] = ...,
         producer: Optional[kombu.Producer] = ...,
@@ -136,6 +141,9 @@ class Task(Generic[_P, _R]):
         add_to_parent: bool = ...,
         publisher: kombu.Producer = ...,
         headers: Dict[str, str] = ...,
+        ignore_result: bool = ...,
+        time_limit: int = ...,
+        soft_time_limit: int = ...,
     ) -> Retry: ...
     def apply(
         self,
@@ -149,6 +157,12 @@ class Task(Generic[_P, _R]):
         logfile: Optional[str] = ...,
         loglevel: Optional[str] = ...,
         headers: Optional[Mapping[str, str]] = ...,
+        *,
+        # options
+        ignore_result: bool = ...,
+        exchange: str = ...,
+        routing_key: str = ...,
+        priority: int = ...,
     ) -> EagerResult[_R]: ...
     def AsyncResult(
         self, task_id: str, **kwargs: Any

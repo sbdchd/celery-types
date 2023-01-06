@@ -35,6 +35,7 @@ class Signature(Dict[str, Any], Generic[_R]):
         subtask_type: Optional[Any] = ...,
         immutable: bool = ...,
         app: Optional[Celery] = ...,
+        *,
         # **ex expanded
         task_id: Optional[str] = ...,
         producer: Optional[kombu.Producer] = ...,
@@ -72,6 +73,7 @@ class Signature(Dict[str, Any], Generic[_R]):
         args: Optional[Tuple[Any]] = ...,
         kwargs: Optional[Dict[str, Any]] = ...,
         route_name: Optional[str] = ...,
+        *,
         # options
         task_id: Optional[str] = ...,
         producer: Optional[kombu.Producer] = ...,
@@ -98,6 +100,7 @@ class Signature(Dict[str, Any], Generic[_R]):
         self,
         args: Optional[Tuple[Any, ...]] = ...,
         kwargs: Optional[Dict[str, Any]] = ...,
+        *,
         # **ex expanded
         task_id: Optional[str] = ...,
         producer: Optional[kombu.Producer] = ...,
@@ -138,6 +141,7 @@ class Signature(Dict[str, Any], Generic[_R]):
     def set(
         self,
         immutable: Optional[bool] = ...,
+        *,
         # **options expanded
         task_id: Optional[str] = ...,
         producer: Optional[kombu.Producer] = ...,
@@ -226,6 +230,7 @@ class _basemap(Signature[Any]):
         self,
         task: Optional[Task[Any, Any]],
         it: Iterable[Any],
+        *,
         # Signature extras
         args: Optional[Tuple[Any, ...]] = ...,
         kwargs: Optional[Dict[str, Any]] = ...,
@@ -264,6 +269,7 @@ class chunks(Signature[Any]):
         task: Optional[Task[Any, Any]],
         it: Iterable[Any],
         n: int,
+        *,
         # Signature extras
         args: Optional[Tuple[Any, ...]] = ...,
         kwargs: Optional[Dict[str, Any]] = ...,
@@ -347,6 +353,7 @@ class chord(Signature[Any]):
         args: Optional[Tuple[Any, ...]] = ...,
         kwargs: Optional[Dict[str, Any]] = ...,
         app: Optional[Celery] = ...,
+        *,
         # from Signature
         options: Optional[Dict[str, Any]] = ...,
         type: Optional[Any] = ...,
