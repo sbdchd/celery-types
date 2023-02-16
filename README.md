@@ -20,7 +20,7 @@ You'll also need to monkey patch `Task` so generic params can be provided:
 
 ```python
 from celery.app.task import Task
-Task.__class_getitem__ = classmethod(lambda cls, *args, **kwargs: cls)
+Task.__class_getitem__ = classmethod(lambda cls, *args, **kwargs: cls) # type: ignore[attr-defined]
 ```
 
 ## dev
