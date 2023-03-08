@@ -66,7 +66,7 @@ class Signature(Dict[str, Any], Generic[_R]):
         self,
         args: Optional[Tuple[Any]] = ...,
         kwargs: Optional[Dict[str, Any]] = ...,
-        **options: Dict[str, Any],
+        **options: Any,
     ) -> EagerResult[_R]: ...
     def apply_async(
         self,
