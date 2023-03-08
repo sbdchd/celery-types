@@ -77,8 +77,8 @@ class Signature(Dict[str, Any], Generic[_R]):
         # options
         task_id: Optional[str] = ...,
         producer: Optional[kombu.Producer] = ...,
-        link: Optional[Signature[Any]] = ...,
-        link_error: Optional[Signature[Any]] = ...,
+        link: Optional[Union[Signature[Any], List[Signature[Any]]]] = ...,
+        link_error: Optional[Union[Signature[Any], List[Signature[Any]]]] = ...,
         shadow: Optional[str] = ...,
         # apply_async options
         countdown: float = ...,
