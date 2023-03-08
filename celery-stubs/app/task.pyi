@@ -183,7 +183,7 @@ class Task(Generic[_P, _R]):
         type_: str,
         retry: bool = ...,
         retry_policy: Optional[Mapping[str, int]] = ...,
-        **fields: Mapping[str, Any],
+        **fields: Any,
     ) -> List[Tuple[object, object]]: ...
     def replace(self, sig: Signature[Any]) -> None: ...
     @overload
