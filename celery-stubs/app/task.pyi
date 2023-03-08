@@ -110,7 +110,7 @@ class Task(Generic[_P, _R]):
         args: Tuple[Any, ...] = ...,
         kwargs: Optional[Dict[str, Any]] = ...,
         queue: Optional[str] = ...,
-        **extra_options: Any
+        **extra_options: Any,
     ) -> Signature[_R]: ...
     subtask_from_request = signature_from_request  # XXX compat
     def retry(
@@ -183,7 +183,7 @@ class Task(Generic[_P, _R]):
         type_: str,
         retry: bool = ...,
         retry_policy: Optional[Mapping[str, int]] = ...,
-        **fields: Mapping[str, Any]
+        **fields: Mapping[str, Any],
     ) -> List[Tuple[object, object]]: ...
     def replace(self, sig: Signature[Any]) -> None: ...
     @overload
@@ -199,7 +199,7 @@ class Task(Generic[_P, _R]):
         task_id: Optional[str] = ...,
         state: Optional[str] = ...,
         meta: Optional[Dict[str, Any]] = ...,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> None: ...
     def on_success(
         self, retval: Any, task_id: str, args: Tuple[Any, ...], kwargs: Dict[str, Any]

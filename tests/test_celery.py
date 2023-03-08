@@ -222,6 +222,7 @@ def test_link() -> None:
     foo.s().apply_async(link=[bar.s(), baz.s()], link_error=[bar.s(), baz.s()])
     foo.s().apply(link=[bar.s(), baz.s()], link_error=[bar.s(), baz.s()])
 
+
 def run_chord() -> AsyncResult[Any]:
     @app.task()
     def foo() -> None:
