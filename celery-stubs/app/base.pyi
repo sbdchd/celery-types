@@ -2,6 +2,7 @@ import datetime
 from typing import (
     Any,
     Callable,
+    DefaultDict,
     Dict,
     List,
     NoReturn,
@@ -42,6 +43,8 @@ _P = ParamSpec("_P")
 _R = TypeVar("_R")
 
 class Celery:
+    steps: DefaultDict[str, set[Any]]
+
     on_configure: Signal
     on_after_configure: Signal
     on_after_finalize: Signal
