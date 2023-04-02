@@ -64,13 +64,13 @@ class Signature(Dict[str, Any], Generic[_R]):
     ) -> celery.result.AsyncResult[_R]: ...
     def apply(
         self,
-        args: Optional[Tuple[Any]] = ...,
+        args: Optional[Tuple[Any, ...]] = ...,
         kwargs: Optional[Dict[str, Any]] = ...,
         **options: Any,
     ) -> EagerResult[_R]: ...
     def apply_async(
         self,
-        args: Optional[Tuple[Any]] = ...,
+        args: Optional[Tuple[Any, ...]] = ...,
         kwargs: Optional[Dict[str, Any]] = ...,
         route_name: Optional[str] = ...,
         *,
