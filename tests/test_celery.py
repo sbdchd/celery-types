@@ -134,8 +134,6 @@ def add_3(x: int, y: int) -> None:
 
 add_3.foo()
 
-x: str = 1123
-
 
 def test_celery_calling_task() -> None:
     signature("tasks.add", args=(2, 2), countdown=10)
