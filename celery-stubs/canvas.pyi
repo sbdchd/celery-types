@@ -1,16 +1,9 @@
+from collections.abc import Callable, Iterable, Mapping
 from datetime import datetime
 from typing import (
     Any,
-    Callable,
-    Dict,
     Generic,
-    Iterable,
-    List,
-    Mapping,
-    Optional,
-    Tuple,
     TypeVar,
-    Union,
     overload,
 )
 
@@ -24,39 +17,39 @@ from celery.utils import abstract
 _F = TypeVar("_F", bound=Callable[..., Any])
 _R = TypeVar("_R")
 
-class Signature(Dict[str, Any], Generic[_R]):
+class Signature(dict[str, Any], Generic[_R]):
     def __init__(
         self,
         task: Task[Any, _R] | str | None = ...,
-        args: Optional[Tuple[Any, ...]] = ...,
-        kwargs: Optional[Dict[str, Any]] = ...,
-        options: Optional[Dict[str, Any]] = ...,
-        type: Optional[Any] = ...,
-        subtask_type: Optional[Any] = ...,
+        args: tuple[Any, ...] | None = ...,
+        kwargs: dict[str, Any] | None = ...,
+        options: dict[str, Any] | None = ...,
+        type: Any | None = ...,
+        subtask_type: Any | None = ...,
         immutable: bool = ...,
-        app: Optional[Celery] = ...,
+        app: Celery | None = ...,
         *,
         # **ex expanded
-        task_id: Optional[str] = ...,
-        producer: Optional[kombu.Producer] = ...,
-        link: Optional[Signature[Any]] = ...,
-        link_error: Optional[Signature[Any]] = ...,
-        shadow: Optional[str] = ...,
+        task_id: str | None = ...,
+        producer: kombu.Producer | None = ...,
+        link: Signature[Any] | None = ...,
+        link_error: Signature[Any] | None = ...,
+        shadow: str | None = ...,
         # apply_async options
         countdown: float = ...,
         eta: datetime | None = ...,
-        expires: Union[float, datetime] = ...,
+        expires: float | datetime = ...,
         retry: bool = ...,
         retry_policy: Mapping[str, Any] = ...,
-        queue: Union[str, kombu.Queue] = ...,
-        exchange: Union[str, kombu.Exchange] = ...,
+        queue: str | kombu.Queue = ...,
+        exchange: str | kombu.Exchange = ...,
         routing_key: str = ...,
         priority: int = ...,
         serializer: str = ...,
         compression: str = ...,
         add_to_parent: bool = ...,
         publisher: kombu.Producer = ...,
-        headers: Dict[str, str] = ...,
+        headers: dict[str, str] = ...,
     ) -> None: ...
     def __call__(self, *partial_args: Any, **partial_kwargs: Any) -> _R: ...
     def delay(
@@ -64,105 +57,105 @@ class Signature(Dict[str, Any], Generic[_R]):
     ) -> celery.result.AsyncResult[_R]: ...
     def apply(
         self,
-        args: Optional[Tuple[Any, ...]] = ...,
-        kwargs: Optional[Dict[str, Any]] = ...,
+        args: tuple[Any, ...] | None = ...,
+        kwargs: dict[str, Any] | None = ...,
         **options: Any,
     ) -> EagerResult[_R]: ...
     def apply_async(
         self,
-        args: Optional[Tuple[Any, ...]] = ...,
-        kwargs: Optional[Dict[str, Any]] = ...,
-        route_name: Optional[str] = ...,
+        args: tuple[Any, ...] | None = ...,
+        kwargs: dict[str, Any] | None = ...,
+        route_name: str | None = ...,
         *,
         # options
-        task_id: Optional[str] = ...,
-        producer: Optional[kombu.Producer] = ...,
-        link: Optional[Union[Signature[Any], List[Signature[Any]]]] = ...,
-        link_error: Optional[Union[Signature[Any], List[Signature[Any]]]] = ...,
-        shadow: Optional[str] = ...,
+        task_id: str | None = ...,
+        producer: kombu.Producer | None = ...,
+        link: Signature[Any] | list[Signature[Any]] | None = ...,
+        link_error: Signature[Any] | list[Signature[Any]] | None = ...,
+        shadow: str | None = ...,
         # apply_async options
         countdown: float = ...,
         eta: datetime | None = ...,
-        expires: Union[float, datetime] = ...,
+        expires: float | datetime = ...,
         retry: bool = ...,
         retry_policy: Mapping[str, Any] = ...,
-        queue: Union[str, kombu.Queue] = ...,
-        exchange: Union[str, kombu.Exchange] = ...,
+        queue: str | kombu.Queue = ...,
+        exchange: str | kombu.Exchange = ...,
         routing_key: str = ...,
         priority: int = ...,
         serializer: str = ...,
         compression: str = ...,
         add_to_parent: bool = ...,
         publisher: kombu.Producer = ...,
-        headers: Dict[str, str] = ...,
+        headers: dict[str, str] = ...,
     ) -> celery.result.AsyncResult[_R]: ...
     def clone(
         self,
-        args: Optional[Tuple[Any, ...]] = ...,
-        kwargs: Optional[Dict[str, Any]] = ...,
+        args: tuple[Any, ...] | None = ...,
+        kwargs: dict[str, Any] | None = ...,
         *,
         # **ex expanded
-        task_id: Optional[str] = ...,
-        producer: Optional[kombu.Producer] = ...,
-        link: Optional[Signature[Any]] = ...,
-        link_error: Optional[Signature[Any]] = ...,
-        shadow: Optional[str] = ...,
+        task_id: str | None = ...,
+        producer: kombu.Producer | None = ...,
+        link: Signature[Any] | None = ...,
+        link_error: Signature[Any] | None = ...,
+        shadow: str | None = ...,
         # apply_async options
         countdown: float = ...,
         eta: datetime | None = ...,
-        expires: Union[float, datetime] = ...,
+        expires: float | datetime = ...,
         retry: bool = ...,
         retry_policy: Mapping[str, Any] = ...,
-        queue: Union[str, kombu.Queue] = ...,
-        exchange: Union[str, kombu.Exchange] = ...,
+        queue: str | kombu.Queue = ...,
+        exchange: str | kombu.Exchange = ...,
         routing_key: str = ...,
         priority: int = ...,
         serializer: str = ...,
         compression: str = ...,
         add_to_parent: bool = ...,
         publisher: kombu.Producer = ...,
-        headers: Dict[str, str] = ...,
+        headers: dict[str, str] = ...,
     ) -> Signature[_R]: ...
     partial = clone
     def freeze(
         self,
-        _id: Optional[str] = ...,
-        group_id: Optional[str] = ...,
-        chord: Optional[chord] = ...,
-        root_id: Optional[str] = ...,
-        parent_id: Optional[str] = ...,
+        _id: str | None = ...,
+        group_id: str | None = ...,
+        chord: chord | None = ...,
+        root_id: str | None = ...,
+        parent_id: str | None = ...,
     ) -> celery.result.AsyncResult[_R]: ...
     def replace(
         self,
-        args: Optional[Tuple[Any, ...]] = ...,
-        kwargs: Optional[Dict[str, Any]] = ...,
-        options: Optional[Dict[str, Any]] = ...,
+        args: tuple[Any, ...] | None = ...,
+        kwargs: dict[str, Any] | None = ...,
+        options: dict[str, Any] | None = ...,
     ) -> Signature[_R]: ...
     def set(
         self,
-        immutable: Optional[bool] = ...,
+        immutable: bool | None = ...,
         *,
         # **options expanded
-        task_id: Optional[str] = ...,
-        producer: Optional[kombu.Producer] = ...,
-        link: Optional[Signature[Any]] = ...,
-        link_error: Optional[Signature[Any]] = ...,
-        shadow: Optional[str] = ...,
+        task_id: str | None = ...,
+        producer: kombu.Producer | None = ...,
+        link: Signature[Any] | None = ...,
+        link_error: Signature[Any] | None = ...,
+        shadow: str | None = ...,
         # apply_async options
         countdown: float = ...,
         eta: datetime | None = ...,
-        expires: Union[float, datetime] = ...,
+        expires: float | datetime = ...,
         retry: bool = ...,
         retry_policy: Mapping[str, Any] = ...,
-        queue: Union[str, kombu.Queue] = ...,
-        exchange: Union[str, kombu.Exchange] = ...,
+        queue: str | kombu.Queue = ...,
+        exchange: str | kombu.Exchange = ...,
         routing_key: str = ...,
         priority: int = ...,
         serializer: str = ...,
         compression: str = ...,
         add_to_parent: bool = ...,
         publisher: kombu.Producer = ...,
-        headers: Dict[str, str] = ...,
+        headers: dict[str, str] = ...,
     ) -> Signature[_R]: ...
     def set_immutable(self, immutable: bool) -> None: ...
     def append_to_list_option(self, key: str, value: Any) -> Any: ...
@@ -170,9 +163,9 @@ class Signature(Dict[str, Any], Generic[_R]):
     def link(self, callback: _F) -> _F: ...
     def link_error(self, errback: Callable[..., Any]) -> Signature[_R]: ...
     def on_error(self, errback: _F) -> _F: ...
-    def flatten_links(self) -> List[Signature[Any]]: ...
+    def flatten_links(self) -> list[Signature[Any]]: ...
     # TODO(sbdchd): use overloads to properly type this
-    def __or__(self, other: Signature[Any]) -> Signature[Any]: ...
+    def __or__(self, other: Signature[Any]) -> Signature[Any]: ...  # type: ignore[override]
     def election(self) -> celery.result.AsyncResult[_R]: ...
     @property
     def name(self) -> str: ...
@@ -181,15 +174,15 @@ class Signature(Dict[str, Any], Generic[_R]):
     @property
     def app(self) -> Celery: ...
     def AsyncResult(self) -> celery.result.AsyncResult[_R]: ...
-    id: Optional[str]
-    parent_id: Optional[str]
-    root_id: Optional[str]
-    task: Optional[str]
-    args: Tuple[Any, ...]
-    kwargs: Dict[str, Any]
-    options: Dict[str, Any]
+    id: str | None
+    parent_id: str | None
+    root_id: str | None
+    task: str | None
+    args: tuple[Any, ...]
+    kwargs: dict[str, Any]
+    options: dict[str, Any]
     subtask_type: Any
-    chord_size: Optional[int]
+    chord_size: int | None
     immutable: bool
 
 class _chain(Signature[Any]):
@@ -197,30 +190,30 @@ class _chain(Signature[Any]):
         self,
         *tasks: Signature[Any],
         # Signature extras
-        options: Optional[Dict[str, Any]] = ...,
-        type: Optional[Any] = ...,
-        subtask_type: Optional[Any] = ...,
+        options: dict[str, Any] | None = ...,
+        type: Any | None = ...,
+        subtask_type: Any | None = ...,
         immutable: bool = ...,
-        app: Optional[Celery] = ...,
-        task_id: Optional[str] = ...,
-        producer: Optional[kombu.Producer] = ...,
-        link: Optional[Signature[Any]] = ...,
-        link_error: Optional[Signature[Any]] = ...,
-        shadow: Optional[str] = ...,
+        app: Celery | None = ...,
+        task_id: str | None = ...,
+        producer: kombu.Producer | None = ...,
+        link: Signature[Any] | None = ...,
+        link_error: Signature[Any] | None = ...,
+        shadow: str | None = ...,
         countdown: float = ...,
         eta: datetime | None = ...,
-        expires: Union[float, datetime] = ...,
+        expires: float | datetime = ...,
         retry: bool = ...,
         retry_policy: Mapping[str, Any] = ...,
-        queue: Union[str, kombu.Queue] = ...,
-        exchange: Union[str, kombu.Exchange] = ...,
+        queue: str | kombu.Queue = ...,
+        exchange: str | kombu.Exchange = ...,
         routing_key: str = ...,
         priority: int = ...,
         serializer: str = ...,
         compression: str = ...,
         add_to_parent: bool = ...,
         publisher: kombu.Producer = ...,
-        headers: Dict[str, str] = ...,
+        headers: dict[str, str] = ...,
     ) -> None: ...
 
 class chain(_chain): ...
@@ -228,36 +221,36 @@ class chain(_chain): ...
 class _basemap(Signature[Any]):
     def __init__(
         self,
-        task: Optional[Task[Any, Any]],
+        task: Task[Any, Any] | None,
         it: Iterable[Any],
         *,
         # Signature extras
-        args: Optional[Tuple[Any, ...]] = ...,
-        kwargs: Optional[Dict[str, Any]] = ...,
-        options: Optional[Dict[str, Any]] = ...,
-        type: Optional[Any] = ...,
-        subtask_type: Optional[Any] = ...,
+        args: tuple[Any, ...] | None = ...,
+        kwargs: dict[str, Any] | None = ...,
+        options: dict[str, Any] | None = ...,
+        type: Any | None = ...,
+        subtask_type: Any | None = ...,
         immutable: bool = ...,
-        app: Optional[Celery] = ...,
-        task_id: Optional[str] = ...,
-        producer: Optional[kombu.Producer] = ...,
-        link: Optional[Signature[Any]] = ...,
-        link_error: Optional[Signature[Any]] = ...,
-        shadow: Optional[str] = ...,
+        app: Celery | None = ...,
+        task_id: str | None = ...,
+        producer: kombu.Producer | None = ...,
+        link: Signature[Any] | None = ...,
+        link_error: Signature[Any] | None = ...,
+        shadow: str | None = ...,
         countdown: float = ...,
         eta: datetime | None = ...,
-        expires: Union[float, datetime] = ...,
+        expires: float | datetime = ...,
         retry: bool = ...,
         retry_policy: Mapping[str, Any] = ...,
-        queue: Union[str, kombu.Queue] = ...,
-        exchange: Union[str, kombu.Exchange] = ...,
+        queue: str | kombu.Queue = ...,
+        exchange: str | kombu.Exchange = ...,
         routing_key: str = ...,
         priority: int = ...,
         serializer: str = ...,
         compression: str = ...,
         add_to_parent: bool = ...,
         publisher: kombu.Producer = ...,
-        headers: Dict[str, str] = ...,
+        headers: dict[str, str] = ...,
     ) -> None: ...
 
 class xmap(_basemap): ...
@@ -266,37 +259,37 @@ class xstarmap(_basemap): ...
 class chunks(Signature[Any]):
     def __init__(
         self,
-        task: Optional[Task[Any, Any]],
+        task: Task[Any, Any] | None,
         it: Iterable[Any],
         n: int,
         *,
         # Signature extras
-        args: Optional[Tuple[Any, ...]] = ...,
-        kwargs: Optional[Dict[str, Any]] = ...,
-        options: Optional[Dict[str, Any]] = ...,
-        type: Optional[Any] = ...,
-        subtask_type: Optional[Any] = ...,
+        args: tuple[Any, ...] | None = ...,
+        kwargs: dict[str, Any] | None = ...,
+        options: dict[str, Any] | None = ...,
+        type: Any | None = ...,
+        subtask_type: Any | None = ...,
         immutable: bool = ...,
-        app: Optional[Celery] = ...,
-        task_id: Optional[str] = ...,
-        producer: Optional[kombu.Producer] = ...,
-        link: Optional[Signature[Any]] = ...,
-        link_error: Optional[Signature[Any]] = ...,
-        shadow: Optional[str] = ...,
+        app: Celery | None = ...,
+        task_id: str | None = ...,
+        producer: kombu.Producer | None = ...,
+        link: Signature[Any] | None = ...,
+        link_error: Signature[Any] | None = ...,
+        shadow: str | None = ...,
         countdown: float = ...,
         eta: datetime | None = ...,
-        expires: Union[float, datetime] = ...,
+        expires: float | datetime = ...,
         retry: bool = ...,
         retry_policy: Mapping[str, Any] = ...,
-        queue: Union[str, kombu.Queue] = ...,
-        exchange: Union[str, kombu.Exchange] = ...,
+        queue: str | kombu.Queue = ...,
+        exchange: str | kombu.Exchange = ...,
         routing_key: str = ...,
         priority: int = ...,
         serializer: str = ...,
         compression: str = ...,
         add_to_parent: bool = ...,
         publisher: kombu.Producer = ...,
-        headers: Dict[str, str] = ...,
+        headers: dict[str, str] = ...,
     ) -> None: ...
     def group(self) -> _group: ...
 
@@ -310,37 +303,37 @@ class group(Signature[Any]):
         self,
         *tasks: Signature[Any],
         # Signature extras
-        args: Optional[Tuple[Any, ...]] = ...,
-        kwargs: Optional[Dict[str, Any]] = ...,
-        options: Optional[Dict[str, Any]] = ...,
-        type: Optional[Any] = ...,
-        subtask_type: Optional[Any] = ...,
+        args: tuple[Any, ...] | None = ...,
+        kwargs: dict[str, Any] | None = ...,
+        options: dict[str, Any] | None = ...,
+        type: Any | None = ...,
+        subtask_type: Any | None = ...,
         immutable: bool = ...,
-        app: Optional[Celery] = ...,
-        task_id: Optional[str] = ...,
-        producer: Optional[kombu.Producer] = ...,
-        link: Optional[Signature[Any]] = ...,
-        link_error: Optional[Signature[Any]] = ...,
-        shadow: Optional[str] = ...,
+        app: Celery | None = ...,
+        task_id: str | None = ...,
+        producer: kombu.Producer | None = ...,
+        link: Signature[Any] | None = ...,
+        link_error: Signature[Any] | None = ...,
+        shadow: str | None = ...,
         countdown: float = ...,
         eta: datetime | None = ...,
-        expires: Union[float, datetime] = ...,
+        expires: float | datetime = ...,
         retry: bool = ...,
         retry_policy: Mapping[str, Any] = ...,
-        queue: Union[str, kombu.Queue] = ...,
-        exchange: Union[str, kombu.Exchange] = ...,
+        queue: str | kombu.Queue = ...,
+        exchange: str | kombu.Exchange = ...,
         routing_key: str = ...,
         priority: int = ...,
         serializer: str = ...,
         compression: str = ...,
         add_to_parent: bool = ...,
         publisher: kombu.Producer = ...,
-        headers: Dict[str, str] = ...,
+        headers: dict[str, str] = ...,
     ) -> None: ...
     def skew(
         self, start: float = ..., stop: float | None = ..., step: float = ...
     ) -> group: ...
-    def __or__(self, other: Signature[Any]) -> chord: ...
+    def __or__(self, other: Signature[Any]) -> chord: ...  # type: ignore[override]
 
 _group = group
 
@@ -348,54 +341,54 @@ class chord(Signature[Any]):
     def __init__(
         self,
         header: Any,
-        body: Optional[Any] = ...,
+        body: Any | None = ...,
         task: str = ...,
-        args: Optional[Tuple[Any, ...]] = ...,
-        kwargs: Optional[Dict[str, Any]] = ...,
-        app: Optional[Celery] = ...,
+        args: tuple[Any, ...] | None = ...,
+        kwargs: dict[str, Any] | None = ...,
+        app: Celery | None = ...,
         *,
         # from Signature
-        options: Optional[Dict[str, Any]] = ...,
-        type: Optional[Any] = ...,
-        subtask_type: Optional[Any] = ...,
+        options: dict[str, Any] | None = ...,
+        type: Any | None = ...,
+        subtask_type: Any | None = ...,
         immutable: bool = ...,
-        task_id: Optional[str] = ...,
-        producer: Optional[kombu.Producer] = ...,
-        link: Optional[Signature[Any]] = ...,
-        link_error: Optional[Signature[Any]] = ...,
-        shadow: Optional[str] = ...,
+        task_id: str | None = ...,
+        producer: kombu.Producer | None = ...,
+        link: Signature[Any] | None = ...,
+        link_error: Signature[Any] | None = ...,
+        shadow: str | None = ...,
         countdown: float = ...,
         eta: datetime | None = ...,
-        expires: Union[float, datetime] = ...,
+        expires: float | datetime = ...,
         retry: bool = ...,
         retry_policy: Mapping[str, Any] = ...,
-        queue: Union[str, kombu.Queue] = ...,
-        exchange: Union[str, kombu.Exchange] = ...,
+        queue: str | kombu.Queue = ...,
+        exchange: str | kombu.Exchange = ...,
         routing_key: str = ...,
         priority: int = ...,
         serializer: str = ...,
         compression: str = ...,
         add_to_parent: bool = ...,
         publisher: kombu.Producer = ...,
-        headers: Dict[str, str] = ...,
+        headers: dict[str, str] = ...,
     ) -> None: ...
-    def __or__(self, other: Signature[Any]) -> chord: ...
-    def __call__(  # type: ignore[override]
+    def __or__(self, other: Signature[Any]) -> chord: ...  # type: ignore[override]
+    def __call__(
         self,
-        body: Optional[Signature[Any]] = ...,
+        body: Signature[Any] | None = ...,
         **options: Any,
     ) -> celery.result.AsyncResult[Any]: ...
 
 def signature(
-    varies: Signature[Any] | str | Dict[str, Any], *args: Any, **kwargs: Any
+    varies: Signature[Any] | str | dict[str, Any], *args: Any, **kwargs: Any
 ) -> Signature[Any]: ...
 
 subtask = signature
 
 def maybe_signature(
-    d: Optional[Union[abstract.CallableSignature, Mapping[str, Any]]],
-    app: Optional[Celery] = ...,
+    d: abstract.CallableSignature | Mapping[str, Any] | None,
+    app: Celery | None = ...,
     clone: bool = ...,
-) -> Optional[abstract.CallableSignature]: ...
+) -> abstract.CallableSignature | None: ...
 
 maybe_subtask = maybe_signature

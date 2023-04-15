@@ -1,4 +1,5 @@
-from typing import Any, Callable, Optional, TypeVar, overload
+from collections.abc import Callable
+from typing import Any, TypeVar, overload
 
 _F = TypeVar("_F", bound=Callable[..., Any])
 
@@ -7,7 +8,7 @@ class Signal:
     def connect(
         self,
         receiver: _F,
-        sender: Optional[Any] = ...,
+        sender: Any | None = ...,
         weak: bool = ...,
         dispatch_uid: str = ...,
         retry: bool = ...,
@@ -16,7 +17,7 @@ class Signal:
     def connect(
         self,
         *,
-        sender: Optional[Any] = ...,
+        sender: Any | None = ...,
         weak: bool = ...,
         dispatch_uid: str = ...,
         retry: bool = ...,

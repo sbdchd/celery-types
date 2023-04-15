@@ -1,4 +1,5 @@
-from typing import Any, Callable, Iterable, Mapping, Sequence, Tuple, Union
+from collections.abc import Callable, Iterable, Mapping, Sequence
+from typing import Any, Union
 
 from celery.app.base import Celery
 from kombu import Connection
@@ -6,7 +7,7 @@ from kombu.pidbox import Mailbox as KombuMailbox
 
 _Reply = Any
 
-_Destination = Union[Sequence[str], Tuple[str, ...]]
+_Destination = Union[Sequence[str], tuple[str, ...]]
 
 def flatten_reply(reply: Iterable[Mapping[str, _Reply]]) -> dict[str, _Reply]: ...
 

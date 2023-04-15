@@ -6,25 +6,25 @@ repository = "https://github.com/sbdchd/celery-types"
 readme = "README.md"
 authors = ["Steve Dignam <steve@dignam.xyz>"]
 keywords = [
-  "celery",
-  "kombu",
-  "vine",
-  "amqp",
-  "billiard",
-  "django_celery_results",
-  "types",
-  "mypy",
-  "stubs"
+    "celery",
+    "kombu",
+    "vine",
+    "amqp",
+    "billiard",
+    "django_celery_results",
+    "types",
+    "mypy",
+    "stubs",
 ]
 
 packages = [
-  { include = "amqp-stubs" },
-  { include = "billiard-stubs" },
-  { include = "celery-stubs" },
-  { include = "django_celery_results-stubs" },
-  { include = "ephem-stubs" },
-  { include = "kombu-stubs" },
-  { include = "vine-stubs" },
+    { include = "amqp-stubs" },
+    { include = "billiard-stubs" },
+    { include = "celery-stubs" },
+    { include = "django_celery_results-stubs" },
+    { include = "ephem-stubs" },
+    { include = "kombu-stubs" },
+    { include = "vine-stubs" },
 ]
 
 [tool.poetry.dependencies]
@@ -33,16 +33,69 @@ typing-extensions = ">=3.10.0,<5.0.0"
 
 [tool.poetry.dev-dependencies]
 celery = "^5.0"
-black = {version = "21.9b0", allow-prereleases = true}
-flake8 = "^3.8"
-flake8-pyi = "^20.10"
-isort = {version = "5.9.3", allow-prereleases = true}
+black = { version = "21.9b0", allow-prereleases = true }
 django-types = "^0.3.1"
 django = "^3.1"
-mypy = "^0.950"
+ruff = "^0.0.261"
+mypy = "^1.2.0"
 
-[tool.isort]
-profile="black"
+[tool.ruff]
+select = [
+    "E",
+    "F",
+    "TID252",
+    "I001",
+    "T20",
+    "C4",
+    "UP",
+    "N",
+    "BLE",
+    "B",
+    "RET",
+    "SIM",
+    "ARG",
+    "DTZ",
+    "ERA",
+    "RUF",
+]
+# src = ["recipeyak"]
+ignore = [
+    "E501",   # line length is handled by black
+    "ARG001", # pytest fixtures mess with this
+    "ARG002", # sometimes parent classes require params
+    "N806",   # django migrations violate this a lot
+    "B008",   # type.Argument violates this
+    "N815",   # we mix and match casing in serializers
+    "ARG005", # monkey patching false positive with *args, and **kwargs
+    "N805",   # false positive with pydantic
+    "N802",   # DRF serializers mess with this
+    "RET505", # if, elif, else are fine with returns
+    "RET507", # if, elif, else with continue is also fine
+    "RET508", # if, elif, else with break is also fine
+
+    # okay because we're doing hacky things for our runtime tests
+    "T201", # we use print for testing
+    "B905", # allow zip without strict
+    "B018", # useless expressions useful for type checking
+    "B904", # allow bad except clauses
+    "N803", # some APIs have weird names
+    "N818", # some exceptions have bad names
+    "N801", # some class names have bad names
+]
+unfixable = [
+    "ERA001",
+] # we want to check ourselves before we delete commented out code.
+update-check = false
+target-version = "py311"
+
+# [tool.ruff.isort]
+# known-third-party = ["django"]
+# known-first-party = ["recipeyak"]
+
+[tool.ruff.flake8-tidy-imports]
+# Disallow all relative imports.
+ban-relative-imports = "all"
+
 
 [build-system]
 requires = ["poetry>=0.12", "setuptools"]
