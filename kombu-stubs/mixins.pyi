@@ -1,4 +1,5 @@
-from typing import Any, Callable, Optional, Sequence
+from collections.abc import Callable, Sequence
+from typing import Any
 
 from kombu.connection import Connection
 from kombu.message import Message
@@ -8,7 +9,7 @@ from kombu.transport.base import Channel
 from kombu.utils.limits import TokenBucket
 
 class ConsumerMixin:
-    connect_max_retries: Optional[int]
+    connect_max_retries: int | None
     should_stop: bool
     def get_consumers(
         self, Consumer: Callable[..., MessagingConsumer], channel: Channel
@@ -32,12 +33,12 @@ class ConsumerMixin:
     ) -> tuple[Connection, Channel, Sequence[MessagingConsumer]]: ...
     def consume(
         self,
-        limit: Optional[int] = ...,
-        timeout: Optional[int] = ...,
+        limit: int | None = ...,
+        timeout: int | None = ...,
         safety_interval: int = ...,
         **kwargs: Any
     ) -> None: ...
-    def maybe_conn_error(self, fun: Optional[Callable[..., Any]]) -> Any: ...
+    def maybe_conn_error(self, fun: Callable[..., Any] | None) -> Any: ...
     def create_connection(self) -> Connection: ...
     def establish_connection(self) -> Connection: ...
     def Consumer(self) -> tuple[Connection, Channel, Sequence[MessagingConsumer]]: ...

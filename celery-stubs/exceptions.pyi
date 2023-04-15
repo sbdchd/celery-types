@@ -1,6 +1,6 @@
 import numbers
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from billiard.exceptions import (
     SoftTimeLimitExceeded,
@@ -54,14 +54,14 @@ class CeleryError(Exception): ...
 class TaskPredicate(CeleryError): ...
 
 class Retry(TaskPredicate):
-    message: Optional[str]
-    exc: Optional[Exception]
-    when: Optional[Union[numbers.Real, datetime]]
+    message: str | None
+    exc: Exception | None
+    when: numbers.Real | datetime | None
     def __init__(
         self,
-        message: Optional[str] = ...,
-        exc: Optional[Exception] = ...,
-        when: Optional[Union[numbers.Real, datetime]] = ...,
+        message: str | None = ...,
+        exc: Exception | None = ...,
+        when: numbers.Real | datetime | None = ...,
         is_eager: bool = ...,
         sig: Signature[Any] | None = ...,
         **kwargs: object
@@ -87,8 +87,8 @@ class AlreadyRegistered(TaskError): ...
 class TimeoutError(TaskError): ...
 
 class MaxRetriesExceededError(TaskError):
-    task_args: List[Any]
-    task_kwargs: Dict[str, Any]
+    task_args: list[Any]
+    task_kwargs: dict[str, Any]
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
 
 class TaskRevokedError(TaskError): ...

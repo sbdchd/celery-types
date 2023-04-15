@@ -1,5 +1,4 @@
 from datetime import timedelta
-from typing import Optional, Union
 from uuid import UUID
 
 from django.db import models
@@ -12,15 +11,15 @@ class TaskResultManager(models.Manager[TaskResult]):
         self,
         content_type: str,
         content_encoding: str,
-        task_id: Union[str, UUID],
+        task_id: str | UUID,
         result: str,
         status: str,
-        traceback: Optional[str] = ...,
-        meta: Optional[str] = ...,
-        task_name: Optional[str] = ...,
-        task_args: Optional[str] = ...,
-        task_kwargs: Optional[str] = ...,
-        using: Optional[str] = ...,
+        traceback: str | None = ...,
+        meta: str | None = ...,
+        task_name: str | None = ...,
+        task_args: str | None = ...,
+        task_kwargs: str | None = ...,
+        using: str | None = ...,
     ) -> TaskResult: ...
     def get_all_expired(self, expires: timedelta) -> QuerySet[TaskResult]: ...
     def delete_expired(self, expires: timedelta) -> None: ...
@@ -32,6 +31,6 @@ class GroupResultManager(models.Manager[GroupResult]):
         content_type: str,
         content_encoding: str,
         group_id: str,
-        result: Optional[str],
-        using: Optional[str] = ...,
+        result: str | None,
+        using: str | None = ...,
     ) -> GroupResult: ...

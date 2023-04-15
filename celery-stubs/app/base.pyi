@@ -1,18 +1,12 @@
 import datetime
+from collections import defaultdict
+from collections.abc import Callable, Sequence
 from typing import (
     Any,
-    Callable,
-    DefaultDict,
-    Dict,
-    List,
+    Concatenate,
+    Literal,
     NoReturn,
-    Optional,
-    Sequence,
-    Set,
-    Tuple,
-    Type,
     TypeVar,
-    Union,
     overload,
 )
 
@@ -36,14 +30,14 @@ from celery.utils.dispatch import Signal
 from celery.utils.objects import FallbackContext
 from celery.utils.threads import _LocalStack
 from celery.worker import WorkController as CeleryWorkController
-from typing_extensions import Concatenate, Literal, ParamSpec
+from typing_extensions import ParamSpec
 
 _T = TypeVar("_T", bound=CeleryTask[Any, Any])
 _P = ParamSpec("_P")
 _R = TypeVar("_R")
 
 class Celery:
-    steps: DefaultDict[str, set[Any]]
+    steps: defaultdict[str, set[Any]]
 
     on_configure: Signal
     on_after_configure: Signal
@@ -51,57 +45,57 @@ class Celery:
     on_after_fork: Signal
     def __init__(
         self,
-        main: Optional[str] = ...,
-        loader: Optional[Any] = ...,
-        backend: Optional[Union[str, Type[Backend]]] = ...,
-        amqp: Optional[Union[str, Type[AMQP]]] = ...,
-        events: Optional[Union[str, Type[celery.app.events.Events]]] = ...,
-        log: Optional[Union[str, Type[Logging]]] = ...,
-        control: Optional[Union[str, Type[celery.app.control.Control]]] = ...,
+        main: str | None = ...,
+        loader: Any | None = ...,
+        backend: str | type[Backend] | None = ...,
+        amqp: str | type[AMQP] | None = ...,
+        events: str | type[celery.app.events.Events] | None = ...,
+        log: str | type[Logging] | None = ...,
+        control: str | type[celery.app.control.Control] | None = ...,
         set_as_current: bool = ...,
-        tasks: Optional[Union[str, Type[TaskRegistry]]] = ...,
-        broker: Optional[str] = ...,
-        include: Optional[List[str]] = ...,
-        changes: Optional[Dict[str, Any]] = ...,
-        config_source: Optional[Union[str, object]] = ...,
-        fixups: Optional[List[str]] = ...,
-        task_cls: Optional[Union[str, Type[CeleryTask[Any, Any]]]] = ...,
+        tasks: str | type[TaskRegistry] | None = ...,
+        broker: str | None = ...,
+        include: list[str] | None = ...,
+        changes: dict[str, Any] | None = ...,
+        config_source: str | object | None = ...,
+        fixups: list[str] | None = ...,
+        task_cls: str | type[CeleryTask[Any, Any]] | None = ...,
         autofinalize: bool = ...,
-        namespace: Optional[str] = ...,
+        namespace: str | None = ...,
         strict_typing: bool = ...,
     ) -> None: ...
     def _task_from_fun(
         self,
         fun: Callable[_P, _R],
-        name: Optional[str] = ...,
-        base: Optional[Type[CeleryTask[Any, Any]]] = ...,
+        name: str | None = ...,
+        base: type[CeleryTask[Any, Any]] | None = ...,
         bind: bool = ...,
         # options
-        autoretry_for: Tuple[Type[BaseException], ...] = ...,
-        retry_kwargs: Dict[str, Any] = ...,
-        retry_backoff: Union[bool, int] = ...,
+        autoretry_for: tuple[type[BaseException], ...] = ...,
+        retry_kwargs: dict[str, Any] = ...,
+        retry_backoff: bool | int = ...,
         retry_backoff_max: int = ...,
         retry_jitter: bool = ...,
         # from task
         typing: bool = ...,
-        max_retries: Optional[int] = ...,
+        max_retries: int | None = ...,
         default_retry_delay: int = ...,
-        rate_limit: Optional[str] = ...,
+        rate_limit: str | None = ...,
         ignore_result: bool = ...,
         trail: bool = ...,
         send_events: bool = ...,
         store_errors_even_if_ignored: bool = ...,
         serializer: str = ...,
-        time_limit: Optional[int] = ...,
-        soft_time_limit: Optional[int] = ...,
+        time_limit: int | None = ...,
+        soft_time_limit: int | None = ...,
         autoregister: bool = ...,
         track_started: bool = ...,
         acks_late: bool = ...,
         acks_on_failure_or_timeout: bool = ...,
         reject_on_worker_lost: bool = ...,
-        throws: Tuple[Type[Exception], ...] = ...,
-        expires: Optional[Union[float, datetime.datetime]] = ...,
-        priority: Optional[int] = ...,
+        throws: tuple[type[Exception], ...] = ...,
+        expires: float | datetime.datetime | None = ...,
+        priority: int | None = ...,
         resultrepr_maxsize: int = ...,
         request_stack: _LocalStack = ...,
         abstract: bool = ...,
@@ -110,8 +104,8 @@ class Celery:
     def set_current(self) -> None: ...
     def set_default(self) -> None: ...
     def close(self) -> None: ...
-    def start(self, argv: Optional[List[str]] = ...) -> NoReturn: ...
-    def worker_main(self, argv: Optional[List[str]] = ...) -> NoReturn: ...
+    def start(self, argv: list[str] | None = ...) -> NoReturn: ...
+    def worker_main(self, argv: list[str] | None = ...) -> NoReturn: ...
     @overload
     def task(self, fun: Callable[_P, _R]) -> CeleryTask[_P, _R]: ...
     @overload
@@ -121,20 +115,20 @@ class Celery:
         name: str = ...,
         serializer: str = ...,
         bind: bool = ...,
-        autoretry_for: Tuple[Type[BaseException], ...] = ...,
-        max_retries: Optional[int] = ...,
+        autoretry_for: tuple[type[BaseException], ...] = ...,
+        max_retries: int | None = ...,
         default_retry_delay: int = ...,
         acks_late: bool = ...,
         ignore_result: bool = ...,
         soft_time_limit: int = ...,
         time_limit: int = ...,
-        base: Type[_T],
-        retry_kwargs: Dict[str, Any] = ...,
-        retry_backoff: Union[bool, int] = ...,
+        base: type[_T],
+        retry_kwargs: dict[str, Any] = ...,
+        retry_backoff: bool | int = ...,
         retry_backoff_max: int = ...,
         retry_jitter: bool = ...,
         typing: bool = ...,
-        rate_limit: Optional[str] = ...,
+        rate_limit: str | None = ...,
         trail: bool = ...,
         send_events: bool = ...,
         store_errors_even_if_ignored: bool = ...,
@@ -142,9 +136,9 @@ class Celery:
         track_started: bool = ...,
         acks_on_failure_or_timeout: bool = ...,
         reject_on_worker_lost: bool = ...,
-        throws: Tuple[Type[Exception], ...] = ...,
-        expires: Optional[Union[float, datetime.datetime]] = ...,
-        priority: Optional[int] = ...,
+        throws: tuple[type[Exception], ...] = ...,
+        expires: float | datetime.datetime | None = ...,
+        priority: int | None = ...,
         resultrepr_maxsize: int = ...,
         request_stack: _LocalStack = ...,
         abstract: bool = ...,
@@ -157,20 +151,20 @@ class Celery:
         name: str = ...,
         serializer: str = ...,
         bind: Literal[False] = ...,
-        autoretry_for: Tuple[Type[BaseException], ...] = ...,
-        max_retries: Optional[int] = ...,
+        autoretry_for: tuple[type[BaseException], ...] = ...,
+        max_retries: int | None = ...,
         default_retry_delay: int = ...,
         acks_late: bool = ...,
         ignore_result: bool = ...,
         soft_time_limit: int = ...,
         time_limit: int = ...,
         base: None = ...,
-        retry_kwargs: Dict[str, Any] = ...,
-        retry_backoff: Union[bool, int] = ...,
+        retry_kwargs: dict[str, Any] = ...,
+        retry_backoff: bool | int = ...,
         retry_backoff_max: int = ...,
         retry_jitter: bool = ...,
         typing: bool = ...,
-        rate_limit: Optional[str] = ...,
+        rate_limit: str | None = ...,
         trail: bool = ...,
         send_events: bool = ...,
         store_errors_even_if_ignored: bool = ...,
@@ -178,9 +172,9 @@ class Celery:
         track_started: bool = ...,
         acks_on_failure_or_timeout: bool = ...,
         reject_on_worker_lost: bool = ...,
-        throws: Tuple[Type[Exception], ...] = ...,
-        expires: Optional[Union[float, datetime.datetime]] = ...,
-        priority: Optional[int] = ...,
+        throws: tuple[type[Exception], ...] = ...,
+        expires: float | datetime.datetime | None = ...,
+        priority: int | None = ...,
         resultrepr_maxsize: int = ...,
         request_stack: _LocalStack = ...,
         abstract: bool = ...,
@@ -193,7 +187,7 @@ class Celery:
         name: str = ...,
         serializer: str = ...,
         bind: Literal[True],
-        autoretry_for: Tuple[Type[BaseException], ...] = ...,
+        autoretry_for: tuple[type[BaseException], ...] = ...,
         max_retries: int = ...,
         default_retry_delay: int = ...,
         acks_late: bool = ...,
@@ -201,12 +195,12 @@ class Celery:
         soft_time_limit: int = ...,
         time_limit: int = ...,
         base: None = ...,
-        retry_kwargs: Dict[str, Any] = ...,
-        retry_backoff: Union[bool, int] = ...,
+        retry_kwargs: dict[str, Any] = ...,
+        retry_backoff: bool | int = ...,
         retry_backoff_max: int = ...,
         retry_jitter: bool = ...,
         typing: bool = ...,
-        rate_limit: Optional[str] = ...,
+        rate_limit: str | None = ...,
         trail: bool = ...,
         send_events: bool = ...,
         store_errors_even_if_ignored: bool = ...,
@@ -214,9 +208,9 @@ class Celery:
         track_started: bool = ...,
         acks_on_failure_or_timeout: bool = ...,
         reject_on_worker_lost: bool = ...,
-        throws: Tuple[Type[Exception], ...] = ...,
-        expires: Optional[Union[float, datetime.datetime]] = ...,
-        priority: Optional[int] = ...,
+        throws: tuple[type[Exception], ...] = ...,
+        expires: float | datetime.datetime | None = ...,
+        priority: int | None = ...,
         resultrepr_maxsize: int = ...,
         request_stack: _LocalStack = ...,
         abstract: bool = ...,
@@ -226,105 +220,105 @@ class Celery:
     ]: ...
     def register_task(
         self,
-        task: Union[CeleryTask[Any, Any], Type[CeleryTask[Any, Any]]],
+        task: CeleryTask[Any, Any] | type[CeleryTask[Any, Any]],
         **options: Any,
     ) -> CeleryTask[Any, Any]: ...
     def gen_task_name(self, name: str, module: str) -> str: ...
     def finalize(self, auto: bool = ...) -> None: ...
-    def add_defaults(self, fun: Callable[[], Dict[str, Any]]) -> None: ...
+    def add_defaults(self, fun: Callable[[], dict[str, Any]]) -> None: ...
     def config_from_object(
         self,
         obj: Any,
         silent: bool = ...,
         force: bool = ...,
-        namespace: Optional[str] = ...,
+        namespace: str | None = ...,
     ) -> Settings: ...
     def config_from_envvar(
         self, variable_name: str, silent: bool = ..., force: bool = ...
     ) -> None: ...
-    def config_from_cmdline(self, argv: List[str], namespace: str = ...) -> None: ...
+    def config_from_cmdline(self, argv: list[str], namespace: str = ...) -> None: ...
     def setup_security(
         self,
-        allowed_serializers: Optional[Set[str]] = ...,
-        key: Optional[str] = ...,
-        cert: Optional[str] = ...,
-        store: Optional[str] = ...,
+        allowed_serializers: set[str] | None = ...,
+        key: str | None = ...,
+        cert: str | None = ...,
+        store: str | None = ...,
         digest: str = ...,
         serializer: str = ...,
     ) -> None: ...
     def autodiscover_tasks(
         self,
-        packages: List[str] | Callable[[], List[str]] | None = ...,
+        packages: list[str] | Callable[[], list[str]] | None = ...,
         related_name: str = ...,
         force: bool = ...,
     ) -> None: ...
     def send_task(
         self,
         name: str,
-        args: Optional[Sequence[Any]] = ...,
-        kwargs: Optional[Dict[str, Any]] = ...,
-        countdown: Optional[float] = ...,
-        eta: Optional[datetime.datetime] = ...,
-        task_id: Optional[str] = ...,
-        producer: Optional[kombu.Producer] = ...,
-        connection: Optional[kombu.Connection] = ...,
-        router: Optional[Router] = ...,
-        result_cls: Optional[Type[celery.result.AsyncResult[Any]]] = ...,
-        expires: Optional[Union[float, datetime.datetime]] = ...,
-        publisher: Optional[kombu.Producer] = ...,
-        link: Optional[Signature[Any]] = ...,
-        link_error: Optional[Signature[Any]] = ...,
+        args: Sequence[Any] | None = ...,
+        kwargs: dict[str, Any] | None = ...,
+        countdown: float | None = ...,
+        eta: datetime.datetime | None = ...,
+        task_id: str | None = ...,
+        producer: kombu.Producer | None = ...,
+        connection: kombu.Connection | None = ...,
+        router: Router | None = ...,
+        result_cls: type[celery.result.AsyncResult[Any]] | None = ...,
+        expires: float | datetime.datetime | None = ...,
+        publisher: kombu.Producer | None = ...,
+        link: Signature[Any] | None = ...,
+        link_error: Signature[Any] | None = ...,
         add_to_parent: bool = ...,
-        group_id: Optional[str] = ...,
+        group_id: str | None = ...,
         retries: int = ...,
-        chord: Optional[chord] = ...,
-        reply_to: Optional[str] = ...,
-        time_limit: Optional[int] = ...,
-        soft_time_limit: Optional[int] = ...,
-        root_id: Optional[str] = ...,
-        parent_id: Optional[str] = ...,
-        route_name: Optional[str] = ...,
-        shadow: Optional[str] = ...,
-        chain: Optional[Any] = ...,
-        task_type: Optional[Any] = ...,
+        chord: chord | None = ...,
+        reply_to: str | None = ...,
+        time_limit: int | None = ...,
+        soft_time_limit: int | None = ...,
+        root_id: str | None = ...,
+        parent_id: str | None = ...,
+        route_name: str | None = ...,
+        shadow: str | None = ...,
+        chain: Any | None = ...,
+        task_type: Any | None = ...,
         # options
         ignore_result: bool = ...,
         **options: Any,
     ) -> celery.result.AsyncResult[Any]: ...
     def connection_for_read(
-        self, url: Optional[str] = ..., **kwargs: Any
+        self, url: str | None = ..., **kwargs: Any
     ) -> kombu.Connection: ...
     def connection_for_write(
-        self, url: Optional[str] = ..., **kwargs: Any
+        self, url: str | None = ..., **kwargs: Any
     ) -> kombu.Connection: ...
     def connection(
         self,
-        hostname: Optional[str] = ...,
-        userid: Optional[str] = ...,
-        password: Optional[str] = ...,
-        virtual_host: Optional[str] = ...,
-        port: Optional[int] = ...,
-        ssl: Optional[Union[bool, Dict[str, Any]]] = ...,
-        connect_timeout: Optional[int] = ...,
-        transport: Optional[str] = ...,
-        transport_options: Optional[Dict[str, Any]] = ...,
-        heartbeat: Optional[int] = ...,
-        login_method: Optional[int] = ...,
-        failover_strategy: Optional[Union[str, Callable[[], Any]]] = ...,
+        hostname: str | None = ...,
+        userid: str | None = ...,
+        password: str | None = ...,
+        virtual_host: str | None = ...,
+        port: int | None = ...,
+        ssl: bool | dict[str, Any] | None = ...,
+        connect_timeout: int | None = ...,
+        transport: str | None = ...,
+        transport_options: dict[str, Any] | None = ...,
+        heartbeat: int | None = ...,
+        login_method: int | None = ...,
+        failover_strategy: str | Callable[[], Any] | None = ...,
         **kwargs: Any,
     ) -> kombu.Connection: ...
     broker_connection = connection
     def connection_or_acquire(
-        self, connection: Optional[kombu.Connection] = ..., pool: bool = ...
+        self, connection: kombu.Connection | None = ..., pool: bool = ...
     ) -> FallbackContext: ...
     default_connection = connection_or_acquire
     def producer_or_acquire(
-        self, producer: Optional[kombu.Producer] = ...
+        self, producer: kombu.Producer | None = ...
     ) -> FallbackContext: ...
     default_producer = producer_or_acquire  # XXX compat
     def prepare_config(self, c: Settings) -> Settings: ...
     def now(self) -> datetime.datetime: ...
-    def select_queues(self, queues: Optional[Sequence[str]] = ...) -> None: ...
+    def select_queues(self, queues: Sequence[str] | None = ...) -> None: ...
     def either(self, default_key: str, *defaults: Any) -> Any: ...
     def bugreport(self) -> str: ...
     def signature(self, *args: Any, **kwargs: Any) -> Signature[Any]: ...
@@ -332,9 +326,9 @@ class Celery:
         self,
         schedule: BaseSchedule | float,
         sig: Signature[Any],
-        args: Tuple[Any, ...] = ...,
-        kwargs: Dict[str, Any] = ...,
-        name: Optional[str] = ...,
+        args: tuple[Any, ...] = ...,
+        kwargs: dict[str, Any] = ...,
+        name: str | None = ...,
         **opts: Any,
     ) -> str: ...
     def __enter__(self) -> Celery: ...
@@ -348,7 +342,7 @@ class Celery:
     @property
     def Task(self) -> CeleryTask[Any, Any]: ...
     @property
-    def annotations(self) -> List[Dict[str, Any]]: ...
+    def annotations(self) -> list[dict[str, Any]]: ...
     @property
     def AsyncResult(self) -> celery.result.AsyncResult[Any]: ...
     @property
@@ -358,9 +352,9 @@ class Celery:
     @property
     def pool(self) -> kombu.pools.ProducerPool: ...
     @property
-    def current_task(self) -> Optional[CeleryTask[Any, Any]]: ...
+    def current_task(self) -> CeleryTask[Any, Any] | None: ...
     @property
-    def current_worker_task(self) -> Optional[CeleryTask[Any, Any]]: ...
+    def current_worker_task(self) -> CeleryTask[Any, Any] | None: ...
     @property
     def oid(self) -> str: ...
     @property

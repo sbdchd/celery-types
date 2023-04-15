@@ -1,11 +1,9 @@
-from typing import Dict, FrozenSet, List, Optional
+from typing import Literal
 
-from typing_extensions import Literal
-
-PRECEDENCE: List[Optional[str]]
+PRECEDENCE: list[str | None]
 
 #: Hash lookup of PRECEDENCE to index
-PRECEDENCE_LOOKUP: Dict[Optional[str], int]
+PRECEDENCE_LOOKUP: dict[str | None, int]
 NONE_PRECEDENCE: int
 
 def precedence(state: object) -> int: ...
@@ -26,12 +24,12 @@ REJECTED: Literal["REJECTED"]
 RETRY: Literal["RETRY"]
 IGNORED: Literal["IGNORED"]
 
-READY_STATES: FrozenSet[str]
-UNREADY_STATES: FrozenSet[str]
-EXCEPTION_STATES: FrozenSet[str]
-PROPAGATE_STATES: FrozenSet[str]
+READY_STATES: frozenset[str]
+UNREADY_STATES: frozenset[str]
+EXCEPTION_STATES: frozenset[str]
+PROPAGATE_STATES: frozenset[str]
 
-ALL_STATES: FrozenSet[str]
+ALL_STATES: frozenset[str]
 
 __all__ = [
     "PENDING",

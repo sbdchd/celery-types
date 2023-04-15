@@ -1,17 +1,17 @@
 import numbers
+from collections.abc import Callable
 from datetime import datetime, timedelta
-from typing import Callable, List, NamedTuple, Optional, Set, Tuple, Union
+from typing import Literal, NamedTuple
 
 import ephem
 from celery.app.base import Celery
 from celery.utils.time import ffwd
-from typing_extensions import Literal
 
 class schedstate(NamedTuple):
     is_due: bool
     next: float
 
-def cronfield(s: Optional[str]) -> str: ...
+def cronfield(s: str | None) -> str: ...
 
 class ParseException(Exception): ...
 
@@ -19,8 +19,8 @@ class BaseSchedule:
     nowfunc: Callable[[], datetime]
     def __init__(
         self,
-        nowfun: Optional[Callable[[], datetime]] = ...,
-        app: Optional[Celery] = ...,
+        nowfun: Callable[[], datetime] | None = ...,
+        app: Celery | None = ...,
     ) -> None: ...
     def now(self) -> datetime: ...
     def remaining_estimate(self, last_run_at: datetime) -> timedelta: ...
@@ -40,10 +40,10 @@ class BaseSchedule:
 class schedule(BaseSchedule):
     def __init__(
         self,
-        run_every: Optional[Union[float, timedelta]] = ...,
+        run_every: float | timedelta | None = ...,
         relative: bool = ...,
-        nowfun: Optional[Callable[[], datetime]] = ...,
-        app: Optional[Celery] = ...,
+        nowfun: Callable[[], datetime] | None = ...,
+        app: Celery | None = ...,
     ) -> None: ...
     @property
     def seconds(self) -> int: ...
@@ -55,24 +55,24 @@ _ModuleLevelParseException = ParseException
 class crontab_parser:
     ParseException: _ModuleLevelParseException
     def __init__(self, max_: int = ..., min_: int = ...) -> None: ...
-    def parse(self, spec: str) -> Set[int]: ...
+    def parse(self, spec: str) -> set[int]: ...
 
 class crontab(BaseSchedule):
     def __init__(
         self,
-        minute: Union[str, int, List[int]] = ...,
-        hour: Union[str, int, List[int]] = ...,
-        day_of_week: Union[str, int, List[int]] = ...,
-        day_of_month: Union[str, int, List[int]] = ...,
-        month_of_year: Union[str, int, List[int]] = ...,
-        nowfun: Optional[Callable[[], datetime]] = ...,
-        app: Optional[Celery] = ...,
+        minute: str | int | list[int] = ...,
+        hour: str | int | list[int] = ...,
+        day_of_week: str | int | list[int] = ...,
+        day_of_month: str | int | list[int] = ...,
+        month_of_year: str | int | list[int] = ...,
+        nowfun: Callable[[], datetime] | None = ...,
+        app: Celery | None = ...,
     ) -> None: ...
     def remaining_delta(
-        self, last_run_at: datetime, tz: Optional[str] = ..., ffwd: ffwd = ...
-    ) -> Tuple[datetime, timedelta, datetime]: ...
+        self, last_run_at: datetime, tz: str | None = ..., ffwd: ffwd = ...
+    ) -> tuple[datetime, timedelta, datetime]: ...
 
-def maybe_schedule(s: Union[numbers.Number, timedelta, BaseSchedule]) -> schedule: ...
+def maybe_schedule(s: numbers.Number | timedelta | BaseSchedule) -> schedule: ...
 
 _SolarEvent = Literal[
     "dawn_astronomical",
@@ -96,6 +96,6 @@ class solar(BaseSchedule):
         event: _SolarEvent,
         lat: float,
         lon: float,
-        nowfun: Optional[Callable[[], datetime]] = ...,
-        app: Optional[Celery] = ...,
+        nowfun: Callable[[], datetime] | None = ...,
+        app: Celery | None = ...,
     ) -> None: ...

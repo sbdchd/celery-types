@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import errno
 import sys
-from typing import Any, Iterator, Protocol
+from collections.abc import Iterator
+from typing import Any, Protocol
 
 import celery
 from celery import Celery, shared_task, signature
@@ -47,7 +48,7 @@ class DB(Protocol):
 class DatabaseTask(Task[Any, Any]):
     @property
     def db(self) -> DB:
-        ...
+        raise Exception()
 
 
 @app.task(base=DatabaseTask)
@@ -80,7 +81,7 @@ def send_twitter_status(self: Task[Any, Any], oauth: str, tweet: str) -> None:
     self.update_state(state="SUCCESS", meta={"foo": "bar"})
 
 
-class HttpNotFound(Exception):
+class HttpNotFoundError(Exception):
     ...
 
 
@@ -93,7 +94,7 @@ def add_5(self: Task[Any, Any], x: int, y: int) -> int:
     rlevel = self.app.conf.worker_redirect_stdouts_level
     try:
         self.app.log.redirect_stdouts_to_logger(logger, rlevel)
-        print("Adding {0} + {1}".format(x, y))
+        print(f"Adding {x} + {y}")
         return x + y
     finally:
         sys.stdout, sys.stderr = old_outs
@@ -103,7 +104,7 @@ app.send_task(name="main.add", args=(1, 2))
 app.send_task(name="main.add", args=[1, 2])
 
 
-@app.task(throws=(KeyError, HttpNotFound))
+@app.task(throws=(KeyError, HttpNotFoundError))
 def foo() -> None:
     print("foo")
 
@@ -121,7 +122,7 @@ class MyTask(celery.Task[Any, Any]):
     def on_failure(
         self, exc: Exception, task_id: str, args: object, kwargs: object, einfo: object
     ) -> None:
-        print("{0!r} failed: {1!r}".format(task_id, exc))
+        print(f"{task_id!r} failed: {exc!r}")
 
     def foo(self) -> None:
         print("foo")
@@ -236,8 +237,7 @@ def run_chord() -> AsyncResult[Any]:
     def baz() -> None:
         pass
 
-    result = chord([foo.s(), bar.s()])(baz.si())
-    return result
+    return chord([foo.s(), bar.s()])(baz.si())
 
 
 with allow_join_result():

@@ -1,4 +1,5 @@
-from typing import Any, MutableMapping
+from collections.abc import MutableMapping
+from typing import Any
 
 class AttributeDictMixin:
     def __getattr__(self, k: str) -> Any: ...

@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any
 
 class BaseLoader:
-    def import_default_modules(self) -> List[Any]: ...
+    def import_default_modules(self) -> list[Any]: ...

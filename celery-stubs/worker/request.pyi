@@ -1,12 +1,12 @@
 import datetime
-from typing import Any, Callable, Sequence
+from collections.abc import Callable, Sequence
+from typing import Any, Literal, TypedDict
 
 from celery.app.base import Celery
 from celery.app.task import Task
 from celery.canvas import chord as chord_type
 from celery.concurrency.base import TaskPool
 from celery.result import AsyncResult
-from typing_extensions import Literal, TypedDict
 
 class _DeliveryInfo(TypedDict, total=False):
     exchange: str | None

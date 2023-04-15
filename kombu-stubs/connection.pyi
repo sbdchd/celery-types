@@ -1,4 +1,5 @@
-from typing import Any, Callable, Dict, List, Optional
+from collections.abc import Callable
+from typing import Any
 
 from kombu.transport.base import Channel, Transport
 
@@ -6,42 +7,42 @@ class Connection:
     def __init__(
         self,
         hostname: str = ...,
-        userid: Optional[str] = ...,
-        password: Optional[str] = ...,
-        virtual_host: Optional[str] = ...,
-        port: Optional[int] = ...,
+        userid: str | None = ...,
+        password: str | None = ...,
+        virtual_host: str | None = ...,
+        port: int | None = ...,
         insist: bool = ...,
         ssl: bool = ...,
-        transport: Optional[Transport] = ...,
+        transport: Transport | None = ...,
         connect_timeout: float = ...,
-        transport_options: Optional[Dict[str, Any]] = ...,
-        login_method: Optional[str] = ...,
-        uri_prefix: Optional[str] = ...,
+        transport_options: dict[str, Any] | None = ...,
+        login_method: str | None = ...,
+        uri_prefix: str | None = ...,
         heartbeat: float = ...,
         failover_strategy: str = ...,
-        alternates: Optional[List[Any]] = ...,
+        alternates: list[Any] | None = ...,
     ) -> None: ...
     def ensure_connection(
         self,
-        errback: Optional[Callable[[Exception, float], None]] = ...,
+        errback: Callable[[Exception, float], None] | None = ...,
         max_retries: int = ...,
         interval_start: int = ...,
         interval_step: int = ...,
         interval_max: int = ...,
-        callback: Optional[Callable[[], None]] = ...,
+        callback: Callable[[], None] | None = ...,
         reraise_as_library_errors: bool = ...,
-        timeout: Optional[int] = ...,
+        timeout: int | None = ...,
     ) -> Connection: ...
     def _ensure_connection(
         self,
-        errback: Optional[Callable[[Exception, float], None]] = ...,
+        errback: Callable[[Exception, float], None] | None = ...,
         max_retries: int = ...,
         interval_start: int = ...,
         interval_step: int = ...,
         interval_max: int = ...,
-        callback: Optional[Callable[[], None]] = ...,
+        callback: Callable[[], None] | None = ...,
         reraise_as_library_errors: bool = ...,
-        timeout: Optional[int] = ...,
+        timeout: int | None = ...,
     ) -> Connection: ...
     def connect(self) -> Connection: ...
     def channel(self) -> Channel: ...

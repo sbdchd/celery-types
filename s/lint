@@ -5,17 +5,13 @@ set -ex
 # format code
 if [[ $CI ]]; then
     ./.venv/bin/black --check .
-    ./.venv/bin/isort --check-only .
+    ./.venv/bin/ruff .
 else
     ./.venv/bin/black .
-    ./.venv/bin/isort .
+    ./.venv/bin/ruff . --fix
 fi
 
 ./node_modules/.bin/pyright typings tests
 
 # type check code
 ./.venv/bin/mypy tests
-
-# lint
-./.venv/bin/flake8 tests
-
