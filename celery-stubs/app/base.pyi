@@ -99,6 +99,8 @@ class Celery:
         resultrepr_maxsize: int = ...,
         request_stack: _LocalStack = ...,
         abstract: bool = ...,
+        after_return: Callable[..., Any] = ...,
+        on_retry: Callable[..., Any] = ...,
     ) -> CeleryTask[_P, _R]: ...
     def on_init(self) -> None: ...
     def set_current(self) -> None: ...
@@ -143,6 +145,8 @@ class Celery:
         request_stack: _LocalStack = ...,
         abstract: bool = ...,
         queue: str = ...,
+        after_return: Callable[..., Any] = ...,
+        on_retry: Callable[..., Any] = ...,
     ) -> Callable[[Callable[..., Any]], _T]: ...
     @overload
     def task(
@@ -179,6 +183,8 @@ class Celery:
         request_stack: _LocalStack = ...,
         abstract: bool = ...,
         queue: str = ...,
+        after_return: Callable[..., Any] = ...,
+        on_retry: Callable[..., Any] = ...,
     ) -> Callable[[Callable[_P, _R]], CeleryTask[_P, _R]]: ...
     @overload
     def task(
@@ -215,6 +221,8 @@ class Celery:
         request_stack: _LocalStack = ...,
         abstract: bool = ...,
         queue: str = ...,
+        after_return: Callable[..., Any] = ...,
+        on_retry: Callable[..., Any] = ...,
     ) -> Callable[
         [Callable[Concatenate[CeleryTask[_P, _R], _P], _R]], CeleryTask[_P, _R]
     ]: ...
