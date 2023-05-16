@@ -63,6 +63,9 @@ class Celery:
         autofinalize: bool = ...,
         namespace: str | None = ...,
         strict_typing: bool = ...,
+        task_create_missing_queues: bool = ...,
+        task_acks_late: bool = ...,
+        task_time_limit: int = ...,
     ) -> None: ...
     def _task_from_fun(
         self,

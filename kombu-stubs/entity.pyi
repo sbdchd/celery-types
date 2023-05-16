@@ -15,10 +15,11 @@ class Exchange(MaybeChannelBound):
 class Queue(MaybeChannelBound):
     routing_key: str
     exchange: Exchange
+    name: str
     def __init__(
         self,
         name: str = ...,
-        exchange: Exchange | None = ...,
+        exchange: Exchange | str | None = ...,
         routing_key: str = ...,
         channel: Channel | None = ...,
         bindings: Any = ...,
