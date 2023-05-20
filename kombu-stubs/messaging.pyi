@@ -42,6 +42,9 @@ class Producer:
     ) -> None: ...
 
 class Consumer:
+    channel: Connection | Channel
+    queues: Sequence[Queue]
+    accept: Sequence[str] | None
     def __init__(
         self,
         channel: Connection | Channel,
