@@ -30,11 +30,8 @@ Task.__class_getitem__ = classmethod(lambda cls, *args, **kwargs: cls) # type: i
 ```shell
 # install poetry (https://python-poetry.org/docs/)
 curl -sSL https://install.python-poetry.org | python3 -
-
-# create Python virtualenv
-python -m venv .venv
-
 # install node
+# install yarn
 npm install --global yarn
 
 # install node dependencies
@@ -44,8 +41,7 @@ yarn
 ### regular development
 
 ```shell
-source .venv/bin/activate
-
+poetry config virtualenvs.in-project true
 poetry install
 
 # run formatting, linting, and typechecking
