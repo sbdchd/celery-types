@@ -1,9 +1,12 @@
 {
   "typeCheckingMode": "strict",
-  "ignore": ["typings/django_celery_results*"],
+  "ignore": [
+    "typings/django_celery_results*"
+  ],
   "reportPrivateUsage": false,
   "reportMissingModuleSource": false,
   "reportIncompatibleMethodOverride": false,
   "reportTypedDictNotRequiredAccess": false,
-  "reportUnusedFunction": false
+  "reportUnusedFunction": false,
+  "pythonVersion": "3.10",
 }
