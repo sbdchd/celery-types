@@ -54,7 +54,17 @@ class Control:
     Mailbox: KombuMailbox
     app: Celery | None
     def __init__(self, app: Celery | None = ...) -> None: ...
-    def inspect(self) -> Any: ...
+    def inspect(
+        self,
+        destination: _Destination | None = ...,
+        timeout: float = ...,
+        callback: Callable[..., Any] | None = ...,
+        connection: Connection | None = ...,
+        app: Celery | None = ...,
+        limit: int | None = ...,
+        pattern: str | None = ...,
+        matcher: Callable[..., Any] | None = ...,
+    ) -> Inspect: ...
     def purge(self, connection: Connection | None = ...) -> int: ...
     discard_all = purge
     def election(
