@@ -75,7 +75,8 @@ def send_twitter_status(self: Task[Any, Any], oauth: str, tweet: str) -> None:
         if exc.errno == errno.ENOMEM:
             raise Reject(exc, requeue=False)
 
-        if not self.request.delivery_info["redelivered"]:
+        delivery_info = self.request.delivery_info or {}
+        if not delivery_info.get("redelivered"):
             raise Reject("no reason", requeue=True)
 
     self.update_state(state="SUCCESS", meta={"foo": "bar"})

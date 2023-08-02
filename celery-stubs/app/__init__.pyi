@@ -12,6 +12,7 @@ from celery.app import beat as beat
 from celery.app import control as control
 from celery.app import events as events
 from celery.app import task as task
+from celery.app.task import Context
 from celery.app.task import Task as Task
 from celery.utils.threads import _LocalStack
 from typing_extensions import ParamSpec
@@ -53,7 +54,7 @@ def shared_task(
     expires: float | datetime | None = ...,
     priority: int | None = ...,
     resultrepr_maxsize: int = ...,
-    request_stack: _LocalStack = ...,
+    request_stack: _LocalStack[Context] = ...,
     abstract: bool = ...,
     queue: str = ...,
 ) -> Callable[[Callable[_P, _R]], Task[_P, _R]]: ...
@@ -88,7 +89,7 @@ def shared_task(
     expires: float | datetime | None = ...,
     priority: int | None = ...,
     resultrepr_maxsize: int = ...,
-    request_stack: _LocalStack = ...,
+    request_stack: _LocalStack[Context] = ...,
     abstract: bool = ...,
     queue: str = ...,
 ) -> Callable[[Callable[Concatenate[Task[_P, _R], _P], _R]], Task[_P, _R]]: ...
@@ -123,7 +124,7 @@ def shared_task(
     expires: float | datetime | None = ...,
     priority: int | None = ...,
     resultrepr_maxsize: int = ...,
-    request_stack: _LocalStack = ...,
+    request_stack: _LocalStack[Context] = ...,
     abstract: bool = ...,
     queue: str = ...,
 ) -> Callable[[Callable[..., Any]], _T]: ...
