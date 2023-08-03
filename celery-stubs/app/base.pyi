@@ -19,6 +19,7 @@ from celery.app.events import Events
 from celery.app.log import Logging
 from celery.app.registry import TaskRegistry
 from celery.app.routes import Router
+from celery.app.task import Context
 from celery.app.task import Task as CeleryTask
 from celery.app.utils import Settings
 from celery.apps.worker import Worker as CeleryWorker
@@ -132,7 +133,7 @@ class Celery:
         expires: float | datetime.datetime | None = ...,
         priority: int | None = ...,
         resultrepr_maxsize: int = ...,
-        request_stack: _LocalStack = ...,
+        request_stack: _LocalStack[Context] = ...,
         abstract: bool = ...,
         after_return: Callable[..., Any] = ...,
         on_retry: Callable[..., Any] = ...,
@@ -177,7 +178,7 @@ class Celery:
         expires: float | datetime.datetime | None = ...,
         priority: int | None = ...,
         resultrepr_maxsize: int = ...,
-        request_stack: _LocalStack = ...,
+        request_stack: _LocalStack[Context] = ...,
         abstract: bool = ...,
         queue: str = ...,
         after_return: Callable[..., Any] = ...,
@@ -215,7 +216,7 @@ class Celery:
         expires: float | datetime.datetime | None = ...,
         priority: int | None = ...,
         resultrepr_maxsize: int = ...,
-        request_stack: _LocalStack = ...,
+        request_stack: _LocalStack[Context] = ...,
         abstract: bool = ...,
         queue: str = ...,
         after_return: Callable[..., Any] = ...,
@@ -253,7 +254,7 @@ class Celery:
         expires: float | datetime.datetime | None = ...,
         priority: int | None = ...,
         resultrepr_maxsize: int = ...,
-        request_stack: _LocalStack = ...,
+        request_stack: _LocalStack[Context] = ...,
         abstract: bool = ...,
         queue: str = ...,
         after_return: Callable[..., Any] = ...,

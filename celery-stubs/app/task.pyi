@@ -1,4 +1,4 @@
-from collections.abc import Iterable, Mapping
+from collections.abc import Iterable, Mapping, Sequence
 from datetime import datetime
 from typing import (
     Any,
@@ -18,11 +18,51 @@ from celery.canvas import Signature, xmap, xstarmap
 from celery.exceptions import Retry
 from celery.result import EagerResult
 from celery.utils.threads import _LocalStack
-from celery.worker.request import Request
+from celery.worker.request import _DeliveryInfo
 from typing_extensions import ParamSpec
 
 _P = ParamSpec("_P")
 _R = TypeVar("_R")
+
+class Context:
+    args: Sequence[Any] | None
+    callbacks: Sequence[Mapping[str, Any]] | None
+    called_directly: bool
+    chain: str | None
+    chord: str | None
+    correlation_id: str | None
+    delivery_info: _DeliveryInfo | None
+    errbacks: Sequence[Mapping[str, Any]] | None
+    eta: int | None
+    expires: int | None
+    group: str | None
+    group_index: int | None
+    headers: Mapping[str, Any] | None
+    hostname: str | None
+    id: str | None
+    ignore_result: bool
+    is_eager: bool
+    kwargs: Mapping[str, Any] | None
+    logfile: str | None
+    loglevel: int | None
+    origin: Any
+    parent_id: int | None
+    properties: Any | None
+    retries: int
+    reply_to: Any
+    replaced_task_nesting: int
+    root_id: str | None
+    shadow: Any
+    taskset: str | None  # compat alias to group
+    timelimit: tuple[int, int] | tuple[None, None] | None
+    utc: bool | None
+    def __init__(self, *args: dict[str, Any], **kwargs: Any) -> None: ...
+    def update(self, *args: dict[str, Any], **kwargs: Any) -> None: ...
+    def clear(self) -> None: ...
+    def get(self, key: str, default: Any = ...) -> Any: ...
+    def as_execution_options(self) -> dict[str, Any]: ...
+    @property
+    def children(self) -> list[str]: ...
 
 class Task(Generic[_P, _R]):
     name: str
@@ -46,7 +86,7 @@ class Task(Generic[_P, _R]):
     expires: float | datetime | None
     priority: int | None
     resultrepr_maxsize: int
-    request_stack: _LocalStack
+    request_stack: _LocalStack[Context]
     abstract: bool
     @classmethod
     def bind(cls, app: Celery) -> Celery: ...
@@ -100,7 +140,7 @@ class Task(Generic[_P, _R]):
     ) -> None: ...
     def signature_from_request(
         self,
-        request: Request | None = ...,
+        request: Context | None = ...,
         args: tuple[Any, ...] = ...,
         kwargs: dict[str, Any] | None = ...,
         queue: str | None = ...,
@@ -227,7 +267,7 @@ class Task(Generic[_P, _R]):
     def push_request(self, *args: _P.args, **kwargs: _P.kwargs) -> None: ...
     def pop_request(self) -> None: ...
     @property
-    def request(self) -> Request: ...
+    def request(self) -> Context: ...
     @property
     def backend(self) -> Backend: ...
     @backend.setter
