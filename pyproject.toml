@@ -98,5 +98,5 @@ ban-relative-imports = "all"
 
 
 [build-system]
-requires = ["poetry>=1.4", "setuptools"]
+requires = ["poetry-core>=1.5.2"]
 build-backend = "poetry.core.masonry.api"
