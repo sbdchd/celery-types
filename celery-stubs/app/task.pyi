@@ -46,7 +46,7 @@ class Context:
     logfile: str | None
     loglevel: int | None
     origin: Any
-    parent_id: int | None
+    parent_id: str | None
     properties: Any | None
     retries: int
     reply_to: Any
