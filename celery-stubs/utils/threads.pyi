@@ -1,8 +1,10 @@
 import threading
+from collections.abc import Generator, Iterator
+from threading import Thread
+from threading import get_ident as get_ident
+from typing import Any, Generic, TypeVar
+
 from _typeshed import Incomplete
-from collections.abc import Generator
-from threading import get_ident as get_ident, Thread
-from typing import Generic, TypeVar, Any, Iterator
 
 _T = TypeVar("_T")
 

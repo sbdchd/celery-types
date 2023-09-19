@@ -1,8 +1,8 @@
 from typing import ClassVar
 
-from kombu import Consumer
-from .utils.graph import GraphFormatter
 from _typeshed import Incomplete
+from celery.utils.graph import GraphFormatter
+from kombu import Consumer
 
 class StepFormatter(GraphFormatter):
     blueprint_prefix: str
