@@ -2,14 +2,14 @@ from _typeshed import Incomplete
 
 def apply_target(
     target: Incomplete,
-    args: Incomplete=...,
+    args: Incomplete = ...,
     kwargs: Incomplete | None = ...,
     callback: Incomplete | None = ...,
     accept_callback: Incomplete | None = ...,
     pid: Incomplete | None = ...,
-    getpid: Incomplete=...,
-    propagate: Incomplete=...,
-    monotonic: Incomplete=...,
+    getpid: Incomplete = ...,
+    propagate: Incomplete = ...,
+    monotonic: Incomplete = ...,
     **_
 ) -> None: ...
 
@@ -34,7 +34,7 @@ class BasePool:
         limit: Incomplete | None = ...,
         putlocks: bool = ...,
         forking_enable: bool = ...,
-        callbacks_propagate: Incomplete=...,
+        callbacks_propagate: Incomplete = ...,
         app: Incomplete | None = ...,
         **options: Incomplete
     ) -> None: ...
@@ -48,7 +48,9 @@ class BasePool:
     def on_soft_timeout(self, job: Incomplete) -> None: ...
     def on_hard_timeout(self, job: Incomplete) -> None: ...
     def maintain_pool(self, *args: Incomplete, **kwargs: Incomplete) -> None: ...
-    def terminate_job(self, pid: Incomplete, signal: Incomplete | None = ...) -> None: ...
+    def terminate_job(
+        self, pid: Incomplete, signal: Incomplete | None = ...
+    ) -> None: ...
     def restart(self) -> None: ...
     def stop(self) -> None: ...
     def terminate(self) -> None: ...
