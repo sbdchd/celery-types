@@ -10,7 +10,7 @@ def apply_target(
     getpid: Incomplete = ...,
     propagate: Incomplete = ...,
     monotonic: Incomplete = ...,
-    **_
+    **_: Incomplete,
 ) -> None: ...
 
 class BasePool:
@@ -36,7 +36,7 @@ class BasePool:
         forking_enable: bool = ...,
         callbacks_propagate: Incomplete = ...,
         app: Incomplete | None = ...,
-        **options: Incomplete
+        **options: Incomplete,
     ) -> None: ...
     def on_start(self) -> None: ...
     def did_start_ok(self) -> Incomplete: ...
@@ -62,7 +62,7 @@ class BasePool:
         target: Incomplete,
         args: Incomplete | None = ...,
         kwargs: Incomplete | None = ...,
-        **options: Incomplete
+        **options: Incomplete,
     ) -> Incomplete: ...
     @property
     def info(self) -> Incomplete: ...
