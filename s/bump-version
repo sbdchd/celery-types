@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ -z "${1}" ]; then
+  echo "must specify new version"
+  exit 1
+fi
+
+./.venv/bin/toml set --toml-path pyproject.toml tool.poetry.version "${1}"
