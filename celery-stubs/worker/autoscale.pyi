@@ -1,4 +1,5 @@
 from typing import Any
+
 from celery.bootsteps import StartStopStep
 from celery.concurrency.base import BasePool
 from celery.utils.threads import bgThread

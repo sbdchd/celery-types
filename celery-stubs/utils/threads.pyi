@@ -4,8 +4,6 @@ from threading import Thread
 from threading import get_ident as get_ident
 from typing import Any, Generic, TypeVar
 
-from typing import Any
-
 _T = TypeVar("_T")
 
 def default_socket_timeout(timeout: float | None) -> Generator[None, None, None]: ...
