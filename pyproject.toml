@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "celery-types"
-version = "0.19.0"
+version = "0.20.0"
 description = "Type stubs for Celery and its related packages"
 repository = "https://github.com/sbdchd/celery-types"
 readme = "README.md"
@@ -38,6 +38,7 @@ django-types = "^0.3.1"
 django = "^3.1"
 ruff = "^0.0.261"
 mypy = "^1.2.0"
+toml-cli = "^0.5.0"
 
 [tool.ruff]
 select = [
