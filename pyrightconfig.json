@@ -7,6 +7,5 @@
   "reportMissingModuleSource": false,
   "reportIncompatibleMethodOverride": false,
   "reportTypedDictNotRequiredAccess": false,
-  "reportUnusedFunction": false,
-  "pythonVersion": "3.10",
+  "reportUnusedFunction": false
 }

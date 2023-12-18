@@ -28,10 +28,10 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.10"
-typing-extensions = ">=3.10.0,<5.0.0"
+python = "^3.9"
+typing-extensions = "^4.9.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 celery = "^5.0"
 black = { version = "21.9b0", allow-prereleases = true }
 django-types = "^0.3.1"
@@ -87,7 +87,7 @@ unfixable = [
     "ERA001",
 ] # we want to check ourselves before we delete commented out code.
 update-check = false
-target-version = "py311"
+target-version = "py39"
 
 # [tool.ruff.isort]
 # known-third-party = ["django"]
