@@ -3,7 +3,6 @@ from collections import defaultdict
 from collections.abc import Callable, Sequence
 from typing import (
     Any,
-    Concatenate,
     Literal,
     NoReturn,
     TypeVar,
@@ -31,7 +30,7 @@ from celery.utils.dispatch import Signal
 from celery.utils.objects import FallbackContext
 from celery.utils.threads import _LocalStack
 from celery.worker import WorkController as CeleryWorkController
-from typing_extensions import ParamSpec
+from typing_extensions import Concatenate, ParamSpec
 
 _T = TypeVar("_T", bound=CeleryTask[Any, Any])
 _P = ParamSpec("_P")

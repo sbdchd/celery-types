@@ -2,7 +2,6 @@ from collections.abc import Callable
 from datetime import datetime
 from typing import (
     Any,
-    Concatenate,
     Literal,
     TypeVar,
     overload,
@@ -15,7 +14,7 @@ from celery.app import task as task
 from celery.app.task import Context
 from celery.app.task import Task as Task
 from celery.utils.threads import _LocalStack
-from typing_extensions import ParamSpec
+from typing_extensions import Concatenate, ParamSpec
 
 _T = TypeVar("_T", bound=Task[Any, Any])
 _P = ParamSpec("_P")
