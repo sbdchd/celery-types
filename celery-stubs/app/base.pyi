@@ -144,7 +144,7 @@ class Celery:
     def start(self, argv: list[str] | None = ...) -> NoReturn: ...
     def worker_main(self, argv: list[str] | None = ...) -> NoReturn: ...
     @overload
-    def task(self, fun: Callable[_P, _R]) -> CeleryTask[_P, _R]: ...
+    def task(self, fun: Callable[_P, _R]) -> CeleryTask[_P, _R]: ...  # type: ignore [misc]
     @overload
     def task(
         self,
@@ -182,6 +182,7 @@ class Celery:
         queue: str = ...,
         after_return: Callable[..., Any] = ...,
         on_retry: Callable[..., Any] = ...,
+        **options: Any,
     ) -> Callable[[Callable[..., Any]], _T]: ...
     @overload
     def task(
@@ -220,6 +221,7 @@ class Celery:
         queue: str = ...,
         after_return: Callable[..., Any] = ...,
         on_retry: Callable[..., Any] = ...,
+        **options: Any,
     ) -> Callable[[Callable[_P, _R]], CeleryTask[_P, _R]]: ...
     @overload
     def task(
@@ -258,6 +260,7 @@ class Celery:
         queue: str = ...,
         after_return: Callable[..., Any] = ...,
         on_retry: Callable[..., Any] = ...,
+        **options: Any,
     ) -> Callable[
         [Callable[Concatenate[CeleryTask[_P, _R], _P], _R]], CeleryTask[_P, _R]
     ]: ...
