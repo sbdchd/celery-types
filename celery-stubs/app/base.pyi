@@ -3,7 +3,6 @@ from collections import defaultdict
 from collections.abc import Callable, Sequence
 from typing import (
     Any,
-    Concatenate,
     Literal,
     NoReturn,
     TypeVar,
@@ -19,6 +18,7 @@ from celery.app.events import Events
 from celery.app.log import Logging
 from celery.app.registry import TaskRegistry
 from celery.app.routes import Router
+from celery.app.task import Context
 from celery.app.task import Task as CeleryTask
 from celery.app.utils import Settings
 from celery.apps.worker import Worker as CeleryWorker
@@ -30,7 +30,7 @@ from celery.utils.dispatch import Signal
 from celery.utils.objects import FallbackContext
 from celery.utils.threads import _LocalStack
 from celery.worker import WorkController as CeleryWorkController
-from typing_extensions import ParamSpec
+from typing_extensions import Concatenate, ParamSpec
 
 _T = TypeVar("_T", bound=CeleryTask[Any, Any])
 _P = ParamSpec("_P")
@@ -63,9 +63,41 @@ class Celery:
         autofinalize: bool = ...,
         namespace: str | None = ...,
         strict_typing: bool = ...,
+        broker_connection_retry: bool = ...,
+        broker_connection_max_retries: int = ...,
+        broker_channel_error_retry: bool = ...,
+        broker_login_method: str = ...,
+        broker_transport_options: dict[str, Any] = ...,
+        broker_connection_retry_on_startup: bool = ...,
+        broker_connection_timeout: int | float = ...,
+        result_backend_transport_options: dict[str, Any] | None = ...,
+        result_extended: bool = ...,
+        result_expires: datetime.timedelta = ...,
+        beat_schedule: dict[str, Any] | None = ...,
+        task_queues: list[kombu.Queue] | None = ...,
+        task_default_queue: str = ...,
+        task_default_exchange: str = ...,
+        task_default_exchange_type: str = ...,
+        task_default_routing_key: str = ...,
+        task_default_delivery_mode: str = ...,
         task_create_missing_queues: bool = ...,
+        task_routes: dict[Any, Any] | Sequence[Any] = ...,
         task_acks_late: bool = ...,
         task_time_limit: int = ...,
+        task_soft_time_limit: int = ...,
+        task_track_started: bool = ...,
+        task_serializer: str = ...,
+        worker_prefetch_multiplier: int = ...,
+        worker_max_tasks_per_child: int = ...,
+        worker_concurrency: int = ...,
+        worker_max_memory_per_child: int = ...,
+        worker_disable_rate_limits: bool = ...,
+        worker_cancel_long_running_tasks_on_connection_loss: bool = ...,
+        worker_hijack_root_logger: bool = ...,
+        worker_log_format: str = ...,
+        worker_task_log_format: str = ...,
+        worker_redirect_stdouts: bool = ...,
+        worker_redirect_stdouts_level: str = ...,
     ) -> None: ...
     def _task_from_fun(
         self,
@@ -75,6 +107,7 @@ class Celery:
         bind: bool = ...,
         # options
         autoretry_for: tuple[type[BaseException], ...] = ...,
+        dont_autoretry_for: tuple[type[BaseException], ...] = ...,
         retry_kwargs: dict[str, Any] = ...,
         retry_backoff: bool | int = ...,
         retry_backoff_max: int = ...,
@@ -100,7 +133,7 @@ class Celery:
         expires: float | datetime.datetime | None = ...,
         priority: int | None = ...,
         resultrepr_maxsize: int = ...,
-        request_stack: _LocalStack = ...,
+        request_stack: _LocalStack[Context] = ...,
         abstract: bool = ...,
         after_return: Callable[..., Any] = ...,
         on_retry: Callable[..., Any] = ...,
@@ -112,7 +145,7 @@ class Celery:
     def start(self, argv: list[str] | None = ...) -> NoReturn: ...
     def worker_main(self, argv: list[str] | None = ...) -> NoReturn: ...
     @overload
-    def task(self, fun: Callable[_P, _R]) -> CeleryTask[_P, _R]: ...
+    def task(self, fun: Callable[_P, _R]) -> CeleryTask[_P, _R]: ...  # type: ignore [misc]
     @overload
     def task(
         self,
@@ -121,6 +154,7 @@ class Celery:
         serializer: str = ...,
         bind: bool = ...,
         autoretry_for: tuple[type[BaseException], ...] = ...,
+        dont_autoretry_for: tuple[type[BaseException], ...] = ...,
         max_retries: int | None = ...,
         default_retry_delay: int = ...,
         acks_late: bool = ...,
@@ -145,11 +179,12 @@ class Celery:
         expires: float | datetime.datetime | None = ...,
         priority: int | None = ...,
         resultrepr_maxsize: int = ...,
-        request_stack: _LocalStack = ...,
+        request_stack: _LocalStack[Context] = ...,
         abstract: bool = ...,
         queue: str = ...,
         after_return: Callable[..., Any] = ...,
         on_retry: Callable[..., Any] = ...,
+        **options: Any,
     ) -> Callable[[Callable[..., Any]], _T]: ...
     @overload
     def task(
@@ -159,6 +194,7 @@ class Celery:
         serializer: str = ...,
         bind: Literal[False] = ...,
         autoretry_for: tuple[type[BaseException], ...] = ...,
+        dont_autoretry_for: tuple[type[BaseException], ...] = ...,
         max_retries: int | None = ...,
         default_retry_delay: int = ...,
         acks_late: bool = ...,
@@ -183,11 +219,12 @@ class Celery:
         expires: float | datetime.datetime | None = ...,
         priority: int | None = ...,
         resultrepr_maxsize: int = ...,
-        request_stack: _LocalStack = ...,
+        request_stack: _LocalStack[Context] = ...,
         abstract: bool = ...,
         queue: str = ...,
         after_return: Callable[..., Any] = ...,
         on_retry: Callable[..., Any] = ...,
+        **options: Any,
     ) -> Callable[[Callable[_P, _R]], CeleryTask[_P, _R]]: ...
     @overload
     def task(
@@ -197,6 +234,7 @@ class Celery:
         serializer: str = ...,
         bind: Literal[True],
         autoretry_for: tuple[type[BaseException], ...] = ...,
+        dont_autoretry_for: tuple[type[BaseException], ...] = ...,
         max_retries: int = ...,
         default_retry_delay: int = ...,
         acks_late: bool = ...,
@@ -221,11 +259,12 @@ class Celery:
         expires: float | datetime.datetime | None = ...,
         priority: int | None = ...,
         resultrepr_maxsize: int = ...,
-        request_stack: _LocalStack = ...,
+        request_stack: _LocalStack[Context] = ...,
         abstract: bool = ...,
         queue: str = ...,
         after_return: Callable[..., Any] = ...,
         on_retry: Callable[..., Any] = ...,
+        **options: Any,
     ) -> Callable[
         [Callable[Concatenate[CeleryTask[_P, _R], _P], _R]], CeleryTask[_P, _R]
     ]: ...
@@ -345,21 +384,21 @@ class Celery:
     def __enter__(self) -> Celery: ...
     def __exit__(self, *exc_info: Any) -> None: ...
     @property
-    def Worker(self) -> CeleryWorker: ...
+    def Worker(self) -> type[CeleryWorker]: ...
     @property
-    def WorkController(self) -> CeleryWorkController: ...
+    def WorkController(self) -> type[CeleryWorkController]: ...
     @property
-    def Beat(self) -> CeleryBeat: ...
+    def Beat(self) -> type[CeleryBeat]: ...
     @property
-    def Task(self) -> CeleryTask[Any, Any]: ...
+    def Task(self) -> type[CeleryTask[Any, Any]]: ...
     @property
     def annotations(self) -> list[dict[str, Any]]: ...
     @property
-    def AsyncResult(self) -> celery.result.AsyncResult[Any]: ...
+    def AsyncResult(self) -> type[celery.result.AsyncResult[Any]]: ...
     @property
-    def ResultSet(self) -> celery.result.ResultSet: ...
+    def ResultSet(self) -> type[celery.result.ResultSet]: ...
     @property
-    def GroupResult(self) -> celery.result.GroupResult: ...
+    def GroupResult(self) -> type[celery.result.GroupResult]: ...
     @property
     def pool(self) -> kombu.pools.ProducerPool: ...
     @property

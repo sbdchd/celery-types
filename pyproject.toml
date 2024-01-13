@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "celery-types"
-version = "0.15.0"
+version = "0.20.0"
 description = "Type stubs for Celery and its related packages"
 repository = "https://github.com/sbdchd/celery-types"
 readme = "README.md"
@@ -28,16 +28,17 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.7"
-typing-extensions = ">=3.10.0,<5.0.0"
+python = "^3.9"
+typing-extensions = "^4.9.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 celery = "^5.0"
 black = { version = "21.9b0", allow-prereleases = true }
 django-types = "^0.3.1"
 django = "^3.1"
 ruff = "^0.0.261"
 mypy = "^1.2.0"
+toml-cli = "^0.5.0"
 
 [tool.ruff]
 select = [
@@ -86,7 +87,7 @@ unfixable = [
     "ERA001",
 ] # we want to check ourselves before we delete commented out code.
 update-check = false
-target-version = "py311"
+target-version = "py39"
 
 # [tool.ruff.isort]
 # known-third-party = ["django"]
@@ -98,5 +99,5 @@ ban-relative-imports = "all"
 
 
 [build-system]
-requires = ["poetry>=0.12", "setuptools"]
-build-backend = "poetry.masonry.api"
+requires = ["poetry-core>=1.5.2"]
+build-backend = "poetry.core.masonry.api"

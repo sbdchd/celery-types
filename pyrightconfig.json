@@ -1,6 +1,8 @@
 {
   "typeCheckingMode": "strict",
-  "ignore": ["typings/django_celery_results*"],
+  "ignore": [
+    "typings/django_celery_results*"
+  ],
   "reportPrivateUsage": false,
   "reportMissingModuleSource": false,
   "reportIncompatibleMethodOverride": false,
