@@ -16,6 +16,7 @@ __all__ = [
     "worker_ready",
     "worker_shutdown",
     "worker_shutting_down",
+    "worker_before_create_process",
     "setup_logging",
     "after_setup_logger",
     "after_setup_task_logger",
@@ -52,6 +53,7 @@ worker_process_shutdown: Signal
 worker_ready: Signal
 worker_shutdown: Signal
 worker_shutting_down: Signal
+worker_before_create_process: Signal
 heartbeat_sent: Signal
 
 setup_logging: Signal
