@@ -22,3 +22,7 @@ class Signal:
         dispatch_uid: str = ...,
         retry: bool = ...,
     ) -> Callable[[_F], _F]: ...
+    def send(
+        self, sender: Any | None, **named: Any
+    ) -> list[tuple[Callable[..., Any], Any]]: ...
+    send_robust = send
