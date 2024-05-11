@@ -1,28 +1,35 @@
 import io
 import numbers
 import os
-from _typeshed import ReadableBuffer, StrOrBytesPath, FileDescriptorLike
-from typing import Iterator, Sequence, TypeVar, SupportsInt
+from collections.abc import Iterator, Sequence
+from typing import SupportsInt, TypeVar
+
+from _typeshed import FileDescriptorLike, ReadableBuffer, StrOrBytesPath
 
 FILENO_ERRORS: tuple[Exception]
 __write__ = os.write
 
 def send_offset(fd: int, buf: ReadableBuffer, offset: int) -> int: ...
+
 fsencode = os.fsencode
 fsdecode = os.fsdecode
 
-MaybeFileNo = numbers.Integral| io.IOBase
+MaybeFileNo = numbers.Integral | io.IOBase
+
 def maybe_fileno(f: MaybeFileNo) -> numbers.Integral: ...
-def get_fdmax(default: int | None = None) -> int|None: ...
+def get_fdmax(default: int | None = ...) -> int | None: ...
 
 T = TypeVar("T")
+
 def uniq(it: Sequence[T]) -> Iterator[T]: ...
 
 closerange = os.closerange
 
-def close_open_fds(keep: Sequence[MaybeFileNo] | None = None) -> None: ...
+def close_open_fds(keep: Sequence[MaybeFileNo] | None = ...) -> None: ...
 def get_errno(exc: Exception | None) -> int: ...
-def spawnv_passfds(path: StrOrBytesPath, args: os._ExecVArgs, passfds: Sequence[MaybeFileNo]) -> int: ...
+def spawnv_passfds(
+    path: StrOrBytesPath, args: os._ExecVArgs, passfds: Sequence[MaybeFileNo]
+) -> int: ...
 def isblocking(handle: FileDescriptorLike) -> bool: ...
 def setblocking(handle: FileDescriptorLike, blocking: bool) -> None: ...
 

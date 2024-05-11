@@ -1,12 +1,28 @@
 import threading
-from _typeshed import Incomplete
 from queue import Queue as Queue
-from threading import BoundedSemaphore as BoundedSemaphore, Event as Event, Lock as Lock, RLock as RLock, Semaphore as Semaphore
+from threading import BoundedSemaphore as BoundedSemaphore
+from threading import Event as Event
+from threading import Lock as Lock
+from threading import RLock as RLock
+from threading import Semaphore as Semaphore
 
-__all__ = ['Process', 'current_process', 'freeze_support', 'Lock', 'RLock', 'Semaphore', 'BoundedSemaphore', 'Event', 'Queue', 'JoinableQueue']
+__all__ = [
+    "Process",
+    "current_process",
+    "freeze_support",
+    "Lock",
+    "RLock",
+    "Semaphore",
+    "BoundedSemaphore",
+    "Event",
+    "Queue",
+    "JoinableQueue",
+]
 
 class DummyProcess(threading.Thread):
-    def __init__(self, group: Incomplete | None = None, target: Incomplete | None = None, name: Incomplete | None = None) -> None: ...
+    def __init__(
+        self,
+    ) -> None: ...
     def start(self) -> None: ...
 
 Process = DummyProcess

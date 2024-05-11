@@ -1,7 +1,7 @@
-from .asynpool import AsynPool
+from celery.concurrency.asynpool import AsynPool
 from celery.concurrency.base import BasePool
 
-__all__ = ['TaskPool']
+__all__ = ["TaskPool"]
 
 class TaskPool(BasePool):
     Pool = AsynPool

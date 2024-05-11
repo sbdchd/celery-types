@@ -1,4 +1,4 @@
-from .components import Timer, Hub, Pool
+from celery.worker.components import Hub, Pool, Timer
 
 class WorkController:
     hub: Hub | None
