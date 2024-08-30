@@ -37,7 +37,7 @@ class Context:
     expires: int | None
     group: str | None
     group_index: int | None
-    headers: Mapping[str, Any] | None
+    headers: dict[str, Any] | None
     hostname: str | None
     id: str | None
     ignore_result: bool
