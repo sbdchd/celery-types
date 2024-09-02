@@ -1,6 +1,7 @@
-from celery.utils.term import colored
-from logging import Logger, Formatter, _SysExcInfoType
+from logging import Formatter, Logger
 from typing import ClassVar
+
+from celery.utils.term import colored
 
 class LoggingProxy: ...
 
@@ -15,5 +16,4 @@ class ColorFormatter(Formatter):
 
     COLORS: ClassVar[dict[str, colored]]
     colors: ClassVar[dict[str, colored]]
-
     def __init__(self, fmt: str | None = ..., use_color: bool = ...) -> None: ...
