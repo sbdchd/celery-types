@@ -18,6 +18,9 @@ _F = TypeVar("_F", bound=Callable[..., Any])
 _R = TypeVar("_R")
 
 class Signature(dict[str, Any], Generic[_R]):
+    @classmethod
+    def from_dict(cls, d: dict[str, Any], app: Celery | None = None) -> Signature: ...
+
     def __init__(
         self,
         task: Task[Any, _R] | str | None = ...,
