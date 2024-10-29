@@ -19,7 +19,9 @@ _R = TypeVar("_R")
 
 class Signature(dict[str, Any], Generic[_R]):
     @classmethod
-    def from_dict(cls, d: dict[str, Any], app: Celery | None = ...) -> Signature[Any]: ...
+    def from_dict(
+        cls, d: dict[str, Any], app: Celery | None = ...
+    ) -> Signature[Any]: ...
     def __init__(
         self,
         task: Task[Any, _R] | str | None = ...,
