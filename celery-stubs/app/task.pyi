@@ -23,6 +23,7 @@ from typing_extensions import ParamSpec
 
 _P = ParamSpec("_P")
 _R = TypeVar("_R")
+_SigR = TypeVar("_SigR")
 
 class Context:
     args: Sequence[Any] | None
@@ -37,7 +38,7 @@ class Context:
     expires: int | None
     group: str | None
     group_index: int | None
-    headers: Mapping[str, Any] | None
+    headers: dict[str, Any] | None
     hostname: str | None
     id: str | None
     ignore_result: bool
@@ -219,7 +220,7 @@ class Task(Generic[_P, _R]):
         retry_policy: Mapping[str, int] | None = ...,
         **fields: Any,
     ) -> list[tuple[object, object]]: ...
-    def replace(self, sig: Signature[Any]) -> None: ...
+    def replace(self, sig: Signature[_SigR]) -> _SigR: ...
     @overload
     def add_to_chord(
         self, sig: Signature[Any], lazy: Literal[True]
