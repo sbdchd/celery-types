@@ -137,6 +137,14 @@ def add_3(x: int, y: int) -> None:
 add_3.foo()
 
 
+def test_celery_register_task() -> None:
+    bar = app_2.register_task(MyTask())
+    bar.foo()
+
+    baz = app_2.register_task(MyTask)
+    baz.foo()
+
+
 def test_celery_calling_task() -> None:
     signature("tasks.add", args=(2, 2), countdown=10)
 
