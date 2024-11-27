@@ -15,7 +15,7 @@ from celery.result import EagerResult
 from celery.utils import abstract
 
 _F = TypeVar("_F", bound=Callable[..., Any])
-_R = TypeVar("_R")
+_R = TypeVar("_R", covariant=True)
 
 class Signature(dict[str, Any], Generic[_R]):
     @classmethod
