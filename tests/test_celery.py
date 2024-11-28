@@ -207,6 +207,22 @@ def test_celery_signals() -> None:
     add.delay(1, 2)
 
 
+def test_covariant_assignment() -> None:
+    @app.task()
+    def foo() -> None:
+        pass
+
+    sig: Signature[None] = foo.s()
+    result: AsyncResult[None] = sig.apply_async()
+
+    def test_covariance(
+        t: Task[[], object], s: Signature[object], r: AsyncResult[object]
+    ) -> None:
+        pass
+
+    test_covariance(foo, sig, result)
+
+
 def test_link() -> None:
     @app.task()
     def foo() -> None:

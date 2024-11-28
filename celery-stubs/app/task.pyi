@@ -22,7 +22,7 @@ from celery.worker.request import _DeliveryInfo
 from typing_extensions import ParamSpec
 
 _P = ParamSpec("_P")
-_R = TypeVar("_R")
+_R = TypeVar("_R", covariant=True)
 _SigR = TypeVar("_SigR")
 
 class Context:
