@@ -25,7 +25,7 @@ class ResultBase:
 
 _State = Literal["PENDING", "STARTED", "RETRY", "FAILURE", "SUCCESS"]
 
-_R = TypeVar("_R")
+_R = TypeVar("_R", covariant=True)
 
 class AsyncResult(ResultBase, Generic[_R]):
     app: Celery
