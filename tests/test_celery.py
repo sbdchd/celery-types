@@ -9,6 +9,7 @@ import celery
 from celery import Celery, shared_task, signature
 from celery.app.task import Task
 from celery.canvas import Signature, chord
+from celery.contrib.django.task import DjangoTask
 from celery.exceptions import Reject
 from celery.result import AsyncResult, allow_join_result, denied_join_result
 from celery.schedules import crontab
@@ -289,3 +290,8 @@ def test_celery_top_level_exports() -> None:
     celery.uuid
     celery.xmap
     celery.xstarmap
+
+
+def test_djangotask(task: DjangoTask[[int, int], Any]) -> None:
+    task.delay_on_commit(1, 2)
+    task.apply_async_on_commit((1, 2), countdown=10.0)
