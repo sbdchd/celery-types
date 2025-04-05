@@ -236,6 +236,9 @@ class Task(Generic[_P, _R]):
         meta: dict[str, Any] | None = ...,
         **kwargs: Any,
     ) -> None: ...
+    def before_start(
+        self, task_id: str, args: tuple[Any, ...], kwargs: dict[str, Any]
+    ) -> None: ...
     def on_success(
         self, retval: Any, task_id: str, args: tuple[Any, ...], kwargs: dict[str, Any]
     ) -> None: ...
