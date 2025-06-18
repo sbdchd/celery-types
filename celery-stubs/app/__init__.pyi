@@ -57,6 +57,7 @@ def shared_task(
     request_stack: _LocalStack[Context] = ...,
     abstract: bool = ...,
     queue: str = ...,
+    pydantic: bool = ...,
 ) -> Callable[[Callable[_P, _R]], Task[_P, _R]]: ...
 @overload
 def shared_task(
@@ -93,6 +94,7 @@ def shared_task(
     request_stack: _LocalStack[Context] = ...,
     abstract: bool = ...,
     queue: str = ...,
+    pydantic: bool = ...,
 ) -> Callable[[Callable[Concatenate[Task[_P, _R], _P], _R]], Task[_P, _R]]: ...
 @overload
 def shared_task(
@@ -129,4 +131,5 @@ def shared_task(
     request_stack: _LocalStack[Context] = ...,
     abstract: bool = ...,
     queue: str = ...,
+    pydantic: bool = ...,
 ) -> Callable[[Callable[..., Any]], _T]: ...
