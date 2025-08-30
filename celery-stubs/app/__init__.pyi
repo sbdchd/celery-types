@@ -131,5 +131,5 @@ def shared_task(
     request_stack: _LocalStack[Context] = ...,
     abstract: bool = ...,
     queue: str = ...,
-    pydantic: bool = ...,
+    **options: Any,
 ) -> Callable[[Callable[..., Any]], _T]: ...
