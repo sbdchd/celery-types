@@ -1,4 +1,4 @@
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from datetime import datetime
 from typing import (
     Any,
@@ -28,8 +28,8 @@ def shared_task(
     name: str = ...,
     serializer: str = ...,
     bind: Literal[False] = ...,
-    autoretry_for: tuple[type[BaseException], ...] = ...,
-    dont_autoretry_for: tuple[type[BaseException], ...] = ...,
+    autoetry_for: Sequence[type[BaseException]] = ...,
+    dont_autoetry_for: Sequence[type[BaseException]] = ...,
     max_retries: int | None = ...,
     default_retry_delay: int = ...,
     acks_late: bool = ...,
@@ -65,8 +65,8 @@ def shared_task(
     name: str = ...,
     serializer: str = ...,
     bind: Literal[True],
-    autoretry_for: tuple[type[BaseException], ...] = ...,
-    dont_autoretry_for: tuple[type[BaseException], ...] = ...,
+    autoetry_for: Sequence[type[BaseException]] = ...,
+    dont_autoetry_for: Sequence[type[BaseException]] = ...,
     max_retries: int | None = ...,
     default_retry_delay: int = ...,
     acks_late: bool = ...,
@@ -102,8 +102,8 @@ def shared_task(
     name: str = ...,
     serializer: str = ...,
     bind: bool = ...,
-    autoretry_for: tuple[type[BaseException], ...] = ...,
-    dont_autoretry_for: tuple[type[BaseException], ...] = ...,
+    autoetry_for: Sequence[type[BaseException]] = ...,
+    dont_autoetry_for: Sequence[type[BaseException]] = ...,
     max_retries: int | None = ...,
     default_retry_delay: int = ...,
     acks_late: bool = ...,
