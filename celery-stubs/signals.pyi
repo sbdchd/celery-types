@@ -9,6 +9,7 @@ __all__ = [
     "task_retry",
     "task_failure",
     "task_revoked",
+    "task_internal_error",
     "celeryd_init",
     "celeryd_after_setup",
     "worker_init",
@@ -39,6 +40,7 @@ task_retry: Signal
 task_failure: Signal
 task_revoked: Signal
 task_rejected: Signal
+task_internal_error: Signal
 task_unknown: Signal
 #: Deprecated, use after_task_publish instead.
 task_sent: Signal
