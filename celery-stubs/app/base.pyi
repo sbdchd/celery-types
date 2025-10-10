@@ -235,7 +235,7 @@ class Celery:
         bind: Literal[True],
         autoretry_for: Sequence[type[BaseException]] = ...,
         dont_autoretry_for: Sequence[type[BaseException]] = ...,
-        max_retries: int = ...,
+        max_retries: int | None = ...,
         default_retry_delay: int = ...,
         acks_late: bool = ...,
         ignore_result: bool = ...,
