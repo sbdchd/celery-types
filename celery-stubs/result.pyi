@@ -133,7 +133,15 @@ class AsyncResult(ResultBase, Generic[_R]):
     @property
     def queue(self) -> str | None: ...
 
-class EagerResult(AsyncResult[_R]): ...
+class EagerResult(AsyncResult[_R]):
+    def __init__(
+        self,
+        id: str,
+        ret_value: _R,
+        state: str,
+        traceback: str | None = ...,
+        name: str | None = ...,
+    ) -> None: ...
 
 class ResultSet(ResultBase):
     results: list[AsyncResult[Any]] | None
