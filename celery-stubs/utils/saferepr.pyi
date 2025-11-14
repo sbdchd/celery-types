@@ -4,7 +4,9 @@ from typing import Any
 
 __all__: tuple[str, str]
 
-def saferepr(o: Any, maxlen: int | None = ..., maxlevels: int = ..., seen: set[int] | None = ...) -> str: ...
+def saferepr(
+    o: Any, maxlen: int | None = ..., maxlevels: int = ..., seen: set[int] | None = ...
+) -> str: ...
 def reprstream(
     stack: deque[Any],
     seen: set[int] | None = ...,
