@@ -143,5 +143,35 @@ class EagerResult(AsyncResult[_R]):
         name: str | None = ...,
     ) -> None: ...
 
-class ResultSet(ResultBase): ...
-class GroupResult(ResultSet): ...
+class ResultSet(ResultBase):
+    results: list[AsyncResult[Any]] | None
+    app: Celery
+    def __init__(
+        self,
+        results: list[AsyncResult[Any]] | None,
+        app: Celery | None = ...,
+        ready_barrier: Any | None = ...,
+        **kwargs: Any,
+    ) -> None: ...
+
+class GroupResult(ResultSet):
+    id: str | None
+    def __init__(
+        self,
+        id: str | None = ...,
+        results: list[AsyncResult[Any]] | None = ...,
+        parent: ResultBase | None = ...,
+        app: Celery | None = ...,
+        **kwargs: Any,
+    ) -> None: ...
+    @classmethod
+    def restore(
+        cls,
+        id: str,
+        backend: Backend | None = ...,
+        app: Celery | None = ...,
+    ) -> GroupResult: ...
+    def save(self, backend: Backend | None = ...) -> Any: ...
+    def delete(self, backend: Backend | None = ...) -> None: ...
+    @property
+    def children(self) -> list[AsyncResult[Any]] | None: ...
