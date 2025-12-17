@@ -30,15 +30,17 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
-typing-extensions = "^4.9.0"
+typing-extensions = "^4.15.0"
+
 
 [tool.poetry.group.dev.dependencies]
 celery = "^5.0"
-black = { version = "21.9b0", allow-prereleases = true }
+black = ">=25.11"
 django-types = "^0.3.1"
 django = "^3.1"
-ruff = "^0.0.261"
-mypy = "^1.2.0"
+ruff = ">=0.14.9"
+mypy = ">=1.19.0"
+pyright = ">=1.1.407"
 toml-cli = "^0.5.0"
 
 [tool.ruff]
@@ -87,17 +89,15 @@ ignore = [
 unfixable = [
     "ERA001",
 ] # we want to check ourselves before we delete commented out code.
-update-check = false
 target-version = "py39"
 
 # [tool.ruff.isort]
 # known-third-party = ["django"]
 # known-first-party = ["recipeyak"]
 
-[tool.ruff.flake8-tidy-imports]
+[tool.ruff.lint.flake8-tidy-imports]
 # Disallow all relative imports.
 ban-relative-imports = "all"
-
 
 [build-system]
 requires = ["poetry-core>=1.5.2"]
