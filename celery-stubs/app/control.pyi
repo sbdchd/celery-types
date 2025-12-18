@@ -1,14 +1,17 @@
+from __future__ import annotations
+
 from collections.abc import Callable, Iterable, Mapping, Sequence
-from typing import Any, Literal, TypedDict, Union
+from typing import Any, Literal, TypedDict
 
 from celery.app.base import Celery
 from celery.result import _State
 from kombu import Connection
 from kombu.pidbox import Mailbox as KombuMailbox
+from typing_extensions import TypeAlias
 
-_Reply = Any
+_Reply: TypeAlias = Any
 
-_Destination = Union[Sequence[str], tuple[str, ...]]
+_Destination: TypeAlias = Sequence[str] | tuple[str, ...]
 
 class _ReportReply(TypedDict):
     ok: str
@@ -143,27 +146,27 @@ class Control:
         destination: _Destination | None = ...,
         terminate: bool = ...,
         signal: str = ...,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> list[dict[str, _Reply]] | None: ...
     def terminate(
         self,
         task_id: str,
         destination: _Destination | None = ...,
         signal: str = ...,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> list[dict[str, _Reply]] | None: ...
     def ping(
         self,
         destination: _Destination | None = ...,
         timeout: float = ...,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> list[dict[str, _Reply]] | None: ...
     def rate_limit(
         self,
         task_name: str,
         rate_limit: int | str,
         destination: _Destination | None = ...,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> list[dict[str, _Reply]] | None: ...
     def add_consumer(
         self,
@@ -173,7 +176,7 @@ class Control:
         routing_key: str | None = ...,
         options: Mapping[str, Any] | None = ...,
         destination: _Destination | None = ...,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> list[dict[str, _Reply]] | None: ...
     def cancel_consumer(
         self, queue: str, destination: _Destination | None = ..., **kwargs: Any
@@ -184,7 +187,7 @@ class Control:
         soft: float | None = ...,
         hard: float | None = ...,
         destination: _Destination | None = ...,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> list[dict[str, _Reply]] | None: ...
     def enable_events(
         self, destination: _Destination | None = ..., **kwargs: Any
@@ -210,7 +213,7 @@ class Control:
         reload: bool = ...,
         reloader: Callable[..., Any] | None = ...,
         destination: _Destination | None = ...,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> list[dict[str, _Reply]] | None: ...
     def heartbeat(
         self, destination: _Destination | None = ..., **kwargs: Any
@@ -228,5 +231,5 @@ class Control:
         channel: Any | None = ...,
         pattern: str | None = ...,
         matcher: Callable[..., Any] = ...,
-        **extra_kwargs: Any
+        **extra_kwargs: Any,
     ) -> list[dict[str, _Reply]] | None: ...

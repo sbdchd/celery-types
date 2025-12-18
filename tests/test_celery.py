@@ -36,14 +36,12 @@ def sub(x: int, y: int) -> int:
 
 
 class Table(Protocol):
-    def all(self) -> Iterator[dict[str, object]]:
-        ...
+    def all(self) -> Iterator[dict[str, object]]: ...
 
 
 class DB(Protocol):
     @property
-    def table(self) -> Table:
-        ...
+    def table(self) -> Table: ...
 
 
 class DatabaseTask(Task[Any, Any]):
@@ -83,8 +81,7 @@ def send_twitter_status(self: Task[Any, Any], oauth: str, tweet: str) -> None:
     self.update_state(state="SUCCESS", meta={"foo": "bar"})
 
 
-class HttpNotFoundError(Exception):
-    ...
+class HttpNotFoundError(Exception): ...
 
 
 logger = get_task_logger(__name__)

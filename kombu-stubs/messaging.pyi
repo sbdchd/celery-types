@@ -16,8 +16,9 @@ class Producer:
         serializer: str | None = ...,
         auto_declare: bool | None = ...,
         compression: str | None = ...,
-        on_return: Callable[[Exception, Exchange | str, str, Message], None]
-        | None = ...,
+        on_return: (
+            Callable[[Exception, Exchange | str, str, Message], None] | None
+        ) = ...,
     ) -> None: ...
     def publish(
         self,
@@ -38,7 +39,7 @@ class Producer:
         declare: Sequence[Exchange | Queue] = ...,
         expiration: float | None = ...,
         timeout: float | None = ...,
-        **properties: Any
+        **properties: Any,
     ) -> None: ...
 
 class Consumer:

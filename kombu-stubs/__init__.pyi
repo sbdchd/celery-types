@@ -9,9 +9,9 @@ from kombu.messaging import Producer as Producer
 __all__ = [
     "Connection",
     "Consumer",
+    "Exchange",
     "Message",
     "Producer",
-    "Exchange",
     "Queue",
     "pools",
 ]
