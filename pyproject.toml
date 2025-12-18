@@ -43,6 +43,9 @@ mypy = ">=1.19.0"
 pyright = ">=1.1.407"
 toml-cli = "^0.5.0"
 
+[tool.black]
+target-version = ["py39", "py310", "py311", "py312", "py313", "py314"]
+
 [tool.ruff]
 select = [
     "E",
