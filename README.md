@@ -35,7 +35,6 @@ curl -sSL https://install.python-poetry.org | python3 -
 ### regular development
 
 ```shell
-poetry config virtualenvs.in-project true
 poetry install
 
 # run formatting, linting, and typechecking
