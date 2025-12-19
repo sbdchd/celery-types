@@ -3,7 +3,7 @@ from typing import Any, Callable, TypeVar
 
 textual_types: tuple[Any]
 
-class JSONEncoder(json.JSONEncoder): ...  # type: ignore
+class JSONEncoder(json.JSONEncoder): ...
 
 def dumps(
     s: str,
