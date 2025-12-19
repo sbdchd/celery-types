@@ -52,6 +52,13 @@ reportIncompatibleMethodOverride = false
 reportTypedDictNotRequiredAccess = false
 reportUnusedFunction = false
 
+[tool.pytest]
+addopts = "--pdbcls IPython.terminal.debugger:TerminalPdb"
+filterwarnings = [
+    # all warnings that are not ignored should raise an error
+    "error",
+]
+
 [tool.mypy]
 show_column_numbers = true
 pretty = false
