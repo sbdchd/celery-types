@@ -43,6 +43,15 @@ mypy = ">=1.19.0"
 pyright = ">=1.1.407"
 toml-cli = "^0.5.0"
 
+[tool.pyright]
+typeCheckingMode = "strict"
+ignore = ["typings/django_celery_results*"]
+reportPrivateUsage = false
+reportMissingModuleSource = false
+reportIncompatibleMethodOverride = false
+reportTypedDictNotRequiredAccess = false
+reportUnusedFunction = false
+
 [tool.black]
 target-version = ["py39", "py310", "py311", "py312", "py313", "py314"]
 

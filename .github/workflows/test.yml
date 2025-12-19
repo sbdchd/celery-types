@@ -40,14 +40,6 @@ jobs:
       - run: poetry install --no-interaction --no-root
         if: steps.cache-deps.outputs.cache-hit != 'true'
 
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: "package.json"
-          cache: "yarn"
-
-      - run: yarn install --frozen-lockfile --non-interactive
-
       # Now install _your_ project. This isn't necessary for many types of projects -- particularly
       # things like Django apps don't need this. But it's a good idea since it fully-exercises the
       # pyproject.toml and makes that if you add things like console-scripts at some point that
