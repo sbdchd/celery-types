@@ -4,14 +4,14 @@ set -ex
 
 # format code
 if [[ $CI ]]; then
-    ./.venv/bin/black --check .
+    ./.venv/bin/ruff format --check .
     ./.venv/bin/ruff check .
 else
-    ./.venv/bin/black .
+    ./.venv/bin/ruff format .
     ./.venv/bin/ruff check . --fix
 fi
 
-./.venv/bin/pyright typings tests
+./.venv/bin/basedpyright typings tests
 
 # type check code
 ./.venv/bin/mypy tests
