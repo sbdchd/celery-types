@@ -24,6 +24,6 @@ repos:
         name: basedpyright check
         entry: uv run basedpyright
         language: system
-        types: [python]
+        types_or: [python, pyi]
         pass_filenames: false
         require_serial: true
