@@ -46,31 +46,22 @@ dev = [
     "prek>=0.2.23",
 ]
 
-[tool.hatch.build.targets.sdist]
-include = [
-    "amqp-stubs",
-    "billiard-stubs",
-    "celery-stubs",
-    "django_celery_results-stubs",
-    "ephem-stubs",
-    "kombu-stubs",
-    "vine-stubs",
-]
-
-[tool.hatch.build.targets.wheel]
-include = [
-    "amqp-stubs",
-    "billiard-stubs",
-    "celery-stubs",
-    "django_celery_results-stubs",
-    "ephem-stubs",
-    "kombu-stubs",
-    "vine-stubs",
-]
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["uv_build>=0.9.18,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = [
+    "amqp-stubs",
+    "billiard-stubs",
+    "celery-stubs",
+    "django_celery_results-stubs",
+    "ephem-stubs",
+    "kombu-stubs",
+    "vine-stubs",
+]
+module-root = ""
 
 [tool.basedpyright]
 typeCheckingMode = "recommended"
