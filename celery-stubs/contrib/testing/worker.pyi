@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from collections.abc import Generator
 from contextlib import contextmanager
 from logging import LogRecord, handlers
@@ -8,6 +6,7 @@ from typing import Any
 from celery import Celery
 from celery.utils.dispatch.signal import Signal
 from celery.worker.worker import WorkController
+from typing_extensions import override
 
 WORKER_LOGLEVEL: str
 
@@ -20,7 +19,9 @@ class TestWorkController(WorkController):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
 
     class QueueHandler(handlers.QueueHandler):
+        @override
         def prepare(self, record: LogRecord) -> LogRecord: ...
+        @override
         def handleError(self, record: LogRecord) -> None: ...
 
     def start(self) -> Any: ...
@@ -32,7 +33,7 @@ def start_worker(
     app: Celery,
     concurrency: int = 1,
     pool: str = "solo",
-    loglevel: str | int = WORKER_LOGLEVEL,
+    loglevel: str | int = ...,
     logfile: str | None = None,
     perform_ping_check: bool = True,
     ping_task_timeout: float = 10.0,
@@ -44,9 +45,9 @@ def _start_worker_thread(
     app: Celery,
     concurrency: int = 1,
     pool: str = "solo",
-    loglevel: str | int = WORKER_LOGLEVEL,
+    loglevel: str | int = ...,
     logfile: str | None = None,
-    WorkController: type[TestWorkController] = TestWorkController,
+    WorkController: type[TestWorkController] = ...,
     perform_ping_check: bool = True,
     shutdown_timeout: float = 10.0,
     **kwargs: Any,
@@ -56,7 +57,7 @@ def _start_worker_process(
     app: Celery,
     concurrency: int = 1,
     pool: str = "solo",
-    loglevel: str | int = WORKER_LOGLEVEL,
+    loglevel: str | int = ...,
     logfile: str | None = None,
     **kwargs: Any,
 ) -> Generator[None, None, None]: ...

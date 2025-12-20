@@ -1,6 +1,5 @@
-from __future__ import annotations
-
 from collections.abc import Callable, Mapping, Sequence
+from types import TracebackType
 from typing import Any
 from unittest.mock import Mock
 
@@ -34,11 +33,16 @@ def task_message_from_sig(
     app: Celery,
     sig: Signature[Any],
     utc: bool = True,
-    TaskMessage: Callable[..., Any] = TaskMessage,
+    TaskMessage: Callable[..., Any] = ...,
 ) -> Any: ...
 
 class _ContextMock(Mock):
     def __enter__(self) -> Self: ...
-    def __exit__(self, *exc_info: Any) -> None: ...
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None: ...
 
 def ContextMock(*args: Any, **kwargs: Any) -> _ContextMock: ...

@@ -2,19 +2,19 @@ from collections.abc import Mapping
 from datetime import datetime
 from typing import Any, TypeVar
 
-import celery
+import celery.result
 import kombu
 from celery.app.task import Task
 from celery.canvas import Signature
 from typing_extensions import ParamSpec
 
 _P = ParamSpec("_P")
-_R = TypeVar("_R", covariant=True)
+_R_co = TypeVar("_R_co", covariant=True)
 
-class DjangoTask(Task[_P, _R]):
+class DjangoTask(Task[_P, _R_co]):
     def delay_on_commit(
         self, *args: _P.args, **kwargs: _P.kwargs
-    ) -> celery.result.AsyncResult[_R]: ...
+    ) -> celery.result.AsyncResult[_R_co]: ...
     def apply_async_on_commit(
         self,
         args: tuple[Any, ...] | None = ...,
@@ -43,4 +43,4 @@ class DjangoTask(Task[_P, _R]):
         ignore_result: bool = ...,
         time_limit: int = ...,
         soft_time_limit: int = ...,
-    ) -> celery.result.AsyncResult[_R]: ...
+    ) -> celery.result.AsyncResult[_R_co]: ...

@@ -2,7 +2,7 @@ import io
 import numbers
 import os
 from collections.abc import Iterator, Sequence
-from typing import SupportsInt, TypeVar
+from typing import SupportsInt, TypeAlias, TypeVar
 
 from _typeshed import FileDescriptorLike, ReadableBuffer, StrOrBytesPath
 
@@ -14,14 +14,14 @@ def send_offset(fd: int, buf: ReadableBuffer, offset: int) -> int: ...
 fsencode = os.fsencode
 fsdecode = os.fsdecode
 
-MaybeFileNo = numbers.Integral | io.IOBase
+MaybeFileNo: TypeAlias = numbers.Integral | io.IOBase
 
 def maybe_fileno(f: MaybeFileNo) -> numbers.Integral: ...
 def get_fdmax(default: int | None = ...) -> int | None: ...
 
-T = TypeVar("T")
+_T = TypeVar("_T")
 
-def uniq(it: Sequence[T]) -> Iterator[T]: ...
+def uniq(it: Sequence[_T]) -> Iterator[_T]: ...
 
 closerange = os.closerange
 

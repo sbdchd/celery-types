@@ -1,31 +1,34 @@
-from celery import app as app
-from celery import local as local
-from celery import result as result
-from celery import schedules as schedules
-from celery import states as states
-from celery._state import current_app as current_app
-from celery._state import current_task as current_task
-from celery.app import Task as Task
-from celery.app import shared_task as shared_task
-from celery.app import task as task
-from celery.app.base import Celery as Celery
-from celery.apps import worker as worker
-from celery.canvas import Signature as Signature
-from celery.canvas import chain as chain
-from celery.canvas import chord as chord
-from celery.canvas import chunks as chunks
-from celery.canvas import group as group
-from celery.canvas import signature as signature
-from celery.canvas import xmap as xmap
-from celery.canvas import xstarmap as xstarmap
-from celery.utils import uuid as uuid
+from celery import local
+from celery._state import current_app, current_task
+from celery.app import shared_task
+from celery.app.base import Celery
+from celery.app.task import Task
+from celery.canvas import (
+    Signature,
+    chain,
+    chord,
+    chunks,
+    group,
+    signature,
+    xmap,
+    xstarmap,
+)
+from celery.utils import uuid
 
-__all__ = [
+__all__ = (
     "Celery",
-    "app",
+    "Signature",
+    "Task",
+    "chain",
+    "chord",
+    "chunks",
     "current_app",
-    "result",
-    "schedules",
+    "current_task",
+    "group",
+    "local",
     "shared_task",
-    "states",
-]
+    "signature",
+    "uuid",
+    "xmap",
+    "xstarmap",
+)

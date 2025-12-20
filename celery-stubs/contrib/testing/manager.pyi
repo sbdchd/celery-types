@@ -1,8 +1,6 @@
-from __future__ import annotations
-
-from collections.abc import Generator, Sequence
+from collections.abc import Callable, Generator, Sequence
 from functools import partial
-from typing import Any, Callable, TextIO, TypeVar
+from typing import Any, TextIO, TypeVar
 
 from celery.app.base import Celery
 from celery.result import AsyncResult
@@ -18,7 +16,7 @@ class Sentinel(Exception): ...
 class ManagerMixin:
     def _init_manager(
         self,
-        block_timeout: float = 30 * 60.0,
+        block_timeout: float = 180,
         no_join: bool = False,
         stdout: TextIO | None = None,
         stderr: TextIO | None = None,

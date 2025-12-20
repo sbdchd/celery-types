@@ -1,5 +1,6 @@
 import json
-from typing import Any, Callable, TypeVar
+from collections.abc import Callable
+from typing import Any, TypeAlias, TypeVar
 
 textual_types: tuple[Any]
 
@@ -20,13 +21,15 @@ def loads(
     object_hook: Callable[[dict[Any, Any]], None],
 ) -> Any: ...
 
-DecoderT = EncoderT = Callable[[Any], Any]
-T = TypeVar("T")
-EncodedT = TypeVar("EncodedT")
+EncoderT: TypeAlias = Callable[[Any], Any]
+DecoderT: TypeAlias = Callable[[Any], Any]
+
+_T = TypeVar("_T")
+_EncodedT = TypeVar("_EncodedT")
 
 def register_type(
-    t: type[T],
+    t: type[_T],
     marker: str | None,
-    encoder: Callable[[T], EncodedT],
-    decoder: Callable[[EncodedT], T],
+    encoder: Callable[[_T], _EncodedT],
+    decoder: Callable[[_EncodedT], _T],
 ) -> None: ...

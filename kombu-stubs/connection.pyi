@@ -1,7 +1,9 @@
 from collections.abc import Callable
+from types import TracebackType
 from typing import Any
 
 from kombu.transport.base import Channel, Transport
+from typing_extensions import Self
 
 class Connection:
     def __init__(
@@ -47,6 +49,11 @@ class Connection:
     def connect(self) -> Connection: ...
     def channel(self) -> Channel: ...
     def release(self) -> None: ...
-    def __enter__(self) -> Connection: ...
-    def __exit__(self, *args: Any) -> None: ...
+    def __enter__(self) -> Self: ...
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None: ...
     close = release

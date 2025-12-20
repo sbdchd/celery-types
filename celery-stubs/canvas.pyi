@@ -6,25 +6,25 @@ from typing import (
     overload,
 )
 
-import celery
+import celery.result
 import kombu
 from celery.app.base import Celery
 from celery.app.task import Task
 from celery.result import EagerResult
 from celery.utils import abstract
-from typing_extensions import TypeVar
+from typing_extensions import TypeVar, override
 
 _F = TypeVar("_F", bound=Callable[..., Any])
-_R = TypeVar("_R", covariant=True, default=Any)
+_R_co = TypeVar("_R_co", covariant=True, default=Any)
 
-class Signature(dict[str, Any], Generic[_R]):
+class Signature(dict[str, Any], Generic[_R_co]):
     @classmethod
     def from_dict(
         cls, d: dict[str, Any], app: Celery | None = ...
     ) -> Signature[Any]: ...
     def __init__(
         self,
-        task: Task[Any, _R] | str | None = ...,
+        task: Task[Any, _R_co] | str | None = ...,
         args: tuple[Any, ...] | None = ...,
         kwargs: dict[str, Any] | None = ...,
         options: dict[str, Any] | None = ...,
@@ -55,16 +55,16 @@ class Signature(dict[str, Any], Generic[_R]):
         publisher: kombu.Producer = ...,
         headers: dict[str, str] = ...,
     ) -> None: ...
-    def __call__(self, *partial_args: Any, **partial_kwargs: Any) -> _R: ...
+    def __call__(self, *partial_args: Any, **partial_kwargs: Any) -> _R_co: ...
     def delay(
         self, *partial_args: Any, **partial_kwargs: Any
-    ) -> celery.result.AsyncResult[_R]: ...
+    ) -> celery.result.AsyncResult[_R_co]: ...
     def apply(
         self,
         args: tuple[Any, ...] | None = ...,
         kwargs: dict[str, Any] | None = ...,
         **options: Any,
-    ) -> EagerResult[_R]: ...
+    ) -> EagerResult[_R_co]: ...
     def apply_async(
         self,
         args: tuple[Any, ...] | None = ...,
@@ -92,7 +92,7 @@ class Signature(dict[str, Any], Generic[_R]):
         add_to_parent: bool = ...,
         publisher: kombu.Producer = ...,
         headers: dict[str, str] = ...,
-    ) -> celery.result.AsyncResult[_R]: ...
+    ) -> celery.result.AsyncResult[_R_co]: ...
     def clone(
         self,
         args: tuple[Any, ...] | None = ...,
@@ -119,7 +119,7 @@ class Signature(dict[str, Any], Generic[_R]):
         add_to_parent: bool = ...,
         publisher: kombu.Producer = ...,
         headers: dict[str, str] = ...,
-    ) -> Signature[_R]: ...
+    ) -> Signature[_R_co]: ...
     partial = clone
     def freeze(
         self,
@@ -128,13 +128,13 @@ class Signature(dict[str, Any], Generic[_R]):
         chord: chord | None = ...,
         root_id: str | None = ...,
         parent_id: str | None = ...,
-    ) -> celery.result.AsyncResult[_R]: ...
+    ) -> celery.result.AsyncResult[_R_co]: ...
     def replace(
         self,
         args: tuple[Any, ...] | None = ...,
         kwargs: dict[str, Any] | None = ...,
         options: dict[str, Any] | None = ...,
-    ) -> Signature[_R]: ...
+    ) -> Signature[_R_co]: ...
     def set(
         self,
         immutable: bool | None = ...,
@@ -160,24 +160,27 @@ class Signature(dict[str, Any], Generic[_R]):
         add_to_parent: bool = ...,
         publisher: kombu.Producer = ...,
         headers: dict[str, str] = ...,
-    ) -> Signature[_R]: ...
+    ) -> Signature[_R_co]: ...
     def set_immutable(self, immutable: bool) -> None: ...
     def append_to_list_option(self, key: str, value: Any) -> Any: ...
     def extend_list_option(self, key: str, value: Any) -> None: ...
     def link(self, callback: _F) -> _F: ...
-    def link_error(self, errback: Callable[..., Any]) -> Signature[_R]: ...
+    def link_error(self, errback: Callable[..., Any]) -> Signature[_R_co]: ...
     def on_error(self, errback: _F) -> _F: ...
     def flatten_links(self) -> list[Signature[Any]]: ...
     # TODO(sbdchd): use overloads to properly type this
-    def __or__(self, other: Signature[Any]) -> Signature[Any]: ...  # type: ignore[override]
-    def election(self) -> celery.result.AsyncResult[_R]: ...
+    @override
+    def __or__(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
+        self, other: Signature[Any]
+    ) -> Signature[Any]: ...
+    def election(self) -> celery.result.AsyncResult[_R_co]: ...
     @property
     def name(self) -> str: ...
     @property
     def type(self) -> Any: ...
     @property
     def app(self) -> Celery: ...
-    def AsyncResult(self) -> celery.result.AsyncResult[_R]: ...
+    def AsyncResult(self) -> celery.result.AsyncResult[_R_co]: ...
     id: str | None
     parent_id: str | None
     root_id: str | None
@@ -300,7 +303,9 @@ class chunks(Signature[Any]):
 class group(Signature[Any]):
     @overload
     def __init__(
-        self, __tasks: group | abstract.CallableSignature | Iterable[Signature[Any]]
+        self,
+        *tasks: group | abstract.CallableSignature | Iterable[Signature[Any]],
+        **options: Any,
     ) -> None: ...
     @overload
     def __init__(
@@ -337,6 +342,7 @@ class group(Signature[Any]):
     def skew(
         self, start: float = ..., stop: float | None = ..., step: float = ...
     ) -> group: ...
+    @override
     def __or__(self, other: Signature[Any]) -> chord: ...  # type: ignore[override]
 
 _group = group
@@ -376,7 +382,9 @@ class chord(Signature[Any]):
         publisher: kombu.Producer = ...,
         headers: dict[str, str] = ...,
     ) -> None: ...
+    @override
     def __or__(self, other: Signature[Any]) -> chord: ...  # type: ignore[override]
+    @override
     def __call__(
         self,
         body: Signature[Any] | None = ...,

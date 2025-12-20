@@ -6,6 +6,8 @@ from threading import Lock as Lock
 from threading import RLock as RLock
 from threading import Semaphore as Semaphore
 
+from typing_extensions import override
+
 __all__ = [
     "BoundedSemaphore",
     "Event",
@@ -23,6 +25,7 @@ class DummyProcess(threading.Thread):
     def __init__(
         self,
     ) -> None: ...
+    @override
     def start(self) -> None: ...
 
 Process = DummyProcess
