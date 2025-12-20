@@ -1,14 +1,14 @@
 from logging import Logger, _Level
 
 __all__ = [
-    "sub_debug",
-    "debug",
-    "info",
-    "sub_warning",
-    "get_logger",
-    "log_to_stderr",
     "SUBDEBUG",
     "SUBWARNING",
+    "debug",
+    "get_logger",
+    "info",
+    "log_to_stderr",
+    "sub_debug",
+    "sub_warning",
 ]
 
 SUBDEBUG: int

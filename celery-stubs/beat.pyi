@@ -5,10 +5,10 @@ from typing import NamedTuple
 from billiard.context import Process
 
 __all__ = [
-    "SchedulingError",
+    "PersistentScheduler",
     "ScheduleEntry",
     "Scheduler",
-    "PersistentScheduler",
+    "SchedulingError",
     "Service",
 ]
 

@@ -1,7 +1,6 @@
 import threading
 from collections.abc import Generator, Iterator
 from threading import Thread
-from threading import get_ident as get_ident
 from typing import Any, Generic, TypeVar
 
 _T = TypeVar("_T")

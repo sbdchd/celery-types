@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import (
     Any,
     Generic,
-    TypeVar,
     overload,
 )
 
@@ -13,9 +12,10 @@ from celery.app.base import Celery
 from celery.app.task import Task
 from celery.result import EagerResult
 from celery.utils import abstract
+from typing_extensions import TypeVar
 
 _F = TypeVar("_F", bound=Callable[..., Any])
-_R = TypeVar("_R", covariant=True)
+_R = TypeVar("_R", covariant=True, default=Any)
 
 class Signature(dict[str, Any], Generic[_R]):
     @classmethod

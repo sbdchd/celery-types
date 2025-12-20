@@ -21,11 +21,11 @@ from celery.canvas import xstarmap as xstarmap
 from celery.utils import uuid as uuid
 
 __all__ = [
-    "states",
-    "result",
+    "Celery",
     "app",
+    "current_app",
+    "result",
     "schedules",
     "shared_task",
-    "current_app",
-    "Celery",
+    "states",
 ]

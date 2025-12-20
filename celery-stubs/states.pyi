@@ -32,18 +32,18 @@ PROPAGATE_STATES: frozenset[str]
 ALL_STATES: frozenset[str]
 
 __all__ = [
+    "EXCEPTION_STATES",
+    "FAILURE",
+    "IGNORED",
     "PENDING",
+    "PROPAGATE_STATES",
+    "READY_STATES",
     "RECEIVED",
+    "RETRY",
+    "REVOKED",
     "STARTED",
     "SUCCESS",
-    "FAILURE",
-    "REVOKED",
-    "RETRY",
-    "IGNORED",
-    "READY_STATES",
     "UNREADY_STATES",
-    "EXCEPTION_STATES",
-    "PROPAGATE_STATES",
     "precedence",
     "state",
 ]

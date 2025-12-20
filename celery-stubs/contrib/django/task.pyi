@@ -1,11 +1,12 @@
 from collections.abc import Mapping
 from datetime import datetime
-from typing import Any, ParamSpec, TypeVar
+from typing import Any, TypeVar
 
 import celery
 import kombu
 from celery.app.task import Task
 from celery.canvas import Signature
+from typing_extensions import ParamSpec
 
 _P = ParamSpec("_P")
 _R = TypeVar("_R", covariant=True)

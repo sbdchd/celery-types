@@ -29,7 +29,7 @@ class Logging:
         format: str | None = ...,
         colorize: bool | None = ...,
         hostname: str | None = ...,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> Any: ...
     def setup_task_loggers(
         self,
@@ -38,7 +38,7 @@ class Logging:
         format: str | None = ...,
         colorize: bool | None = ...,
         propagate: bool = ...,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> Logger: ...
     def redirect_stdouts_to_logger(
         self,
@@ -60,6 +60,6 @@ class Logging:
         format: str,
         colorize: bool,
         formatter: Any = ...,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> Logger: ...
     def get_default_logger(self, name: str = ..., **kwargs: Any) -> Logger: ...
