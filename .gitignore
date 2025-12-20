@@ -2,3 +2,4 @@
 dist
 .idea
 node_modules
+.python-version

@@ -1,10 +1,10 @@
-[tool.poetry]
+[project]
 name = "celery-types"
 version = "0.23.0"
 description = "Type stubs for Celery and its related packages"
-repository = "https://github.com/sbdchd/celery-types"
+authors = [{ name = "Steve Dignam", email = "steve@dignam.xyz" }]
+requires-python = ">=3.10,<4"
 readme = "README.md"
-authors = ["Steve Dignam <steve@dignam.xyz>"]
 license = "Apache-2.0"
 keywords = [
     "celery",
@@ -17,47 +17,72 @@ keywords = [
     "mypy",
     "stubs",
 ]
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Typing :: Stubs Only",
+    "Typing :: Typed",
+]
+dependencies = ["typing-extensions>=4.15.0,<5"]
 
-packages = [
-    { include = "amqp-stubs" },
-    { include = "billiard-stubs" },
-    { include = "celery-stubs" },
-    { include = "django_celery_results-stubs" },
-    { include = "ephem-stubs" },
-    { include = "kombu-stubs" },
-    { include = "vine-stubs" },
+[project.urls]
+Repository = "https://github.com/sbdchd/celery-types"
+
+[dependency-groups]
+dev = [
+    "celery>=5.0,<6",
+    "django-types>=0.3.1,<0.4",
+    "django>=3.1,<4",
+    "ruff>=0.14.9",
+    "mypy>=1.19.0",
+    "basedpyright>=1.36.1",
+    "toml-cli>=0.5.0,<0.6",
+    "prek>=0.2.23",
 ]
 
-[tool.poetry.dependencies]
-python = "^3.9"
-typing-extensions = "^4.15.0"
+[tool.hatch.build.targets.sdist]
+include = [
+    "amqp-stubs",
+    "billiard-stubs",
+    "celery-stubs",
+    "django_celery_results-stubs",
+    "ephem-stubs",
+    "kombu-stubs",
+    "vine-stubs",
+]
 
+[tool.hatch.build.targets.wheel]
+include = [
+    "amqp-stubs",
+    "billiard-stubs",
+    "celery-stubs",
+    "django_celery_results-stubs",
+    "ephem-stubs",
+    "kombu-stubs",
+    "vine-stubs",
+]
 
-[tool.poetry.group.dev.dependencies]
-celery = "^5.0"
-black = ">=25.11"
-django-types = "^0.3.1"
-django = "^3.1"
-ruff = ">=0.14.9"
-mypy = ">=1.19.0"
-pyright = ">=1.1.407"
-toml-cli = "^0.5.0"
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.pyright]
-typeCheckingMode = "strict"
-ignore = ["typings/django_celery_results*"]
-reportPrivateUsage = false
-reportMissingModuleSource = false
-reportIncompatibleMethodOverride = false
-reportTypedDictNotRequiredAccess = false
+[tool.basedpyright]
+typeCheckingMode = "recommended"
+pythonVersion = "3.10"
+
+reportAny = false
+reportExplicitAny = false
+reportUnusedCallResult = false
+reportUnusedParameter = false
 reportUnusedFunction = false
+reportPrivateUsage = false
+reportUnannotatedClassAttribute = false
 
-[tool.pytest]
-addopts = "--pdbcls IPython.terminal.debugger:TerminalPdb"
-filterwarnings = [
-    # all warnings that are not ignored should raise an error
-    "error",
-]
 
 [tool.mypy]
 show_column_numbers = true
@@ -88,33 +113,18 @@ warn_unreachable = true
 strict_equality = true
 ignore_missing_imports = false
 
-[tool.black]
-target-version = ["py39", "py310", "py311", "py312", "py313", "py314"]
-
-[tool.ruff]
-target-version = "py39"
-
 [tool.ruff.lint]
-select = [
-    "E",
-    "F",
-    "TID252",
-    "I001",
-    "T20",
-    "C4",
-    "UP",
-    "N",
-    "BLE",
-    "B",
-    "RET",
-    "SIM",
-    "ARG",
-    "DTZ",
-    "ERA",
-    "RUF",
-]
-# src = ["recipeyak"]
+select = ["ALL"]
 ignore = [
+    "COM812", # conflict with ruff formatting
+    "ANN401", # allow Any in type annotations
+    "D",      # docstring style is not important for stubs
+    "A001",   # shadowing builtins is okay in stubs
+    "A002",   # common name clashes are okay in stubs
+    "A004",   # shadowing names from typing is okay in stubs
+    "TD003",  # missing issue link for
+    "FIX002", # allow todo comments
+
     "E501",   # line length is handled by black
     "ARG001", # pytest fixtures mess with this
     "ARG002", # sometimes parent classes require params
@@ -142,14 +152,6 @@ unfixable = [
 ] # we want to check ourselves before we delete commented out code.
 
 
-# [tool.ruff.isort]
-# known-third-party = ["django"]
-# known-first-party = ["recipeyak"]
-
 [tool.ruff.lint.flake8-tidy-imports]
 # Disallow all relative imports.
 ban-relative-imports = "all"
-
-[build-system]
-requires = ["poetry-core>=1.5.2"]
-build-backend = "poetry.core.masonry.api"
