@@ -28,21 +28,48 @@ Task.__class_getitem__ = classmethod(lambda cls, *args, **kwargs: cls) # type: i
 ### initial setup
 
 ```shell
-# install poetry (https://python-poetry.org/docs/)
-curl -sSL https://install.python-poetry.org | python3 -
+# install uv (https://docs.astral.sh/uv/)
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
 ### regular development
 
 ```shell
-poetry install
-
+uv sync
+```
+```shell
 # run formatting, linting, and typechecking
 s/lint
-
-# build and publish
-poetry publish --build
 ```
+or
+```shell
+uv run ruff check --fix
+uv run ruff format
+uv run basedpyright typings tests
+uv run mypy tests
+```
+```shell
+# build and publish
+uv build && uv publish
+```
+
+### pre-commit
+
+The project uses [pre-commit](https://pre-commit.com/) for code quality checks:
+
+```shell
+# install pre-commit hooks
+uv run prek install
+
+# run all checks manually
+uv run prek run --all-files
+```
+
+### tooling
+
+- [ruff](https://docs.astral.sh/ruff/) — formatting and linting
+- [basedpyright](https://docs.basedpyright.com/) — type checking
+- [mypy](https://mypy.readthedocs.io/) — type checking
 
 ## related
 
