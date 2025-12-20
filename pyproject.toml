@@ -6,6 +6,7 @@ authors = [{ name = "Steve Dignam", email = "steve@dignam.xyz" }]
 requires-python = ">=3.10,<4"
 readme = "README.md"
 license = "Apache-2.0"
+license-files = ["LICENSE"]
 keywords = [
     "celery",
     "kombu",
