@@ -51,7 +51,7 @@ class DB(Protocol):
 class DatabaseTask(Task[Any, Any]):
     @property
     def db(self) -> DB:
-        raise Exception()
+        raise Exception  # noqa: TRY002
 
 
 @app.task(base=DatabaseTask)
@@ -80,7 +80,8 @@ def send_twitter_status(self: Task[Any, Any], oauth: str, tweet: str) -> None:
 
         delivery_info = self.request.delivery_info or {}
         if not delivery_info.get("redelivered"):
-            raise Reject("no reason", requeue=True)
+            msg = "no reason"
+            raise Reject(msg, requeue=True)
 
     self.update_state(state="SUCCESS", meta={"foo": "bar"})
 
