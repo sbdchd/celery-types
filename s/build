@@ -3,4 +3,4 @@ set -eux
 # poetry errors if there are any non-.pyi files in the stubs D:
 find . -name '.DS_Store' -type f -delete
 
-poetry build
+uv build

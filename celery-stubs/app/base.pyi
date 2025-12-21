@@ -1,15 +1,18 @@
 import datetime
 from collections import defaultdict
 from collections.abc import Callable, Sequence
+from types import TracebackType
 from typing import (
     Any,
+    Concatenate,
     Literal,
     NoReturn,
     TypeVar,
     overload,
 )
 
-import celery
+import celery.app
+import celery.result
 import kombu
 from celery.app.amqp import AMQP
 from celery.app.beat import Beat as CeleryBeat
@@ -30,7 +33,7 @@ from celery.utils.dispatch import Signal
 from celery.utils.objects import FallbackContext
 from celery.utils.threads import _LocalStack
 from celery.worker import WorkController as CeleryWorkController
-from typing_extensions import Concatenate, ParamSpec
+from typing_extensions import ParamSpec, Self
 
 _T = TypeVar("_T", bound=CeleryTask[Any, Any])
 _P = ParamSpec("_P")
@@ -70,7 +73,7 @@ class Celery:
         broker_login_method: str = ...,
         broker_transport_options: dict[str, Any] = ...,
         broker_connection_retry_on_startup: bool = ...,
-        broker_connection_timeout: int | float = ...,
+        broker_connection_timeout: float = ...,
         result_backend_transport_options: dict[str, Any] | None = ...,
         result_extended: bool = ...,
         result_expires: datetime.timedelta = ...,
@@ -362,7 +365,7 @@ class Celery:
     def producer_or_acquire(
         self, producer: kombu.Producer | None = ...
     ) -> FallbackContext: ...
-    default_producer = producer_or_acquire  # XXX compat
+    default_producer = producer_or_acquire
     def prepare_config(self, c: Settings) -> Settings: ...
     def now(self) -> datetime.datetime: ...
     def select_queues(self, queues: Sequence[str] | None = ...) -> None: ...
@@ -378,8 +381,13 @@ class Celery:
         name: str | None = ...,
         **opts: Any,
     ) -> str: ...
-    def __enter__(self) -> Celery: ...
-    def __exit__(self, *exc_info: Any) -> None: ...
+    def __enter__(self) -> Self: ...
+    def __exit__(
+        self,
+        typ: type[BaseException] | None,
+        exc: BaseException | None,
+        tb: TracebackType | None,
+    ) -> None: ...
     @property
     def Worker(self) -> type[CeleryWorker]: ...
     @property

@@ -1,11 +1,12 @@
 import numbers
 from collections.abc import Callable
 from datetime import datetime, timedelta
-from typing import Literal, NamedTuple
+from typing import Literal, NamedTuple, TypeAlias
 
 import ephem
 from celery.app.base import Celery
 from celery.utils.time import ffwd
+from typing_extensions import override
 
 class schedstate(NamedTuple):
     is_due: bool
@@ -35,6 +36,7 @@ class BaseSchedule:
     @property
     def utc_enabled(self) -> bool: ...
     def to_local(self, dt: datetime) -> datetime: ...
+    @override
     def __eq__(self, other: object) -> bool: ...
 
 class schedule(BaseSchedule):
@@ -74,7 +76,7 @@ class crontab(BaseSchedule):
 
 def maybe_schedule(s: numbers.Number | timedelta | BaseSchedule) -> schedule: ...
 
-_SolarEvent = Literal[
+_SolarEvent: TypeAlias = Literal[
     "dawn_astronomical",
     "dawn_nautical",
     "dawn_civil",

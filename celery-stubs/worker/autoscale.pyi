@@ -3,13 +3,20 @@ from typing import Any
 from celery.bootsteps import StartStopStep
 from celery.concurrency.base import BasePool
 from celery.utils.threads import bgThread
+from typing_extensions import override
 
 class WorkerComponent(StartStopStep):
     enabled: Any
     def __init__(self, w: Any, **kwargs: Any) -> None: ...
-    def create(self, w: Any) -> Any: ...
+    @override
+    def create(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self, w: Any
+    ) -> Any: ...
     def register_with_event_loop(self, w: Any, hub: Any) -> None: ...
-    def info(self, w: Any) -> Any: ...
+    @override
+    def info(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self, w: Any
+    ) -> Any: ...
 
 class Autoscaler(bgThread):
     pool: BasePool
@@ -24,9 +31,10 @@ class Autoscaler(bgThread):
         max_concurrency: int,
         min_concurrency: int = ...,
         worker: Any | None = ...,
-        keepalive: int | float = ...,
+        keepalive: float = ...,
         mutex: Any | None = ...,
     ) -> None: ...
+    @override
     def body(self) -> None: ...
     def maybe_scale(self, req: Any | None = ...) -> None: ...
     def update(self, max: Any | None = ..., min: Any | None = ...) -> Any: ...

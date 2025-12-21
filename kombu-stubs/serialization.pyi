@@ -1,11 +1,11 @@
 import pickle as pickle
 from collections.abc import Callable, Container, Iterable, Mapping
-from typing import Any, NamedTuple
+from typing import Any, NamedTuple, TypeAlias
 
 pickle_load = pickle.load
 
-_Encoder = Callable[[Any], str]
-_Decoder = Callable[[str], Any]
+_Encoder: TypeAlias = Callable[[Any], str]
+_Decoder: TypeAlias = Callable[[str], Any]
 
 class codec(NamedTuple):
     content_type: str

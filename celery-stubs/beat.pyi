@@ -3,6 +3,7 @@ from threading import Thread
 from typing import NamedTuple
 
 from billiard.context import Process
+from typing_extensions import override
 
 __all__ = [
     "PersistentScheduler",
@@ -27,8 +28,11 @@ class Scheduler:
 
 class PersistentScheduler(Scheduler):
     persistence = shelve
+    @override
     def setup_schedule(self) -> None: ...
+    @override
     def sync(self) -> None: ...
+    @override
     def close(self) -> None: ...
 
 class Service:
@@ -45,10 +49,12 @@ class Service:
 class _Threaded(Thread):
     daemon: bool
     name: str
+    @override
     def run(self) -> None: ...
     def stop(self) -> None: ...
 
 class _Process(Process):
     name: str
+    @override
     def run(self) -> None: ...
     def stop(self) -> None: ...

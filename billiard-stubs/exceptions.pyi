@@ -1,7 +1,22 @@
-from multiprocessing import AuthenticationError as AuthenticationError
-from multiprocessing import BufferTooShort as BufferTooShort
-from multiprocessing import ProcessError as ProcessError
-from multiprocessing import TimeoutError as TimeoutError
+from multiprocessing import (
+    AuthenticationError,
+    BufferTooShort,
+    ProcessError,
+    TimeoutError,
+)
+
+__all__ = [
+    "AuthenticationError",
+    "BufferTooShort",
+    "CoroStop",
+    "ProcessError",
+    "RestartFreqExceeded",
+    "SoftTimeLimitExceeded",
+    "Terminated",
+    "TimeLimitExceeded",
+    "TimeoutError",
+    "WorkerLostError",
+]
 
 class TimeLimitExceeded(Exception): ...
 class SoftTimeLimitExceeded(Exception): ...

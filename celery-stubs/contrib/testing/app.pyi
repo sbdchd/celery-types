@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from collections.abc import Generator
 from contextlib import contextmanager
 from typing import Any
@@ -19,7 +17,7 @@ def TestApp(
     config: dict[str, Any] | None = None,
     enable_logging: bool = False,
     set_as_current: bool = False,
-    log: type[UnitLogging] | None = UnitLogging,
+    log: type[UnitLogging] | None = ...,
     backend: Any = None,
     broker: Any = None,
     **kwargs: Any,

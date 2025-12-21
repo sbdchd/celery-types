@@ -1,1 +1,3 @@
-from amqp.exceptions import ConnectionError as ConnectionError
+from amqp.exceptions import ConnectionError
+
+__all__ = ["ConnectionError"]

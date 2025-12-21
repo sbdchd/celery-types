@@ -10,41 +10,25 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
         with:
-          python-version: 3.11
+          enable-cache: true
+          python-version: "3.10"
 
-      - name: cache poetry install
-        uses: actions/cache@v4
-        with:
-          path: ~/.local
-          key: poetry-1.7.1-0
+      - name: Install dependencies
+        run: uv sync
 
-      - uses: snok/install-poetry@v1
-        with:
-          version: 1.7.1
-          virtualenvs-create: true
-          virtualenvs-in-project: true
+      - name: Format check
+        run: uv run ruff format --check
 
-      - name: cache deps
-        id: cache-deps
-        uses: actions/cache@v4
-        with:
-          path: .venv
-          key: pydeps-${{ hashFiles('**/poetry.lock') }}
+      - name: Lint
+        run: uv run ruff check
 
-      # Install dependencies. `--no-root` means "install all dependencies but not the project
-      # itself", which is what you want to avoid caching _your_ code. The `if` statement
-      # ensures this only runs on a cache miss.
-      - run: poetry install --no-interaction --no-root
-        if: steps.cache-deps.outputs.cache-hit != 'true'
+      - name: Type check (basedpyright)
+        run: uv run basedpyright typings tests
 
-      # Now install _your_ project. This isn't necessary for many types of projects -- particularly
-      # things like Django apps don't need this. But it's a good idea since it fully-exercises the
-      # pyproject.toml and makes that if you add things like console-scripts at some point that
-      # they'll be installed and working.
-      - run: poetry install --no-interaction
-
-      - name: lint
-        run: ./s/lint
+      - name: Type check (mypy)
+        run: uv run mypy tests

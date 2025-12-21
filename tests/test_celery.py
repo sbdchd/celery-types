@@ -2,18 +2,22 @@ from __future__ import annotations
 
 import errno
 import sys
-from collections.abc import Iterator
-from typing import Any, Protocol
+from typing import TYPE_CHECKING, Any, Protocol
 
 import celery
 from celery import Celery, shared_task, signature
 from celery.app.task import Task
 from celery.canvas import Signature, chord
-from celery.contrib.django.task import DjangoTask
 from celery.exceptions import Reject
 from celery.result import AsyncResult, allow_join_result, denied_join_result
 from celery.schedules import crontab
 from celery.utils.log import get_task_logger
+from typing_extensions import override
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
+    from celery.contrib.django.task import DjangoTask
 
 app = celery.Celery()
 
@@ -47,7 +51,7 @@ class DB(Protocol):
 class DatabaseTask(Task[Any, Any]):
     @property
     def db(self) -> DB:
-        raise Exception()
+        raise Exception  # noqa: TRY002
 
 
 @app.task(base=DatabaseTask)
@@ -76,7 +80,8 @@ def send_twitter_status(self: Task[Any, Any], oauth: str, tweet: str) -> None:
 
         delivery_info = self.request.delivery_info or {}
         if not delivery_info.get("redelivered"):
-            raise Reject("no reason", requeue=True)
+            msg = "no reason"
+            raise Reject(msg, requeue=True)
 
     self.update_state(state="SUCCESS", meta={"foo": "bar"})
 
@@ -118,8 +123,14 @@ add.chunks(zip(range(100), range(100)), 10).group().skew(start=1, stop=10)()
 class MyTask(celery.Task[Any, Any]):
     throws = (ValueError,)
 
+    @override
     def on_failure(
-        self, exc: Exception, task_id: str, args: object, kwargs: object, einfo: object
+        self,
+        exc: Exception,
+        task_id: str,
+        args: object,
+        kwargs: object,
+        einfo: object,
     ) -> None:
         print(f"{task_id!r} failed: {exc!r}")
 
@@ -283,7 +294,6 @@ def test_celery_top_level_exports() -> None:
     celery.local
     celery.shared_task
     celery.signature
-    celery.task
     celery.uuid
     celery.xmap
     celery.xstarmap

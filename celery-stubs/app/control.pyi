@@ -1,13 +1,10 @@
-from __future__ import annotations
-
 from collections.abc import Callable, Iterable, Mapping, Sequence
-from typing import Any, Literal, TypedDict
+from typing import Any, Literal, TypeAlias, TypedDict
 
 from celery.app.base import Celery
 from celery.result import _State
 from kombu import Connection
 from kombu.pidbox import Mailbox as KombuMailbox
-from typing_extensions import TypeAlias
 
 _Reply: TypeAlias = Any
 
