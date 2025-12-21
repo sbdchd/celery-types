@@ -55,14 +55,51 @@ class DatabaseTask(Task[Any, Any]):
 
 
 @app.task(base=DatabaseTask)
-def process_rows() -> None:
+def process_rows(param_1: int) -> None:
     for row in process_rows.db.table.all():
         print(row)
 
 
 @shared_task(base=DatabaseTask)
-def process_rows_2() -> None:
+def process_rows_2(param_1: int) -> None:
     for row in process_rows_2.db.table.all():
+        print(row)
+
+
+@shared_task(base=DatabaseTask, bind=True)
+def process_rows_3(self: DatabaseTask, param_1: int) -> None:
+    for row in process_rows_3.db.table.all():
+        print(row)
+
+
+# Here, a typeignore is needed so that when the overload stops working correctly,
+# pyright and mypy will report that the typeignore is unnecessary.
+@shared_task(base=DatabaseTask, bind=True)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+def process_rows_4(self: int, param_1: int) -> None:
+    for row in process_rows_4.db.table.all():
+        print(row)
+
+
+database_app = Celery[DatabaseTask]()
+
+
+@database_app.task(name="main.process_rows_4")
+def process_rows_5(param_1: int) -> None:
+    for row in process_rows_5.db.table.all():
+        print(row)
+
+
+@database_app.task(name="main.process_rows_5", bind=True)
+def process_rows_6(self: DatabaseTask, param_1: int) -> None:
+    for row in process_rows_6.db.table.all():
+        print(row)
+
+
+# Here, a typeignore is needed so that when the overload stops working correctly,
+# pyright and mypy will report that the typeignore is unnecessary.
+@database_app.task(name="main.process_rows_5", bind=True)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+def process_rows_7(self: int, param_1: int) -> None:
+    for row in process_rows_7.db.table.all():
         print(row)
 
 

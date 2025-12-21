@@ -5,9 +5,9 @@ from types import TracebackType
 from typing import (
     Any,
     Concatenate,
+    Generic,
     Literal,
     NoReturn,
-    TypeVar,
     overload,
 )
 
@@ -33,13 +33,18 @@ from celery.utils.dispatch import Signal
 from celery.utils.objects import FallbackContext
 from celery.utils.threads import _LocalStack
 from celery.worker import WorkController as CeleryWorkController
-from typing_extensions import ParamSpec, Self
+from typing_extensions import ParamSpec, Self, TypeVar
 
 _T = TypeVar("_T", bound=CeleryTask[Any, Any])
+_T_Global = TypeVar(
+    "_T_Global",
+    bound=CeleryTask[Any, Any],
+    default=CeleryTask[Any, Any],
+)
 _P = ParamSpec("_P")
 _R = TypeVar("_R")
 
-class Celery:
+class Celery(Generic[_T_Global]):
     steps: defaultdict[str, set[Any]]
 
     on_configure: Signal
@@ -63,7 +68,7 @@ class Celery:
         changes: dict[str, Any] | None = ...,
         config_source: str | object | None = ...,
         fixups: list[str] | None = ...,
-        task_cls: str | type[CeleryTask[Any, Any]] | None = ...,
+        task_cls: str | type[_T_Global] | None = ...,
         autofinalize: bool = ...,
         namespace: str | None = ...,
         strict_typing: bool = ...,
@@ -107,7 +112,7 @@ class Celery:
         self,
         fun: Callable[_P, _R],
         name: str | None = ...,
-        base: type[CeleryTask[Any, Any]] | None = ...,
+        base: type[_T_Global] | None = ...,
         bind: bool = ...,
         # options
         autoretry_for: Sequence[type[BaseException]] = ...,
@@ -141,7 +146,7 @@ class Celery:
         abstract: bool = ...,
         after_return: Callable[..., Any] = ...,
         on_retry: Callable[..., Any] = ...,
-    ) -> CeleryTask[_P, _R]: ...
+    ) -> _T_Global: ...
     def on_init(self) -> None: ...
     def set_current(self) -> None: ...
     def set_default(self) -> None: ...
@@ -149,7 +154,7 @@ class Celery:
     def start(self, argv: list[str] | None = ...) -> NoReturn: ...
     def worker_main(self, argv: list[str] | None = ...) -> NoReturn: ...
     @overload
-    def task(self, fun: Callable[_P, _R]) -> CeleryTask[_P, _R]: ...
+    def task(self, fun: Callable[_P, _R]) -> _T_Global: ...
     @overload
     def task(
         self,
@@ -229,7 +234,7 @@ class Celery:
         after_return: Callable[..., Any] = ...,
         on_retry: Callable[..., Any] = ...,
         **options: Any,
-    ) -> Callable[[Callable[_P, _R]], CeleryTask[_P, _R]]: ...
+    ) -> Callable[[Callable[_P, _R]], _T_Global]: ...
     @overload
     def task(
         self,
@@ -269,9 +274,7 @@ class Celery:
         after_return: Callable[..., Any] = ...,
         on_retry: Callable[..., Any] = ...,
         **options: Any,
-    ) -> Callable[
-        [Callable[Concatenate[CeleryTask[_P, _R], _P], _R]], CeleryTask[_P, _R]
-    ]: ...
+    ) -> Callable[[Callable[Concatenate[_T_Global, _P], _R]], _T_Global]: ...
     def register_task(self, task: _T | type[_T], **options: Any) -> _T: ...
     def gen_task_name(self, name: str, module: str) -> str: ...
     def finalize(self, auto: bool = ...) -> None: ...
@@ -395,7 +398,7 @@ class Celery:
     @property
     def Beat(self) -> type[CeleryBeat]: ...
     @property
-    def Task(self) -> type[CeleryTask[Any, Any]]: ...
+    def Task(self) -> type[_T_Global]: ...
     @property
     def annotations(self) -> list[dict[str, Any]]: ...
     @property
@@ -407,9 +410,9 @@ class Celery:
     @property
     def pool(self) -> kombu.pools.ProducerPool: ...
     @property
-    def current_task(self) -> CeleryTask[Any, Any] | None: ...
+    def current_task(self) -> _T_Global | None: ...
     @property
-    def current_worker_task(self) -> CeleryTask[Any, Any] | None: ...
+    def current_worker_task(self) -> _T_Global | None: ...
     @property
     def oid(self) -> str: ...
     @property
