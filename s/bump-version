@@ -5,4 +5,4 @@ if [ -z "${1}" ]; then
   exit 1
 fi
 
-./.venv/bin/toml set --toml-path pyproject.toml tool.poetry.version "${1}"
+uv version "${1}"

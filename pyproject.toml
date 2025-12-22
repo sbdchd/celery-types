@@ -42,7 +42,6 @@ dev = [
     "ruff>=0.14.9",
     "mypy>=1.19.0",
     "basedpyright>=1.36.1",
-    "toml-cli>=0.5.0,<0.6",
     "prek>=0.2.23",
 ]
 
