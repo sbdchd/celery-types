@@ -82,7 +82,6 @@ dev = [
     { name = "mypy" },
     { name = "prek" },
     { name = "ruff" },
-    { name = "toml-cli" },
 ]
 
 [package.metadata]
@@ -97,7 +96,6 @@ dev = [
     { name = "mypy", specifier = ">=1.19.0" },
     { name = "prek", specifier = ">=0.2.23" },
     { name = "ruff", specifier = ">=0.14.9" },
-    { name = "toml-cli", specifier = ">=0.5.0,<0.6" },
 ]
 
 [[package]]
@@ -430,12 +428,6 @@ wheels = [
 ]
 
 [[package]]
-name = "regex"
-version = "2020.11.13"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/2e/e4/3447fed9ab29944333f48730ecff4dca92f0868c5b188d6ab2b2078e32c2/regex-2020.11.13.tar.gz", hash = "sha256:83d6b356e116ca119db8e7c6fc2983289d87b27b3fac238cfe5dca529d884562", size = 694595, upload-time = "2020-11-13T01:56:49.885Z" }
-
-[[package]]
 name = "ruff"
 version = "0.14.9"
 source = { registry = "https://pypi.org/simple" }
@@ -480,48 +472,12 @@ wheels = [
 ]
 
 [[package]]
-name = "toml-cli"
-version = "0.5.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "regex" },
-    { name = "tomlkit" },
-    { name = "typer" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/92/2d/b514b6f1640d80d98a3d47ed7eb2aa37712a5607084ef4be5d6ab8e4d792/toml_cli-0.5.0.tar.gz", hash = "sha256:11599eb9c601c489e5bd2de1660facd98be0f639684866c688920f981390da71", size = 6011, upload-time = "2023-05-11T05:31:36.643Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/c6/2b/3228d86100362ee265e83c1f2e803ebc2106a7103fa7d3dd750ecea05b0c/toml_cli-0.5.0-py3-none-any.whl", hash = "sha256:1c74d950d018c7570513f570d180c030cc9200b37f8039898b2051c5993fc16a", size = 6720, upload-time = "2023-05-11T05:31:34.996Z" },
-]
-
-[[package]]
 name = "tomli"
 version = "1.2.3"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/fb/2e/d0a8276b0cf9b9e34fd0660c330acc59656f53bb2209adc75af863a3582d/tomli-1.2.3.tar.gz", hash = "sha256:05b6166bff487dc068d322585c7ea4ef78deed501cc124060e0f238e89a9231f", size = 15094, upload-time = "2021-12-13T22:25:06.254Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/05/e4/74f9440db36734d7ba83c574c1e7024009ce849208a41f90e94a134dc6d1/tomli-1.2.3-py3-none-any.whl", hash = "sha256:e3069e4be3ead9668e21cb9b074cd948f7b3113fd9c8bba083f48247aab8b11c", size = 12122, upload-time = "2021-12-13T22:25:05.02Z" },
-]
-
-[[package]]
-name = "tomlkit"
-version = "0.12.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/0d/07/d34a911a98e64b07f862da4b10028de0c1ac2222ab848eaf5dd1877c4b1b/tomlkit-0.12.1.tar.gz", hash = "sha256:38e1ff8edb991273ec9f6181244a6a391ac30e9f5098e7535640ea6be97a7c86", size = 190535, upload-time = "2023-07-27T14:50:22.643Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a0/6d/808775ed618e51edaa7bbe6759e22e1c7eafe359af6e084700c6d39d3455/tomlkit-0.12.1-py3-none-any.whl", hash = "sha256:712cbd236609acc6a3e2e97253dfc52d4c2082982a88f61b640ecf0817eab899", size = 37335, upload-time = "2023-07-27T14:50:21.12Z" },
-]
-
-[[package]]
-name = "typer"
-version = "0.9.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "click" },
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/5b/49/39f10d0f75886439ab3dac889f14f8ad511982a754e382c9b6ca895b29e9/typer-0.9.0.tar.gz", hash = "sha256:50922fd79aea2f4751a8e0408ff10d2662bd0c8bbfa84755a699f3bada2978b2", size = 273985, upload-time = "2023-05-02T05:20:57.63Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/bf/0e/c68adf10adda05f28a6ed7b9f4cd7b8e07f641b44af88ba72d9c89e4de7a/typer-0.9.0-py3-none-any.whl", hash = "sha256:5d96d986a21493606a358cae4461bd8cdf83cbf33a5aa950ae629ca3b51467ee", size = 45861, upload-time = "2023-05-02T05:20:55.675Z" },
 ]
 
 [[package]]
