@@ -1,6 +1,6 @@
 [project]
 name = "celery-types"
-version = "0.23.0"
+version = "0.24.0"
 description = "Type stubs for Celery and its related packages"
 authors = [{ name = "Steve Dignam", email = "steve@dignam.xyz" }]
 requires-python = ">=3.10,<4"
