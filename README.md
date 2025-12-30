@@ -1,4 +1,11 @@
-# celery-types [![PyPI](https://img.shields.io/pypi/v/celery-types.svg)](https://pypi.org/project/celery-types/)
+# celery-types 
+[![PyPI](https://img.shields.io/pypi/v/celery-types.svg)](https://pypi.org/project/celery-types/)
+[![Downloads](https://static.pepy.tech/personalized-badge/celery-types?period=month&units=international_system&left_color=black&right_color=orange&left_text=PyPI%20downloads%20per%20month)](https://pepy.tech/project/celery-types)
+![PyPI - Types](https://img.shields.io/pypi/types/celery-types)
+[![image](https://img.shields.io/pypi/pyversions/celery-types.svg)](https://pypi.python.org/pypi/celery-types)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+
 
 Type stubs for celery related projects:
 
