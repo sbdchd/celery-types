@@ -301,6 +301,8 @@ class chunks(Signature[Any]):
     def group(self) -> _group: ...
 
 class group(Signature[Any]):
+    tasks: list[Signature[Any]]
+
     @overload
     def __init__(
         self,
