@@ -16,11 +16,35 @@ Type stubs for celery related projects:
 pip install celery-types
 ```
 
-You'll also need to monkey patch `Task` so generic params can be provided:
+You'll also need to monkey patch the classes from the example below (you can delete anything you don't intend to use) so generic params can be provided:
 
 ```python
+from celery import Celery, Signature
 from celery.app.task import Task
-Task.__class_getitem__ = classmethod(lambda cls, *args, **kwargs: cls) # type: ignore[attr-defined]
+from celery.contrib.abortable import AbortableAsyncResult, AbortableTask
+from celery.contrib.django.task import DjangoTask
+from celery.local import class_property
+from celery.result import AsyncResult
+from celery.utils.objects import FallbackContext
+
+classes = [
+    Celery,
+    Task,
+    DjangoTask,
+    AbortableTask,
+    AsyncResult,
+    AbortableAsyncResult,
+    Signature,
+    FallbackContext,
+    class_property,
+]
+
+for cls in classes:
+    setattr(  # noqa: B010
+        cls,
+        "__class_getitem__",
+        classmethod(lambda cls, *args, **kwargs: cls),
+    )
 ```
 
 ## dev
