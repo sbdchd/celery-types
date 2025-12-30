@@ -36,6 +36,7 @@ from celery.worker import WorkController as CeleryWorkController
 from typing_extensions import ParamSpec, Self, TypeVar
 
 _T = TypeVar("_T", bound=CeleryTask[Any, Any])
+_T_1 = TypeVar("_T_1")
 _T_Global = TypeVar(
     "_T_Global",
     bound=CeleryTask[Any, Any],
@@ -51,27 +52,28 @@ class Celery(Generic[_T_Global]):
     on_after_configure: Signal
     on_after_finalize: Signal
     on_after_fork: Signal
+
     def __init__(
         self,
-        main: str | None = ...,
-        loader: Any | None = ...,
-        backend: str | type[Backend] | None = ...,
-        amqp: str | type[AMQP] | None = ...,
-        events: str | type[celery.app.events.Events] | None = ...,
-        log: str | type[Logging] | None = ...,
-        control: str | type[celery.app.control.Control] | None = ...,
-        set_as_current: bool = ...,
-        tasks: str | type[TaskRegistry] | None = ...,
-        broker: str | None = ...,
-        imports: list[str] | tuple[str, ...] | None = ...,
-        include: list[str] | tuple[str, ...] | None = ...,
-        changes: dict[str, Any] | None = ...,
-        config_source: str | object | None = ...,
-        fixups: list[str] | None = ...,
-        task_cls: str | type[_T_Global] | None = ...,
-        autofinalize: bool = ...,
-        namespace: str | None = ...,
-        strict_typing: bool = ...,
+        main: str | None = None,
+        loader: Any | None = None,
+        backend: str | type[Backend] | None = None,
+        amqp: str | type[AMQP] | None = None,
+        events: str | type[celery.app.events.Events] | None = None,
+        log: str | type[Logging] | None = None,
+        control: str | type[celery.app.control.Control] | None = None,
+        set_as_current: bool = True,
+        tasks: str | type[TaskRegistry] | None = None,
+        broker: str | None = None,
+        imports: list[str] | tuple[str, ...] | None = None,
+        include: list[str] | tuple[str, ...] | None = None,
+        changes: dict[str, Any] | None = None,
+        config_source: str | object | None = None,
+        fixups: list[str] | None = None,
+        task_cls: str | type[_T_Global] | None = None,
+        autofinalize: bool = True,
+        namespace: str | None = None,
+        strict_typing: bool = True,
         broker_connection_retry: bool = ...,
         broker_connection_max_retries: int = ...,
         broker_channel_error_retry: bool = ...,
@@ -151,8 +153,8 @@ class Celery(Generic[_T_Global]):
     def set_current(self) -> None: ...
     def set_default(self) -> None: ...
     def close(self) -> None: ...
-    def start(self, argv: list[str] | None = ...) -> NoReturn: ...
-    def worker_main(self, argv: list[str] | None = ...) -> NoReturn: ...
+    def start(self, argv: list[str] | None = None) -> NoReturn: ...
+    def worker_main(self, argv: list[str] | None = None) -> NoReturn: ...
     @overload
     def task(self, fun: Callable[_P, _R]) -> _T_Global: ...
     @overload
@@ -275,103 +277,125 @@ class Celery(Generic[_T_Global]):
         on_retry: Callable[..., Any] = ...,
         **options: Any,
     ) -> Callable[[Callable[Concatenate[_T_Global, _P], _R]], _T_Global]: ...
-    def register_task(self, task: _T | type[_T], **options: Any) -> _T: ...
+    def type_checker(
+        self, fun: Callable[_P, _T_1], bound: bool = False
+    ) -> Callable[_P, _T_1]: ...
+    def register_task(
+        self,
+        task: _T | type[_T],
+        *,
+        autoretry_for: Sequence[type[BaseException]] = ...,
+        dont_autoretry_for: Sequence[type[BaseException]] = ...,
+        retry_kwargs: dict[str, Any] = ...,
+        retry_backoff: bool | int = ...,
+        retry_backoff_max: int = ...,
+        retry_jitter: bool = ...,
+    ) -> _T: ...
     def gen_task_name(self, name: str, module: str) -> str: ...
-    def finalize(self, auto: bool = ...) -> None: ...
+    def finalize(self, auto: bool = False) -> None: ...
     def add_defaults(self, fun: Callable[[], dict[str, Any]]) -> None: ...
     def config_from_object(
         self,
         obj: Any,
-        silent: bool = ...,
-        force: bool = ...,
-        namespace: str | None = ...,
+        silent: bool = False,
+        force: bool = False,
+        namespace: str | None = None,
     ) -> Settings: ...
     def config_from_envvar(
-        self, variable_name: str, silent: bool = ..., force: bool = ...
+        self, variable_name: str, silent: bool = False, force: bool = False
     ) -> None: ...
-    def config_from_cmdline(self, argv: list[str], namespace: str = ...) -> None: ...
+    def config_from_cmdline(
+        self, argv: list[str], namespace: str = "celery"
+    ) -> None: ...
     def setup_security(
         self,
-        allowed_serializers: set[str] | None = ...,
-        key: str | None = ...,
-        cert: str | None = ...,
-        store: str | None = ...,
+        allowed_serializers: set[str] | None = None,
+        key: str | None = None,
+        cert: str | None = None,
+        store: str | None = None,
         digest: str = ...,
-        serializer: str = ...,
+        serializer: str = "json",
     ) -> None: ...
     def autodiscover_tasks(
         self,
-        packages: list[str] | Callable[[], list[str]] | None = ...,
-        related_name: str = ...,
-        force: bool = ...,
+        packages: list[str] | Callable[[], list[str]] | None = None,
+        related_name: str = "tasks",
+        force: bool = False,
     ) -> None: ...
     def send_task(
         self,
         name: str,
-        args: Sequence[Any] | None = ...,
-        kwargs: dict[str, Any] | None = ...,
-        countdown: float | None = ...,
-        eta: datetime.datetime | None = ...,
-        task_id: str | None = ...,
-        producer: kombu.Producer | None = ...,
-        connection: kombu.Connection | None = ...,
-        router: Router | None = ...,
-        result_cls: type[celery.result.AsyncResult[Any]] | None = ...,
-        expires: float | datetime.datetime | None = ...,
-        publisher: kombu.Producer | None = ...,
-        link: Signature[Any] | None = ...,
-        link_error: Signature[Any] | None = ...,
-        add_to_parent: bool = ...,
-        group_id: str | None = ...,
-        retries: int = ...,
-        chord: chord | None = ...,
-        reply_to: str | None = ...,
-        time_limit: int | None = ...,
-        soft_time_limit: int | None = ...,
-        root_id: str | None = ...,
-        parent_id: str | None = ...,
-        route_name: str | None = ...,
-        shadow: str | None = ...,
-        chain: Any | None = ...,
-        task_type: Any | None = ...,
+        args: Sequence[Any] | None = None,
+        kwargs: dict[str, Any] | None = None,
+        countdown: float | None = None,
+        eta: datetime.datetime | None = None,
+        task_id: str | None = None,
+        producer: kombu.Producer | None = None,
+        connection: kombu.Connection | None = None,
+        router: Router | None = None,
+        result_cls: type[celery.result.AsyncResult[Any]] | None = None,
+        expires: float | datetime.datetime | None = None,
+        publisher: kombu.Producer | None = None,
+        link: Signature[Any] | None = None,
+        link_error: Signature[Any] | None = None,
+        add_to_parent: bool = True,
+        group_id: str | None = None,
+        retries: int = 0,
+        chord: chord | None = None,
+        reply_to: str | None = None,
+        time_limit: int | None = None,
+        soft_time_limit: int | None = None,
+        root_id: str | None = None,
+        parent_id: str | None = None,
+        route_name: str | None = None,
+        shadow: str | None = None,
+        chain: Any | None = None,
+        task_type: Any | None = None,
+        replaced_task_nesting: int = 0,
         # options
         ignore_result: bool = ...,
         **options: Any,
     ) -> celery.result.AsyncResult[Any]: ...
     def connection_for_read(
-        self, url: str | None = ..., **kwargs: Any
+        self, url: str | None = None, **kwargs: Any
     ) -> kombu.Connection: ...
     def connection_for_write(
-        self, url: str | None = ..., **kwargs: Any
+        self, url: str | None = None, **kwargs: Any
     ) -> kombu.Connection: ...
     def connection(
         self,
-        hostname: str | None = ...,
-        userid: str | None = ...,
-        password: str | None = ...,
-        virtual_host: str | None = ...,
-        port: int | None = ...,
-        ssl: bool | dict[str, Any] | None = ...,
-        connect_timeout: int | None = ...,
-        transport: str | None = ...,
-        transport_options: dict[str, Any] | None = ...,
-        heartbeat: int | None = ...,
-        login_method: int | None = ...,
-        failover_strategy: str | Callable[[], Any] | None = ...,
+        hostname: str | None = None,
+        userid: str | None = None,
+        password: str | None = None,
+        virtual_host: str | None = None,
+        port: int | None = None,
+        ssl: bool | dict[str, Any] | None = None,
+        connect_timeout: int | None = None,
+        transport: str | None = None,
+        transport_options: dict[str, Any] | None = None,
+        heartbeat: int | None = None,
+        login_method: int | None = None,
+        failover_strategy: str | Callable[[], Any] | None = None,
         **kwargs: Any,
     ) -> kombu.Connection: ...
+
     broker_connection = connection
+
     def connection_or_acquire(
-        self, connection: kombu.Connection | None = ..., pool: bool = ...
+        self, connection: kombu.Connection | None = None, pool: bool = True
     ) -> FallbackContext[Any, Any]: ...
+
     default_connection = connection_or_acquire
+
     def producer_or_acquire(
-        self, producer: kombu.Producer | None = ...
+        self, producer: kombu.Producer | None = None
     ) -> FallbackContext[Any, Any]: ...
+
     default_producer = producer_or_acquire
+
     def prepare_config(self, c: Settings) -> Settings: ...
     def now(self) -> datetime.datetime: ...
-    def select_queues(self, queues: Sequence[str] | None = ...) -> None: ...
+    def select_queues(self, queues: Sequence[str] | None = None) -> None: ...
     def either(self, default_key: str, *defaults: Any) -> Any: ...
     def bugreport(self) -> str: ...
     def signature(self, *args: Any, **kwargs: Any) -> Signature[Any]: ...
@@ -379,11 +403,21 @@ class Celery(Generic[_T_Global]):
         self,
         schedule: BaseSchedule | float,
         sig: Signature[Any],
-        args: tuple[Any, ...] = ...,
+        args: tuple[Any, ...] = (),
         kwargs: dict[str, Any] = ...,
-        name: str | None = ...,
+        name: str | None = None,
         **opts: Any,
     ) -> str: ...
+    def create_task_cls(self) -> type[Any]: ...
+    def subclass_with_self(
+        self,
+        Class: type[Any],
+        name: str | None = None,
+        attribute: str = "app",
+        reverse: str | None = None,
+        keep_reduce: bool = False,
+        **kw: Any,
+    ) -> type[Any]: ...
     def __enter__(self) -> Self: ...
     def __exit__(
         self,
@@ -415,6 +449,8 @@ class Celery(Generic[_T_Global]):
     def current_worker_task(self) -> _T_Global | None: ...
     @property
     def oid(self) -> str: ...
+    @property
+    def thread_oid(self) -> str: ...
     @property
     def amqp(self) -> AMQP: ...
     @property

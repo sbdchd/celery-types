@@ -1,4 +1,11 @@
-# celery-types [![PyPI](https://img.shields.io/pypi/v/celery-types.svg)](https://pypi.org/project/celery-types/)
+# celery-types 
+[![PyPI](https://img.shields.io/pypi/v/celery-types.svg)](https://pypi.org/project/celery-types/)
+[![Downloads](https://static.pepy.tech/personalized-badge/celery-types?period=month&units=international_system&left_color=black&right_color=orange&left_text=PyPI%20downloads%20per%20month)](https://pepy.tech/project/celery-types)
+![PyPI - Types](https://img.shields.io/pypi/types/celery-types)
+[![image](https://img.shields.io/pypi/pyversions/celery-types.svg)](https://pypi.python.org/pypi/celery-types)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+
 
 Type stubs for celery related projects:
 
@@ -16,11 +23,35 @@ Type stubs for celery related projects:
 pip install celery-types
 ```
 
-You'll also need to monkey patch `Task` so generic params can be provided:
+You'll also need to monkey patch the classes from the example below (you can delete anything you don't intend to use) so generic params can be provided:
 
 ```python
+from celery import Celery, Signature
 from celery.app.task import Task
-Task.__class_getitem__ = classmethod(lambda cls, *args, **kwargs: cls) # type: ignore[attr-defined]
+from celery.contrib.abortable import AbortableAsyncResult, AbortableTask
+from celery.contrib.django.task import DjangoTask
+from celery.local import class_property
+from celery.result import AsyncResult
+from celery.utils.objects import FallbackContext
+
+classes = [
+    Celery,
+    Task,
+    DjangoTask,
+    AbortableTask,
+    AsyncResult,
+    AbortableAsyncResult,
+    Signature,
+    FallbackContext,
+    class_property,
+]
+
+for cls in classes:
+    setattr(  # noqa: B010
+        cls,
+        "__class_getitem__",
+        classmethod(lambda cls, *args, **kwargs: cls),
+    )
 ```
 
 ## dev
