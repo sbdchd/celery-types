@@ -9,6 +9,8 @@ from kombu.transport.base import StdChannel
 from kombu.utils.limits import TokenBucket
 from typing_extensions import override
 
+__all__ = ("ConsumerMixin", "ConsumerProducerMixin")
+
 class ConsumerMixin:
     connect_max_retries: int | None
     should_stop: bool

@@ -1,33 +1,49 @@
 from collections import UserDict
-from collections.abc import Callable, Hashable, Mapping
-from typing import Any
+from collections.abc import Callable, Hashable, Iterable, Iterator
+from typing import Any, TypeVar
 
 __all__ = (
     "LRUCache",
-    "dictfilter",
-    "is_list",
+    "memoize",
     "lazy",
     "maybe_evaluate",
+    "is_list",
     "maybe_list",
-    "memoize",
+    "dictfilter",
+    "retry_over_time",
 )
 
-KEYWORD_MARK = object()
+_T = TypeVar("_T")
+_KT = TypeVar("_KT")
+_VT = TypeVar("_VT")
+
+KEYWORD_MARK: object
 
 class ChannelPromise:
     def __init__(self, contract: Any) -> None: ...
     def __call__(self) -> Any: ...
 
-class LRUCache(UserDict[str, Any]): ...
+class LRUCache(UserDict[_KT, _VT]):
+    limit: int | None
+
+    def __init__(self, limit: int | None = ...) -> None: ...
+    def incr(self, key: _KT, delta: int = ...) -> int: ...
+    def iteritems(self) -> Iterator[tuple[_KT, _VT]]: ...
+    def iterkeys(self) -> Iterator[_KT]: ...
+    def itervalues(self) -> Iterator[_VT]: ...
+    def popitem(self, last: bool = ...) -> tuple[_KT, _VT]: ...
 
 def memoize(
-    maxsize: int | None = None,
-    keyfun: Callable[..., Any] | None = None,
-    Cache: type[Mapping[Hashable, Any]] = ...,
-) -> Callable[..., Callable[..., Any]]: ...
+    maxsize: int | None = ...,
+    keyfun: Callable[..., Any] | None = ...,
+    Cache: type[LRUCache[Any, Any]] = ...,
+) -> Callable[[Callable[..., _T]], Callable[..., _T]]: ...
 
 class lazy:
     def __init__(self, fun: Callable[..., Any], *args: Any, **kwargs: Any) -> None: ...
+    def __call__(self) -> Any: ...
+    def __deepcopy__(self, memo: dict[int, Any]) -> lazy: ...
+    def evaluate(self) -> Any: ...
 
 def maybe_evaluate(value: Any) -> Any: ...
 def is_list(
@@ -37,8 +53,21 @@ def is_list(
 ) -> bool: ...
 def maybe_list(obj: Any, scalars: tuple[type[Any], ...] = ...) -> list[Any]: ...
 def dictfilter(
-    d: dict[Hashable, Any] | None = None, **kw: Any
+    d: dict[Hashable, Any] | None = ..., **kw: Any
 ) -> dict[Hashable, Any]: ...
+def retry_over_time(
+    fun: Callable[..., _T],
+    catch: type[BaseException] | tuple[type[BaseException], ...],
+    args: Iterable[Any] | None = ...,
+    kwargs: dict[str, Any] | None = ...,
+    errback: Callable[[BaseException, float], None] | None = ...,
+    max_retries: int | None = ...,
+    interval_start: float = ...,
+    interval_step: float = ...,
+    interval_max: float = ...,
+    callback: Callable[[], None] | None = ...,
+    timeout: float | None = ...,
+) -> _T: ...
 
 promise = lazy
 maybe_promise = maybe_evaluate
