@@ -1,4 +1,5 @@
-from amqp import ConnectionError
+from amqp import ChannelError as ChannelError
+from amqp import ConnectionError as ConnectionError
 
 class KombuError(Exception): ...
 class OperationalError(KombuError): ...

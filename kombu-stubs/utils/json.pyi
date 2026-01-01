@@ -2,23 +2,27 @@ import json
 from collections.abc import Callable
 from typing import Any, TypeAlias, TypeVar
 
-textual_types: tuple[Any]
+# These TypeVars are exported by the runtime module, so they must be public
+T = TypeVar("T")  # noqa: PYI001
+EncodedT = TypeVar("EncodedT")  # noqa: PYI001
+
+textual_types: tuple[()]
 
 class JSONEncoder(json.JSONEncoder): ...
 
 def dumps(
-    s: str,
-    _dumps: Callable[..., str],
-    cls: JSONEncoder,
-    default_kwargs: dict[str, Any],
+    s: Any,
+    _dumps: Callable[..., str] = ...,
+    cls: type[json.JSONEncoder] = ...,
+    default_kwargs: dict[str, Any] | None = ...,
     **kwargs: Any,
 ) -> str: ...
-def object_hook(o: dict[Any, Any]) -> None: ...
+def object_hook(o: dict[Any, Any]) -> Any: ...
 def loads(
-    s: str,
-    _loads: Callable[[str], Any],
-    decode_bytes: bool,
-    object_hook: Callable[[dict[Any, Any]], None],
+    s: str | bytes | bytearray | memoryview,
+    _loads: Callable[[str], Any] = ...,
+    decode_bytes: bool = ...,
+    object_hook: Callable[[dict[Any, Any]], Any] | None = ...,
 ) -> Any: ...
 
 EncoderT: TypeAlias = Callable[[Any], Any]
@@ -31,5 +35,5 @@ def register_type(
     t: type[_T],
     marker: str | None,
     encoder: Callable[[_T], _EncodedT],
-    decoder: Callable[[_EncodedT], _T],
+    decoder: Callable[[_EncodedT], _T] = ...,
 ) -> None: ...
