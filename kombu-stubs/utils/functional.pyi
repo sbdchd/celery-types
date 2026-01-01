@@ -68,6 +68,9 @@ def retry_over_time(
     callback: Callable[[], None] | None = ...,
     timeout: float | None = ...,
 ) -> _T: ...
+def reprkwargs(
+    kwargs: dict[str, Any], sep: str = ..., fmt: str = ...
+) -> str: ...
 
 promise = lazy
 maybe_promise = maybe_evaluate

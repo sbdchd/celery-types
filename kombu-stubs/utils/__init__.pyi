@@ -3,9 +3,11 @@ from contextlib import contextmanager
 from typing import Any, BinaryIO, TextIO, TypeVar
 from uuid import UUID
 
+from kombu.utils.functional import reprkwargs as reprkwargs
 from kombu.utils.functional import retry_over_time as retry_over_time
 from kombu.utils.objects import cached_property as cached_property
 
+# Note: runtime __all__ includes reprkwargs but it's not actually exported (kombu bug)
 __all__ = (
     "EqualityDict",
     "uuid",
@@ -16,6 +18,7 @@ __all__ = (
     "emergency_dump_state",
     "cached_property",
     "register_after_fork",
+    "reprkwargs",
     "reprcall",
     "symbol_by_name",
     "nested",
