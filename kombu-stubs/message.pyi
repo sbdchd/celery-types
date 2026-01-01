@@ -1,9 +1,14 @@
 from typing import Any
 
+from kombu.exceptions import MessageStateError
+
+__all__ = ("Message",)
+
 ACK_STATES: set[str]
 
 class Message:
-    errors: list[Any]
+    MessageStateError: type[MessageStateError]
+    errors: list[Any] | None
     body: str | None
     content_encoding: str | None
     headers: dict[str, str]

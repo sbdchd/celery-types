@@ -1,7 +1,22 @@
-from collections.abc import Callable, Sequence
-from typing import Any, TypeVar
+from collections.abc import Callable, Iterable, Iterator, Sequence
+from typing import Any, Generic, TypeVar
+
+__all__ = ("FairCycle", "priority_cycle", "round_robin_cycle", "sorted_cycle")
 
 _T = TypeVar("_T")
+
+class round_robin_cycle(Generic[_T]):
+    items: list[_T] | None
+    def __init__(self, it: Iterable[_T] | None = ...) -> None: ...
+    def update(self, it: Iterable[_T]) -> None: ...
+    def consume(self, n: int) -> Iterator[_T]: ...
+    def rotate(self, last_used: _T) -> None: ...
+
+class priority_cycle(round_robin_cycle[_T]):
+    ...
+
+class sorted_cycle(round_robin_cycle[_T]):
+    ...
 
 class FairCycle:
     fun: Callable[..., Any]

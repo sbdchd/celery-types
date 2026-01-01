@@ -1,10 +1,15 @@
 import types
-from typing import Any, Self
+from typing import Any, Self, TypeAlias
 
 from kombu.connection import Connection
 from kombu.message import Message as Message
 from kombu.messaging import Consumer, Producer
 from kombu.utils.objects import cached_property
+
+__all__ = ("Message", "StdChannel", "Management", "Transport")
+
+# Forward reference for Management to avoid name collision with Transport.Management
+_ManagementType: TypeAlias = "Management"
 
 class Management:
     transport: Transport
@@ -12,6 +17,8 @@ class Management:
     def get_bindings(self) -> list[dict[str, Any]]: ...
 
 class Transport:
+    Management: type[Management]
+
     client: Connection | None
     can_parse_url: bool
     default_port: int | None
@@ -41,7 +48,7 @@ class Transport:
         include_password: bool = ...,
         mask: str = ...,
     ) -> str: ...
-    def get_manager(self, *args: Any, **kwargs: Any) -> Management: ...
+    def get_manager(self, *args: Any, **kwargs: Any) -> _ManagementType: ...
     def register_with_event_loop(
         self, connection: Any, loop: Any
     ) -> None: ...
@@ -51,7 +58,7 @@ class Transport:
     @property
     def default_connection_params(self) -> dict[str, Any]: ...
     @cached_property
-    def manager(self) -> Management: ...
+    def manager(self) -> _ManagementType: ...
     @property
     def supports_heartbeats(self) -> bool: ...
     @property
@@ -74,7 +81,3 @@ class StdChannel:
         exc_val: BaseException | None,
         exc_tb: types.TracebackType | None,
     ) -> None: ...
-
-# Alias for backwards compatibility - in reality, Channel doesn't exist at runtime
-# but is commonly used in type annotations
-Channel = StdChannel

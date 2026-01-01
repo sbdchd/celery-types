@@ -1,7 +1,8 @@
+import logging
 import types
 from collections import OrderedDict
 from collections.abc import Callable, Generator, Iterable
-from typing import Any, NamedTuple, Self
+from typing import Any, NamedTuple, Self, TypeAlias
 
 from kombu.connection import Connection
 from kombu.message import Message as BaseMessage
@@ -10,6 +11,20 @@ from kombu.transport.base import StdChannel
 from kombu.transport.base import Transport as BaseTransport
 from kombu.transport.virtual.exchange import ExchangeType
 from kombu.utils.scheduling import FairCycle
+
+ARRAY_TYPE_H: str
+NOT_EQUIVALENT_FMT: str
+RESTORE_PANIC_FMT: str
+RESTORING_FMT: str
+UNDELIVERABLE_FMT: str
+W_NO_CONSUMERS: str
+
+logger: logging.Logger
+
+# Forward references for type annotations to avoid name collisions with class attributes
+_QoSType: TypeAlias = "QoS"
+_MessageType: TypeAlias = "Message"
+_ChannelType: TypeAlias = "Channel"
 
 class binding_key_t(NamedTuple):
     queue: str
@@ -30,9 +45,9 @@ class NotEquivalentError(Exception): ...
 class UndeliverableWarning(UserWarning): ...
 
 class BrokerState:
-    exchanges: dict[str, dict[str, Any]]
-    bindings: dict[binding_key_t, queue_binding_t]
-    queue_index: dict[str, set[binding_key_t]]
+    exchanges: dict[str, dict[str, Any]] | None
+    bindings: dict[binding_key_t, queue_binding_t] | None
+    queue_index: dict[str, set[binding_key_t]] | None
 
     def __init__(
         self, exchanges: dict[str, dict[str, Any]] | None = ...
@@ -59,8 +74,8 @@ class QoS:
     prefetch_count: int
     restore_at_shutdown: bool
 
-    _delivered: OrderedDict[int, Any]
-    _dirty: set[int]
+    _delivered: OrderedDict[int, Any] | None
+    _dirty: set[int] | None
 
     def __init__(
         self, channel: AbstractChannel, prefetch_count: int = ...
@@ -81,12 +96,27 @@ class Message(BaseMessage):
     def __init__(
         self,
         payload: dict[str, Any],
-        channel: AbstractChannel | None = ...,
+        channel: Channel | None = ...,
         **kwargs: Any,
     ) -> None: ...
     def serializable(self) -> dict[str, Any]: ...
 
-class AbstractChannel(StdChannel):
+# AbstractChannel is a base class with only internal methods
+class AbstractChannel:
+    def _get(self, queue: str, timeout: float | None = ...) -> Any: ...
+    def _put(self, queue: str, message: Any) -> None: ...
+    def _purge(self, queue: str) -> int: ...
+    def _size(self, queue: str) -> int: ...
+    def _delete(self, queue: str, *args: Any, **kwargs: Any) -> None: ...
+    def _new_queue(self, queue: str, **kwargs: Any) -> None: ...
+    def _has_queue(self, queue: str, **kwargs: Any) -> bool: ...
+    def _poll(self, cycle: FairCycle, callback: Callable[..., Any], timeout: float | None = ...) -> None: ...
+
+# Channel inherits from AbstractChannel and StdChannel (multiple inheritance)
+class Channel(AbstractChannel, StdChannel):
+    Message: type[Message]
+    QoS: type[QoS]
+
     do_restore: bool
     exchange_types: dict[str, type[ExchangeType]]
     supports_fanout: bool
@@ -99,11 +129,15 @@ class AbstractChannel(StdChannel):
     max_priority: int
     deadletter_queue: str | None
 
+    connection: Connection
+
     _delivery_tags: Iterable[int]
     _consumers: dict[str, Any]
     _cycle: FairCycle | None
-    _qos: QoS | None
+    _qos: _QoSType | None
     _tag_to_queue: dict[str, str]
+
+    from_transport_options: tuple[str, ...]
 
     def __init__(self, connection: Connection, **kwargs: Any) -> None: ...
     def exchange_declare(
@@ -121,6 +155,22 @@ class AbstractChannel(StdChannel):
         exchange: str,
         if_unused: bool = ...,
         nowait: bool = ...,
+    ) -> None: ...
+    def exchange_bind(
+        self,
+        destination: str,
+        source: str = ...,
+        routing_key: str = ...,
+        nowait: bool = ...,
+        arguments: dict[str, Any] | None = ...,
+    ) -> None: ...
+    def exchange_unbind(
+        self,
+        destination: str,
+        source: str = ...,
+        routing_key: str = ...,
+        nowait: bool = ...,
+        arguments: dict[str, Any] | None = ...,
     ) -> None: ...
     def queue_declare(
         self,
@@ -155,16 +205,16 @@ class AbstractChannel(StdChannel):
     def basic_publish(
         self,
         message: Any,
-        exchange: str = ...,
-        routing_key: str = ...,
+        exchange: str,
+        routing_key: str,
         **kwargs: Any,
     ) -> None: ...
     def basic_consume(
         self,
         queue: str,
-        no_ack: bool = ...,
-        callback: Callable[..., Any] | None = ...,
-        consumer_tag: str | None = ...,
+        no_ack: bool,
+        callback: Callable[..., Any] | None,
+        consumer_tag: str | None,
         **kwargs: Any,
     ) -> str: ...
     def basic_cancel(self, consumer_tag: str) -> None: ...
@@ -173,7 +223,7 @@ class AbstractChannel(StdChannel):
         queue: str,
         no_ack: bool = ...,
         **kwargs: Any,
-    ) -> Message | None: ...
+    ) -> _MessageType | None: ...
     def basic_ack(self, delivery_tag: int, multiple: bool = ...) -> None: ...
     def basic_qos(
         self,
@@ -199,7 +249,7 @@ class AbstractChannel(StdChannel):
         self, exchange: str, default: str = ...
     ) -> ExchangeType: ...
     def list_bindings(self) -> Generator[tuple[str, str, str], None, None]: ...
-    def message_to_python(self, raw_message: Any) -> Message: ...
+    def message_to_python(self, raw_message: Any) -> _MessageType: ...
     def prepare_message(
         self,
         body: Any,
@@ -209,7 +259,8 @@ class AbstractChannel(StdChannel):
         headers: dict[str, Any] | None = ...,
         properties: dict[str, Any] | None = ...,
     ) -> dict[str, Any]: ...
-    def flow(self, active: bool) -> None: ...
+    def flow(self, active: bool = ...) -> None: ...
+    def after_reply_message_received(self, queue: str) -> None: ...
     def __enter__(self) -> Self: ...
     def __exit__(
         self,
@@ -220,38 +271,40 @@ class AbstractChannel(StdChannel):
     @property
     def state(self) -> BrokerState: ...
     @property
-    def qos(self) -> QoS: ...
+    def qos(self) -> _QoSType: ...
     @property
     def cycle(self) -> FairCycle: ...
 
-Channel = AbstractChannel
-
 class Management(BaseManagement):
     transport: Transport
-    channel: AbstractChannel | None
+    channel: _ChannelType | None
 
     def __init__(self, transport: Transport) -> None: ...
     def get_bindings(self) -> list[dict[str, Any]]: ...
     def close(self) -> None: ...
 
 class Transport(BaseTransport):
+    Channel: type[_ChannelType]
+    Cycle: type[FairCycle]
+    Management: type[Management]
+
     polling_interval: float
     channel_max: int
-    channels: list[AbstractChannel]
+    channels: list[_ChannelType] | None
     cycle: FairCycle | None
 
-    _callbacks: dict[str, Callable[..., Any]]
+    _callbacks: dict[str, Callable[..., Any]] | None
 
     def __init__(self, client: Connection, **kwargs: Any) -> None: ...
-    def create_channel(self, connection: Connection) -> AbstractChannel: ...
+    def create_channel(self, connection: Connection) -> _ChannelType: ...
     def close_channel(self, channel: StdChannel) -> None: ...
     def establish_connection(self) -> Connection: ...
     def close_connection(self, connection: Connection) -> None: ...
-    def drain_events(
-        self, connection: Connection, timeout: float | None = ..., **kwargs: Any
+    def drain_events(  # type: ignore[override]
+        self, connection: Connection, timeout: float | None = ...
     ) -> None: ...
     def on_message_ready(
-        self, channel: AbstractChannel, message: Message, queue: str
+        self, channel: _ChannelType, message: _MessageType, queue: str
     ) -> None: ...
     @property
     def default_connection_params(self) -> dict[str, Any]: ...

@@ -1,14 +1,14 @@
 from typing import Any
 
 from kombu.abstract import MaybeChannelBound
-from kombu.transport.base import Channel
+from kombu.transport.base import StdChannel
 
 class Exchange(MaybeChannelBound):
     def __init__(
         self,
         name: str = ...,
         type: str = ...,
-        channel: Channel | None = ...,
+        channel: StdChannel | None = ...,
         **kwargs: Any,
     ) -> None: ...
 
@@ -21,7 +21,7 @@ class Queue(MaybeChannelBound):
         name: str = ...,
         exchange: Exchange | str | None = ...,
         routing_key: str = ...,
-        channel: Channel | None = ...,
+        channel: StdChannel | None = ...,
         bindings: Any = ...,
         on_declared: Any = ...,
         **kwargs: Any,
