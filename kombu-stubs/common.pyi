@@ -32,11 +32,18 @@ class Broadcast(Queue):
     ) -> None: ...
 
 class QoS:
-    channel: StdChannel
-    prev: int
+    callback: Callable[..., None]
+    prev: int | None
     value: int
+    max_prefetch: int | None
+    _mutex: Any
 
-    def __init__(self, callback: Callable[[int], None], initial_value: int = ...) -> None: ...
+    def __init__(
+        self,
+        callback: Callable[..., None],
+        initial_value: int,
+        max_prefetch: int | None = ...,
+    ) -> None: ...
     def update(self) -> int: ...
     def decrement_eventually(self, n: int = ...) -> int: ...
     def increment_eventually(self, n: int = ...) -> int: ...

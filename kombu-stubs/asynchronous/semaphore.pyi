@@ -1,13 +1,17 @@
 from collections.abc import Callable
+from types import TracebackType
 from typing import Any
 
 __all__ = ("DummyLock", "LaxBoundedSemaphore")
 
 class DummyLock:
     def __enter__(self) -> DummyLock: ...
-    def __exit__(self, *exc_info: Any) -> None: ...
-    def acquire(self) -> bool: ...
-    def release(self) -> None: ...
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None: ...
 
 class LaxBoundedSemaphore:
     initial_value: int
@@ -15,7 +19,7 @@ class LaxBoundedSemaphore:
 
     def __init__(self, value: int) -> None: ...
     def acquire(
-        self, callback: Callable[..., Any], *partial_args: Any, **partial_kwargs: Any
+        self, callback: Callable[..., None], *partial_args: Any, **partial_kwargs: Any
     ) -> bool: ...
     def release(self) -> None: ...
     def grow(self, n: int = ...) -> None: ...

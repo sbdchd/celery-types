@@ -1,11 +1,18 @@
-from typing import Any
+from logging import Logger
 
-from kombu.transport.virtual import Transport as VirtualTransport
+from kombu.connection import Connection
+from kombu.entity import Queue
 
-class Transport(VirtualTransport):
-    driver_type: str
-    driver_name: str
+logger: Logger
+MAX_NUMBER_OF_BITS_TO_USE: int
+MAX_LEVEL: int
+CELERY_DELAYED_DELIVERY_EXCHANGE: str
 
-class Channel:
-    connection: Any
-    def __init__(self, connection: Any, **kwargs: Any) -> None: ...
+def level_name(level: int) -> str: ...
+def declare_native_delayed_delivery_exchanges_and_queues(
+    connection: Connection, queue_type: str
+) -> None: ...
+def bind_queue_to_native_delayed_delivery_exchange(
+    connection: Connection, queue: Queue
+) -> None: ...
+def calculate_routing_key(countdown_in_seconds: int) -> str: ...

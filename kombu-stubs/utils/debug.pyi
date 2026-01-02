@@ -4,12 +4,12 @@ from typing import Any
 __all__ = ("setup_logging", "Logwrapped")
 
 class Logwrapped:
-    obj: Any
+    instance: Any
     logger: Logger
-    ident: str
+    ident: str | None
 
     def __init__(
-        self, obj: Any, logger: Logger | None = ..., ident: str | None = ...
+        self, instance: Any, logger: Logger | None = ..., ident: str | None = ...
     ) -> None: ...
     def __getattr__(self, key: str) -> Any: ...
 

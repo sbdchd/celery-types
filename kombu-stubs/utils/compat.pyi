@@ -6,6 +6,8 @@ from typing import Any, TypeVar
 _T = TypeVar("_T")
 _ExcT = TypeVar("_ExcT", bound=BaseException)
 
+FILENO_ERRORS: tuple[type[Exception], ...]
+
 class UnsupportedOperation(Exception): ...
 
 def detect_environment() -> str: ...
