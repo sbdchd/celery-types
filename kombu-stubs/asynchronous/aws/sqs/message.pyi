@@ -3,7 +3,6 @@ from typing import Any
 from kombu.message import Message
 
 class BaseAsyncMessage(Message): ...
-
 class AsyncRawMessage(BaseAsyncMessage): ...
 
 class AsyncMessage(BaseAsyncMessage):

@@ -1,6 +1,5 @@
 from collections.abc import Callable, Iterator
 from datetime import datetime
-from time import monotonic
 from types import TracebackType
 from typing import Any, NamedTuple
 from zoneinfo import ZoneInfo

@@ -1,7 +1,6 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Any, Iterator
 
-from pymongo import errors
 from pymongo.collection import Collection
 from pymongo.cursor import Cursor
 from pymongo.database import Database

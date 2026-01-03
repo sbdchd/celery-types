@@ -1,7 +1,7 @@
 from logging import Logger
 from typing import Any
 
-from confluent_kafka import KafkaException, Consumer, Producer  # type: ignore[import-untyped]
+from confluent_kafka import KafkaException  # type: ignore[import-untyped]
 from confluent_kafka.admin import AdminClient  # type: ignore[import-untyped]
 from kombu.transport.virtual import Channel as VirtualChannel
 from kombu.transport.virtual import Message as VirtualMessage

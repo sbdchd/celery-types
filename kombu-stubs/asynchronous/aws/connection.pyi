@@ -76,25 +76,49 @@ class AsyncAWSQueryConnection(AsyncConnection):
     STATUS_CODES_TIMEOUT: tuple[int, ...]
 
     def __init__(
-        self, sqs_connection: Any, http_client: Any = ...,
-        http_client_params: dict[str, Any] | None = ..., **kwargs: Any
+        self,
+        sqs_connection: Any,
+        http_client: Any = ...,
+        http_client_params: dict[str, Any] | None = ...,
+        **kwargs: Any,
     ) -> None: ...
     def make_request(
-        self, operation: str, params_: dict[str, Any], path: str, verb: str,
-        callback: Any = ..., protocol_params: dict[str, Any] | None = ...
+        self,
+        operation: str,
+        params_: dict[str, Any],
+        path: str,
+        verb: str,
+        callback: Any = ...,
+        protocol_params: dict[str, Any] | None = ...,
     ) -> promise: ...
     def get_list(
-        self, operation: str, params: dict[str, Any], markers: Any,
-        path: str = ..., parent: Any = ..., verb: str = ...,
-        callback: Any = ..., protocol_params: dict[str, Any] | None = ...
+        self,
+        operation: str,
+        params: dict[str, Any],
+        markers: Any,
+        path: str = ...,
+        parent: Any = ...,
+        verb: str = ...,
+        callback: Any = ...,
+        protocol_params: dict[str, Any] | None = ...,
     ) -> promise: ...
     def get_object(
-        self, operation: str, params: dict[str, Any], path: str = ...,
-        parent: Any = ..., verb: str = ..., callback: Any = ...,
-        protocol_params: dict[str, Any] | None = ...
+        self,
+        operation: str,
+        params: dict[str, Any],
+        path: str = ...,
+        parent: Any = ...,
+        verb: str = ...,
+        callback: Any = ...,
+        protocol_params: dict[str, Any] | None = ...,
     ) -> promise: ...
     def get_status(
-        self, operation: str, params: dict[str, Any], path: str = ...,
-        parent: Any = ..., verb: str = ..., callback: Any = ...,
-        protocol_params: dict[str, Any] | None = ...
+        self,
+        operation: str,
+        params: dict[str, Any],
+        path: str = ...,
+        parent: Any = ...,
+        verb: str = ...,
+        callback: Any = ...,
+        protocol_params: dict[str, Any] | None = ...,
     ) -> promise: ...

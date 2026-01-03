@@ -1,5 +1,3 @@
-from typing import Any
-
 import boto3 as boto3
 from botocore import exceptions as exceptions
 from botocore.awsrequest import AWSRequest as AWSRequest

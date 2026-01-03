@@ -1,5 +1,3 @@
-from typing import Any
-
 __all__ = (
     "AMQPError",
     "ConnectionError",
@@ -110,7 +108,6 @@ class InternalError(IrrecoverableConnectionError):
     code: int
 
 class MessageNacked(Exception): ...
-
 class AMQPDeprecationWarning(UserWarning): ...
 
 def error_for_code(

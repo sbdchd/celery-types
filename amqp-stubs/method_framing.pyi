@@ -1,5 +1,4 @@
 from collections.abc import Callable
-from io import BytesIO as Buffer
 from typing import Any
 
 from amqp.basic_message import Message as Message

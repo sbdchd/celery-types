@@ -17,7 +17,6 @@ class Object:
 class MaybeChannelBound(Object):
     @property
     def can_cache_declaration(self) -> bool: ...
-
     def __call__(
         self: _MaybeChannelBoundT, channel: StdChannel | Connection
     ) -> _MaybeChannelBoundT: ...

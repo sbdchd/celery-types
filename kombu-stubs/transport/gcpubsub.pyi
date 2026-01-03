@@ -1,6 +1,5 @@
 import dataclasses
-import threading
-from concurrent.futures import Future, ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 from logging import Logger
 from typing import Any
 
