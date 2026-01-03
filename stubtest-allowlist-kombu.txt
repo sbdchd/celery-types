@@ -3,10 +3,6 @@
 # librabbitmq is a C extension that can't be installed without the native library
 kombu.transport.librabbitmq
 
-# types-redis stubs have a Protocol metaclass that differs from runtime
-kombu.transport.redis.PrefixedRedisPipeline
-kombu.transport.redis.PrefixedStrictRedis
-
 # kombu bug: reprkwargs is in __all__ but not defined at runtime
 # See: https://github.com/celery/kombu/blob/main/kombu/utils/__init__.py
 kombu.utils.reprkwargs
