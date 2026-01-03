@@ -9,10 +9,7 @@ from kombu.message import Message
 from kombu.transport.base import StdChannel
 from typing_extensions import Self
 
-from kombu.entity import Exchange as Exchange
-from kombu.entity import Queue as Queue
-
-__all__ = ("Exchange", "Queue", "Producer", "Consumer")
+__all__ = ("Consumer", "Exchange", "Producer", "Queue")
 
 class Producer:
     channel: Connection | StdChannel | None

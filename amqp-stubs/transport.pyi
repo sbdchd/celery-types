@@ -1,9 +1,9 @@
 import re
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Generator, Mapping
 from contextlib import contextmanager
 from socket import socket
 from ssl import SSLError as SSLError
-from typing import Any, Generator
+from typing import Any
 
 from amqp.exceptions import UnexpectedFrame as UnexpectedFrame
 

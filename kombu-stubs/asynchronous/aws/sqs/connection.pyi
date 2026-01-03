@@ -1,9 +1,8 @@
 from typing import Any
 
-from vine import promise
-
 from kombu.asynchronous.aws.connection import AsyncAWSQueryConnection
 from kombu.asynchronous.aws.sqs.queue import AsyncQueue
+from vine import promise
 
 __all__ = ("AsyncSQSConnection",)
 

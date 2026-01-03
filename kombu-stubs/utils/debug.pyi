@@ -1,7 +1,7 @@
 from logging import Logger
 from typing import Any
 
-__all__ = ("setup_logging", "Logwrapped")
+__all__ = ("Logwrapped", "setup_logging")
 
 class Logwrapped:
     instance: Any

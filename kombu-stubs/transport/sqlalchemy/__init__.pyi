@@ -1,10 +1,10 @@
 from typing import Any
 
-from sqlalchemy.exc import OperationalError
-from sqlalchemy.orm import Session
 from kombu.transport.virtual import Channel as VirtualChannel
 from kombu.transport.virtual import Transport as VirtualTransport
 from kombu.utils.objects import cached_property
+from sqlalchemy.exc import OperationalError
+from sqlalchemy.orm import Session
 
 VERSION: tuple[int, int, int]
 

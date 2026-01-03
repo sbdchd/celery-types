@@ -1,6 +1,6 @@
 from collections.abc import Callable, Mapping
 from socket import socket
-from typing import Any, TypeAlias
+from typing import Any, Self, TypeAlias
 
 from amqp.channel import Channel as _ChannelType
 
@@ -77,8 +77,8 @@ class Connection:
         frame_writer: Callable[..., Any] = ...,
         **kwargs: Any,
     ) -> None: ...
-    def __enter__(self) -> Connection: ...
-    def __exit__(self, *eargs: Any) -> None: ...
+    def __enter__(self) -> Self: ...
+    def __exit__(self, *eargs: object) -> None: ...
     def Transport(
         self,
         host: str,

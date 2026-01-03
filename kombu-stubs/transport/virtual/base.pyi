@@ -22,9 +22,9 @@ W_NO_CONSUMERS: str
 logger: logging.Logger
 
 # Forward references for type annotations to avoid name collisions with class attributes
-_QoSType: TypeAlias = "QoS"
-_MessageType: TypeAlias = "Message"
-_ChannelType: TypeAlias = "Channel"
+_QoSType: TypeAlias = QoS
+_MessageType: TypeAlias = Message
+_ChannelType: TypeAlias = Channel
 
 class binding_key_t(NamedTuple):
     queue: str

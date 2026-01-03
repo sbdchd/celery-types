@@ -1,9 +1,9 @@
 from collections.abc import Callable, Mapping
 from io import BytesIO
 from types import TracebackType
-from typing import Any
+from typing import Any, Self
 
-__all__ = ("Headers", "Response", "Request")
+__all__ = ("Headers", "Request", "Response")
 
 class Headers(dict[str, str]):
     complete: bool
@@ -102,7 +102,7 @@ class BaseClient:
     def add_request(self, request: _Request) -> _Request: ...
     def close(self) -> None: ...
     def on_header(self, headers: _Headers, line: bytes | str) -> None: ...
-    def __enter__(self) -> BaseClient: ...
+    def __enter__(self) -> Self: ...
     def __exit__(
         self,
         exc_type: type[BaseException] | None,

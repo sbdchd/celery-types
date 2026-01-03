@@ -1,11 +1,11 @@
 from collections.abc import Callable
 from types import TracebackType
-from typing import Any
+from typing import Any, Self
 
 __all__ = ("DummyLock", "LaxBoundedSemaphore")
 
 class DummyLock:
-    def __enter__(self) -> DummyLock: ...
+    def __enter__(self) -> Self: ...
     def __exit__(
         self,
         exc_type: type[BaseException] | None,

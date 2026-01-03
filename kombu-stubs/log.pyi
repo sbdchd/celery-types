@@ -3,7 +3,7 @@ from typing import Any, TextIO
 
 from kombu.utils.objects import cached_property
 
-__all__ = ("LogMixin", "LOG_LEVELS", "get_loglevel", "setup_logging")
+__all__ = ("LOG_LEVELS", "LogMixin", "get_loglevel", "setup_logging")
 
 LOG_LEVELS: dict[str | int, int | str]
 DISABLE_TRACEBACKS: str | None

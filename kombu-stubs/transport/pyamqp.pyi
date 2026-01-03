@@ -1,7 +1,6 @@
 from typing import Any
 
 import amqp
-
 from kombu.transport.base import Message as BaseMessage
 from kombu.transport.base import StdChannel
 from kombu.transport.base import Transport as BaseTransport

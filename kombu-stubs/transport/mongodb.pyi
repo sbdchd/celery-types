@@ -1,12 +1,13 @@
+from collections.abc import Iterator
 from datetime import datetime
-from typing import Any, Iterator
+from typing import Any
 
-from pymongo.collection import Collection
-from pymongo.cursor import Cursor
-from pymongo.database import Database
 from kombu.transport.virtual import Channel as VirtualChannel
 from kombu.transport.virtual import Transport as VirtualTransport
 from kombu.utils.objects import cached_property
+from pymongo.collection import Collection
+from pymongo.cursor import Cursor
+from pymongo.database import Database
 
 E_SERVER_VERSION: str
 E_NO_TTL_INDEXES: str

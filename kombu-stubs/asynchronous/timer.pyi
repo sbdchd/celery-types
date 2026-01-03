@@ -1,7 +1,7 @@
 from collections.abc import Callable, Iterator
 from datetime import datetime
 from types import TracebackType
-from typing import Any, NamedTuple
+from typing import Any, NamedTuple, Self
 from zoneinfo import ZoneInfo
 
 __all__ = ("Entry", "Timer", "to_timestamp")
@@ -50,7 +50,7 @@ class Timer:
         on_error: Callable[[Exception], None] | None = ...,
         **kwargs: Any,
     ) -> None: ...
-    def __enter__(self) -> Timer: ...
+    def __enter__(self) -> Self: ...
     def __exit__(
         self,
         exc_type: type[BaseException] | None,

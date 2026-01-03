@@ -4,4 +4,4 @@ from botocore.awsrequest import AWSRequest as AWSRequest
 from botocore.httpsession import get_cert_path as get_cert_path
 from botocore.response import get_response as get_response
 
-__all__ = ("exceptions", "AWSRequest", "get_response", "get_cert_path")
+__all__ = ("AWSRequest", "exceptions", "get_cert_path", "get_response")

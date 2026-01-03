@@ -4,12 +4,12 @@ from typing import Any, TypeVar
 
 __all__ = (
     "LRUCache",
-    "memoize",
+    "dictfilter",
+    "is_list",
     "lazy",
     "maybe_evaluate",
-    "is_list",
     "maybe_list",
-    "dictfilter",
+    "memoize",
     "retry_over_time",
 )
 

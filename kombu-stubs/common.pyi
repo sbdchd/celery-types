@@ -9,14 +9,14 @@ from kombu.transport.base import StdChannel
 
 __all__ = (
     "Broadcast",
-    "maybe_declare",
-    "uuid",
-    "itermessages",
-    "send_reply",
     "collect_replies",
-    "insured",
     "drain_consumer",
     "eventloop",
+    "insured",
+    "itermessages",
+    "maybe_declare",
+    "send_reply",
+    "uuid",
 )
 
 class Broadcast(Queue):

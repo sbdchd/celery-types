@@ -1,12 +1,12 @@
 from collections.abc import Callable, Iterable
 
 __all__ = (
-    "register",
-    "encoders",
-    "get_encoder",
-    "get_decoder",
     "compress",
     "decompress",
+    "encoders",
+    "get_decoder",
+    "get_encoder",
+    "register",
 )
 
 def register(

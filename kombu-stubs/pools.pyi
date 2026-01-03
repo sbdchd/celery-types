@@ -4,14 +4,14 @@ from kombu.connection import Connection, ConnectionPool
 from kombu.messaging import Producer
 
 __all__ = (
-    "ProducerPool",
     "PoolGroup",
-    "register_group",
+    "ProducerPool",
     "connections",
-    "producers",
     "get_limit",
-    "set_limit",
+    "producers",
+    "register_group",
     "reset",
+    "set_limit",
 )
 
 _ProducerType: TypeAlias = Producer

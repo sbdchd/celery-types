@@ -1,6 +1,7 @@
 from collections.abc import Callable
+from typing import TypeAlias
 
-MatcherFunction = Callable[[str, str], bool]
+MatcherFunction: TypeAlias = Callable[[str, str], bool]
 
 class MatcherNotInstalled(Exception): ...
 

@@ -8,7 +8,7 @@ from kombu.transport.base import Management, StdChannel, Transport
 from kombu.utils.objects import cached_property
 from typing_extensions import Self
 
-__all__ = ("Connection", "ConnectionPool", "ChannelPool")
+__all__ = ("ChannelPool", "Connection", "ConnectionPool")
 
 _T = TypeVar("_T")
 

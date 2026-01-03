@@ -1,11 +1,10 @@
-from typing import Any, TypeVar
+from typing import Any
 
 from kombu.connection import Connection
 from kombu.transport.base import StdChannel
+from typing_extensions import Self
 
-__all__ = ("Object", "MaybeChannelBound")
-
-_MaybeChannelBoundT = TypeVar("_MaybeChannelBoundT", bound="MaybeChannelBound")
+__all__ = ("MaybeChannelBound", "Object")
 
 class Object:
     attrs: tuple[tuple[str, Any], ...]
@@ -17,15 +16,9 @@ class Object:
 class MaybeChannelBound(Object):
     @property
     def can_cache_declaration(self) -> bool: ...
-    def __call__(
-        self: _MaybeChannelBoundT, channel: StdChannel | Connection
-    ) -> _MaybeChannelBoundT: ...
-    def bind(
-        self: _MaybeChannelBoundT, channel: StdChannel | Connection
-    ) -> _MaybeChannelBoundT: ...
-    def maybe_bind(
-        self: _MaybeChannelBoundT, channel: StdChannel | Connection
-    ) -> _MaybeChannelBoundT: ...
+    def __call__(self, channel: StdChannel | Connection) -> Self: ...
+    def bind(self, channel: StdChannel | Connection) -> Self: ...
+    def maybe_bind(self, channel: StdChannel | Connection) -> Self: ...
     def revive(self, channel: StdChannel) -> None: ...
     def when_bound(self) -> None: ...
     @property

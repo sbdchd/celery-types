@@ -1,8 +1,7 @@
 from typing import Any, NoReturn
 
-from vine import promise
-
 from kombu.asynchronous.aws.sqs.message import AsyncMessage
+from vine import promise
 
 def list_first(rs: list[Any]) -> Any | None: ...
 

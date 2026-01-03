@@ -1,7 +1,7 @@
 from typing import Any
 
 from sqlalchemy.orm import RelationshipProperty
-from sqlalchemy.schema import MetaData, Column
+from sqlalchemy.schema import Column, MetaData
 
 class_registry: dict[str, Any]
 metadata: MetaData
@@ -16,7 +16,6 @@ class Queue:
     messages: RelationshipProperty[Any]
 
     def __init__(self, name: str) -> None: ...
-    def __str__(self) -> str: ...
 
 class Message:
     __table_args__: tuple[Any, ...]
@@ -32,4 +31,3 @@ class Message:
     queue: Queue
 
     def __init__(self, payload: str, queue: Queue) -> None: ...
-    def __str__(self) -> str: ...

@@ -5,7 +5,6 @@ from typing import Any, TypeVar
 from amqp import promise as promise
 
 _T = TypeVar("_T")
-_F = TypeVar("_F", bound=Callable[..., Any])
 
 class NullHandler(Handler):
     def emit(self, record: Any) -> None: ...

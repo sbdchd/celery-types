@@ -2,7 +2,7 @@ import pickle as pickle
 from collections.abc import Callable, Container, Iterable, Mapping
 from typing import Any, NamedTuple, TypeAlias
 
-__all__ = ("pickle", "loads", "dumps", "register", "unregister")
+__all__ = ("dumps", "loads", "pickle", "register", "unregister")
 
 pickle_load = pickle.load
 

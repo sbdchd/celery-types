@@ -6,10 +6,10 @@ from kombu.message import Message as Message
 from kombu.messaging import Consumer, Producer
 from kombu.utils.objects import cached_property
 
-__all__ = ("Message", "StdChannel", "Management", "Transport")
+__all__ = ("Management", "Message", "StdChannel", "Transport")
 
 # Forward reference for Management to avoid name collision with Transport.Management
-_ManagementType: TypeAlias = "Management"
+_ManagementType: TypeAlias = Management
 
 class Management:
     transport: Transport

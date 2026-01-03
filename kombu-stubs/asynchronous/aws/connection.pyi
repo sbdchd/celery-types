@@ -4,7 +4,7 @@ from typing import Any
 from kombu.asynchronous.http.base import Request as _Request
 from vine import promise
 
-__all__ = ("AsyncHTTPSConnection", "AsyncConnection")
+__all__ = ("AsyncConnection", "AsyncHTTPSConnection")
 
 def message_from_headers(hdr: list[tuple[str, str]]) -> Any: ...
 

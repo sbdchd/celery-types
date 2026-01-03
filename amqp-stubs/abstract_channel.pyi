@@ -1,11 +1,10 @@
 from collections.abc import Callable
 from logging import Logger
-from typing import Any
-
-from vine import promise
+from typing import Any, Self
 
 from amqp.exceptions import AMQPNotImplementedError as AMQPNotImplementedError
 from amqp.exceptions import RecoverableConnectionError as RecoverableConnectionError
+from vine import promise
 
 __all__ = ("AbstractChannel",)
 
@@ -20,8 +19,8 @@ class AbstractChannel:
     method_queue: list[Any]
 
     def __init__(self, connection: Any, channel_id: int | None) -> None: ...
-    def __enter__(self) -> AbstractChannel: ...
-    def __exit__(self, *args: Any) -> None: ...
+    def __enter__(self) -> Self: ...
+    def __exit__(self, *args: object) -> None: ...
     def close(self) -> None: ...
     def dispatch_method(
         self, method_sig: tuple[int, int], payload: bytes, content: Any

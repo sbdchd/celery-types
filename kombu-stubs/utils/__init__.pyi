@@ -10,20 +10,20 @@ from kombu.utils.objects import cached_property as cached_property
 # We match the runtime __all__ exactly
 __all__ = (
     "EqualityDict",
-    "uuid",
-    "maybe_list",
+    "cached_property",
+    "emergency_dump_state",
+    "fileno",
     "fxrange",
     "fxrangemax",
-    "retry_over_time",
-    "emergency_dump_state",
-    "cached_property",
-    "register_after_fork",
-    "reprkwargs",
-    "reprcall",
-    "symbol_by_name",
-    "nested",
-    "fileno",
     "maybe_fileno",
+    "maybe_list",
+    "nested",
+    "register_after_fork",
+    "reprcall",
+    "reprkwargs",
+    "retry_over_time",
+    "symbol_by_name",
+    "uuid",
 )
 
 # Defined in __all__ but not actually implemented at runtime (kombu bug)

@@ -1,6 +1,7 @@
-from collections.abc import Callable, Sequence
+import builtins
+from collections.abc import Callable, Generator, Sequence
 from contextlib import contextmanager
-from typing import Any, Generator, Type, TypeAlias
+from typing import Any, TypeAlias
 
 from kombu.connection import Connection
 from kombu.entity import Exchange, Queue
@@ -9,10 +10,9 @@ from kombu.messaging import Consumer, Producer
 from kombu.transport.base import StdChannel
 from kombu.utils.objects import cached_property
 
-__all__ = ("Node", "Mailbox")
+__all__ = ("Mailbox", "Node")
 
 _ConsumerType: TypeAlias = Consumer
-_NodeType: TypeAlias = "Node"
 
 class Node:
     hostname: str | None
@@ -84,7 +84,7 @@ class Mailbox:
     queue_exclusive: bool
     reply_queue_ttl: float | None
     reply_queue_expires: float | None
-    node_cls: Type[_NodeType]
+    node_cls: builtins.type[Node]
 
     def __init__(
         self,
@@ -102,14 +102,14 @@ class Mailbox:
         reply_queue_ttl: float | None = ...,
         reply_queue_expires: float | None = ...,
     ) -> None: ...
-    def __call__(self, connection: Connection) -> _NodeType: ...
+    def __call__(self, connection: Connection) -> Node: ...
     def Node(
         self,
         hostname: str | None = ...,
         state: Any | None = ...,
         channel: StdChannel | None = ...,
         handlers: dict[str, Callable[..., Any]] | None = ...,
-    ) -> _NodeType: ...
+    ) -> Node: ...
     def get_queue(self, hostname: str) -> Queue: ...
     def get_reply_queue(self) -> Queue: ...
     @contextmanager

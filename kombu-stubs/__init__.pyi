@@ -13,21 +13,21 @@ from kombu.pools import Connections as _Connections
 from kombu.pools import Producers as _Producers
 
 __all__ = (
-    "Connection",
     "BrokerConnection",
+    "Connection",
+    "Consumer",
     "Exchange",
+    "Message",
+    "Producer",
     "Queue",
     "binding",
-    "Message",
-    "Consumer",
-    "Producer",
     "connections",
-    "producers",
-    "parse_url",
-    "eventloop",
-    "uuid",
-    "enable_insecure_serializers",
     "disable_insecure_serializers",
+    "enable_insecure_serializers",
+    "eventloop",
+    "parse_url",
+    "producers",
+    "uuid",
 )
 
 BrokerConnection = Connection

@@ -8,7 +8,7 @@ from kombu.messaging import Consumer, Producer
 from kombu.transport.base import StdChannel
 from typing_extensions import Self
 
-__all__ = ("SimpleQueue", "SimpleBuffer")
+__all__ = ("SimpleBuffer", "SimpleQueue")
 
 class SimpleBase:
     Empty: type[Empty]
