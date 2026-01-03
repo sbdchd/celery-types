@@ -1,6 +1,7 @@
 # Unfixable stubtest errors for kombu
 
-# librabbitmq is a C extension that can't be installed without the native library
+# librabbitmq is a legacy C extension (abandoned 2018, Python 3.6 max)
+# No stub provided - use pyamqp transport instead
 kombu.transport.librabbitmq
 
 # kombu bug: reprkwargs is in __all__ but not defined at runtime
