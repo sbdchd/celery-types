@@ -278,7 +278,7 @@ class Transport(BaseTransport):
     Cycle: type[FairCycle]
     Management: type[Management]
 
-    polling_interval: float
+    polling_interval: float | None
     channel_max: int
     channels: list[_ChannelType] | None
     cycle: FairCycle | None

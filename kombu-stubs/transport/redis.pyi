@@ -185,7 +185,7 @@ _Channel = Channel
 class Transport(VirtualTransport):
     Channel: type[_Channel]
 
-    polling_interval: None  # type: ignore[assignment]
+    polling_interval: None
     brpop_timeout: int
     default_port: int
     driver_type: str
