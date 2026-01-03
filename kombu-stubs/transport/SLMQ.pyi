@@ -32,8 +32,10 @@ class Channel(VirtualChannel):
     @property
     def transport_options(self) -> dict[str, Any]: ...
 
+_Channel = Channel
+
 class Transport(VirtualTransport):
-    Channel: type[Channel]
+    Channel: type[_Channel]
     driver_type: str
     driver_name: str
-    connection_errors: tuple[type[Exception], ...]
+    connection_errors: tuple[type[Exception] | None, ...]  # type: ignore[assignment]

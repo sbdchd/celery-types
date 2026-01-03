@@ -4,6 +4,7 @@ from typing import Any
 
 from kombu.transport.virtual import Channel as VirtualChannel
 from kombu.transport.virtual import Transport as VirtualTransport
+from kombu.transport.virtual.base import BrokerState
 
 class Channel(VirtualChannel):
     events: defaultdict[str, set[Any]]
@@ -14,8 +15,11 @@ class Channel(VirtualChannel):
     def __init__(self, connection: Any, **kwargs: Any) -> None: ...
     def close(self) -> None: ...
 
+_Channel = Channel
+
 class Transport(VirtualTransport):
-    Channel: type[Channel]
+    Channel: type[_Channel]
     default_port: int | None
     driver_type: str
     driver_name: str
+    global_state: BrokerState

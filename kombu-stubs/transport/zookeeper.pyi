@@ -8,10 +8,14 @@ KZ_CONNECTION_ERRORS: tuple[type[Exception], ...]
 KZ_CHANNEL_ERRORS: tuple[type[Exception], ...]
 
 class Channel(VirtualChannel):
-    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
+    def __init__(self, connection: Any, **kwargs: Any) -> None: ...
+    @property
+    def client(self) -> Any: ...
+
+_Channel = Channel
 
 class Transport(VirtualTransport):
-    Channel: type[Channel]
+    Channel: type[_Channel]
     driver_type: str
     driver_name: str
     connection_errors: tuple[type[Exception], ...]

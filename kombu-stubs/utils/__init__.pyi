@@ -6,8 +6,8 @@ from uuid import UUID
 from kombu.utils.functional import retry_over_time as retry_over_time
 from kombu.utils.objects import cached_property as cached_property
 
-# Note: runtime __all__ includes reprkwargs but it's not actually importable (kombu bug)
-# We match the runtime __all__ exactly to avoid stubtest errors
+# Note: runtime __all__ includes reprkwargs but it's not actually defined (kombu bug)
+# We match the runtime __all__ exactly
 __all__ = (
     "EqualityDict",
     "uuid",
@@ -26,7 +26,8 @@ __all__ = (
     "maybe_fileno",
 )
 
-# Declared but not actually exported at runtime (kombu bug)
+# Defined in __all__ but not actually implemented at runtime (kombu bug)
+# We define it in the stub to match __all__
 def reprkwargs(kwargs: Mapping[str, Any], sep: str = ..., fmt: str = ...) -> str: ...
 
 _T = TypeVar("_T")

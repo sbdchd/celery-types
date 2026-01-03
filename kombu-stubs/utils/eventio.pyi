@@ -1,7 +1,7 @@
 from collections.abc import Callable
 from typing import Any
 
-__all__: tuple[str, ...]
+__all__ = ("poll",)
 
 READ: int
 WRITE: int

@@ -18,9 +18,14 @@ class AuthenticationFailure(Exception): ...
 class QoS(VirtualQoS):
     def __init__(self, session: Any, prefetch_count: int = ...) -> None: ...
 
+_Channel = Channel
+
 class Connection:
+    Channel: type[_Channel]
+
     def __init__(self, **conn_info: Any) -> None: ...
     def close(self) -> None: ...
+    def close_channel(self, channel: Any) -> None: ...
     def get_qpid_connection(self) -> Any: ...
 
 _Message = Message
@@ -69,5 +74,14 @@ class Transport(BaseTransport):
     Connection: type[_Connection]
     driver_type: str
     driver_name: str
-    connection_errors: tuple[type[Exception], ...]
-    channel_errors: tuple[type[Exception], ...]
+    polling_interval: None
+    connection_errors: tuple[type[Exception] | None, ...]  # type: ignore[assignment]
+    channel_errors: tuple[type[Exception] | None, ...]  # type: ignore[assignment]
+    recoverable_connection_errors: tuple[type[BaseException] | None, ...]  # type: ignore[assignment]
+    recoverable_channel_errors: tuple[type[BaseException] | None, ...]  # type: ignore[assignment]
+
+    def __del__(self) -> None: ...
+    def drain_events(
+        self, connection: Any, timeout: int = ..., **kwargs: Any
+    ) -> None: ...
+    def verify_runtime_environment(self) -> None: ...
