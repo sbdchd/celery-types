@@ -2,6 +2,7 @@ from logging import Logger
 from typing import Any, TextIO
 
 from kombu.utils.objects import cached_property
+from typing_extensions import override
 
 __all__ = ("LOG_LEVELS", "LogMixin", "get_loglevel", "setup_logging")
 
@@ -29,8 +30,10 @@ class Log(LogMixin):
     _logger: Logger | None
 
     def __init__(self, name: str, logger: Logger | None = ...) -> None: ...
+    @override
     def get_logger(self) -> Logger: ...
     @property
+    @override
     def logger_name(self) -> str: ...
 
 def get_loglevel(level: str | int) -> int: ...

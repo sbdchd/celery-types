@@ -11,7 +11,7 @@ from kombu.transport.base import StdChannel
 from kombu.transport.base import Transport as BaseTransport
 from kombu.transport.virtual.exchange import ExchangeType
 from kombu.utils.scheduling import FairCycle
-from typing_extensions import Self
+from typing_extensions import Self, override
 
 ARRAY_TYPE_H: str
 NOT_EQUIVALENT_FMT: str
@@ -251,8 +251,11 @@ class Channel(AbstractChannel, StdChannel):
         properties: dict[str, Any] | None = ...,
     ) -> dict[str, Any]: ...
     def flow(self, active: bool = ...) -> None: ...
+    @override
     def after_reply_message_received(self, queue: str) -> None: ...
+    @override
     def __enter__(self) -> Self: ...
+    @override
     def __exit__(
         self,
         exc_type: type[BaseException] | None,
@@ -271,6 +274,7 @@ class Management(BaseManagement):
     channel: _ChannelType | None
 
     def __init__(self, transport: Transport) -> None: ...
+    @override
     def get_bindings(self) -> list[dict[str, Any]]: ...
     def close(self) -> None: ...
 
@@ -287,10 +291,15 @@ class Transport(BaseTransport):
     _callbacks: dict[str, Callable[..., Any]] | None
 
     def __init__(self, client: Connection, **kwargs: Any) -> None: ...
+    @override
     def create_channel(self, connection: Connection) -> _ChannelType: ...
+    @override
     def close_channel(self, channel: StdChannel) -> None: ...  # pyright: ignore[reportIncompatibleMethodOverride]
+    @override
     def establish_connection(self) -> Connection: ...
+    @override
     def close_connection(self, connection: Connection) -> None: ...
+    @override
     def drain_events(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self, connection: Connection, timeout: float | None = ...
     ) -> None: ...
@@ -298,4 +307,5 @@ class Transport(BaseTransport):
         self, channel: _ChannelType, message: _MessageType, queue: str
     ) -> None: ...
     @property
+    @override
     def default_connection_params(self) -> dict[str, Any]: ...

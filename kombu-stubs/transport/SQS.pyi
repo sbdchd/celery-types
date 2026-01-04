@@ -6,6 +6,7 @@ from kombu.transport.virtual import Channel as VirtualChannel
 from kombu.transport.virtual import QoS as VirtualQoS
 from kombu.transport.virtual import Transport as VirtualTransport
 from kombu.utils.objects import cached_property
+from typing_extensions import override
 
 logger: Logger
 CHARS_REPLACE_TABLE: dict[int, int]
@@ -19,6 +20,7 @@ class AccessDeniedQueueException(Exception): ...
 class DoesNotExistQueueException(Exception): ...
 
 class QoS(VirtualQoS):
+    @override
     def reject(self, delivery_tag: int, requeue: bool = ...) -> None: ...
     def apply_backoff_policy(
         self,
@@ -48,16 +50,21 @@ class Channel(VirtualChannel):
     B64_REGEX: re.Pattern[bytes]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
+    @override
     def basic_consume(
         self, queue: str, no_ack: bool, *args: Any, **kwargs: Any
     ) -> str: ...
+    @override
     def basic_cancel(self, consumer_tag: str) -> Any: ...
+    @override
     def drain_events(
         self, timeout: float | None = ..., callback: Any | None = ..., **kwargs: Any
     ) -> None: ...
     def entity_name(self, name: str, table: dict[int, int] = ...) -> str: ...
     def canonical_queue_name(self, queue_name: str) -> str: ...
+    @override
     def basic_ack(self, delivery_tag: int, multiple: bool = ...) -> None: ...
+    @override
     def close(self) -> None: ...
     def new_sqs_client(
         self,
@@ -120,4 +127,5 @@ class Transport(VirtualTransport):
     implements: Any
 
     @property
+    @override
     def default_connection_params(self) -> dict[str, Any]: ...

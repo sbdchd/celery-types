@@ -5,6 +5,7 @@ from kombu.transport.base import Transport as BaseTransport
 from kombu.transport.virtual import Channel as VirtualChannel
 from kombu.transport.virtual import Message
 from kombu.transport.virtual import QoS as VirtualQoS
+from typing_extensions import override
 
 logger: Logger
 buffer: type[bytes]
@@ -34,7 +35,9 @@ class Channel(VirtualChannel):
     QoS: type[_QoS]  # pyright: ignore[reportIncompatibleVariableOverride]
 
     def __init__(self, connection: Any, transport: Any) -> None: ...
+    @override
     def close(self) -> None: ...
+    @override
     def queue_declare(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         queue: str,
@@ -45,6 +48,7 @@ class Channel(VirtualChannel):
         nowait: bool = ...,
         arguments: dict[str, Any] | None = ...,
     ) -> Any: ...
+    @override
     def exchange_declare(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         exchange: str = ...,
@@ -52,15 +56,19 @@ class Channel(VirtualChannel):
         durable: bool = ...,
         **kwargs: Any,
     ) -> None: ...
+    @override
     def exchange_delete(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self, exchange_name: str, **kwargs: Any
     ) -> None: ...
+    @override
     def queue_bind(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self, queue: str, exchange: str, routing_key: str, **kwargs: Any
     ) -> None: ...
+    @override
     def queue_unbind(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self, queue: str, exchange: str, routing_key: str, **kwargs: Any
     ) -> None: ...
+    @override
     def basic_qos(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self, prefetch_count: int, *args: Any
     ) -> None: ...
@@ -79,6 +87,7 @@ class Transport(BaseTransport):
     recoverable_channel_errors: tuple[type[BaseException] | None, ...]  # type: ignore[assignment]  # pyright: ignore[reportIncompatibleVariableOverride]
 
     def __del__(self) -> None: ...
+    @override
     def drain_events(
         self, connection: Any, timeout: int = ..., **kwargs: Any
     ) -> None: ...

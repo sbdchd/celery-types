@@ -8,6 +8,7 @@ from kombu.utils.objects import cached_property
 from pymongo.collection import Collection
 from pymongo.cursor import Cursor
 from pymongo.database import Database
+from typing_extensions import override
 
 E_SERVER_VERSION: str
 E_NO_TTL_INDEXES: str
@@ -42,10 +43,13 @@ class Channel(VirtualChannel):
     from_transport_options: tuple[str, ...]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
+    @override
     def get_table(self, exchange: str) -> frozenset[tuple[str, str, str]]: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
+    @override
     def queue_delete(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self, queue: str, **kwargs: Any
     ) -> int | None: ...
+    @override
     def prepare_queue_arguments(
         self, arguments: dict[str, Any] | None, **kwargs: Any
     ) -> dict[str, Any]: ...
@@ -75,7 +79,9 @@ class Transport(VirtualTransport):
     driver_name: str
     implements: Any
 
+    @override
     def driver_version(self) -> str: ...
+    @override
     def as_uri(
         self, uri: str, include_password: bool = ..., mask: str = ...
     ) -> str: ...

@@ -5,6 +5,7 @@ from kombu.transport.virtual import Channel as VirtualChannel
 from kombu.transport.virtual import Transport as VirtualTransport
 from kombu.transport.virtual.base import BrokerState
 from kombu.utils.objects import cached_property
+from typing_extensions import override
 
 DEFAULT_PORT: int
 E_NAMESERVER: str
@@ -13,6 +14,7 @@ logger: Logger
 
 class Channel(VirtualChannel):
     def __init__(self, connection: Any, **kwargs: Any) -> None: ...
+    @override
     def close(self) -> None: ...
     def queues(self) -> list[str]: ...
     @cached_property

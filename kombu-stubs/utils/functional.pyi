@@ -2,6 +2,8 @@ from collections import UserDict
 from collections.abc import Callable, Hashable, Iterable, Iterator
 from typing import Any, TypeVar
 
+from typing_extensions import override
+
 __all__ = (
     "LRUCache",
     "dictfilter",
@@ -31,6 +33,7 @@ class LRUCache(UserDict[_KT, _VT]):
     def iteritems(self) -> Iterator[tuple[_KT, _VT]]: ...
     def iterkeys(self) -> Iterator[_KT]: ...
     def itervalues(self) -> Iterator[_VT]: ...
+    @override
     def popitem(self, last: bool = ...) -> tuple[_KT, _VT]: ...
 
 def memoize(

@@ -5,6 +5,7 @@ from kombu.transport.virtual import Transport as VirtualTransport
 from kombu.utils.objects import cached_property
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session
+from typing_extensions import override
 
 VERSION: tuple[int, int, int]
 
@@ -33,4 +34,5 @@ class Transport(VirtualTransport):
     driver_name: str
     connection_errors: tuple[type[OperationalError], ...]  # pyright: ignore[reportIncompatibleVariableOverride]
 
+    @override
     def driver_version(self) -> str: ...

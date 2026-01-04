@@ -2,6 +2,7 @@ from typing import Any
 
 from kombu.asynchronous.aws.connection import AsyncAWSQueryConnection
 from kombu.asynchronous.aws.sqs.queue import AsyncQueue
+from typing_extensions import override
 from vine import promise
 
 __all__ = ("AsyncSQSConnection",)
@@ -19,6 +20,7 @@ class AsyncSQSConnection(AsyncAWSQueryConnection):
         message_attribute_names: list[str] | None = ...,
         **kwargs: Any,
     ) -> None: ...
+    @override
     def make_request(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         operation_name: str,

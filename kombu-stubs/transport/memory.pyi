@@ -5,6 +5,7 @@ from typing import Any
 from kombu.transport.virtual import Channel as VirtualChannel
 from kombu.transport.virtual import Transport as VirtualTransport
 from kombu.transport.virtual.base import BrokerState
+from typing_extensions import override
 
 class Channel(VirtualChannel):
     events: defaultdict[str, set[Any]]
@@ -13,6 +14,7 @@ class Channel(VirtualChannel):
     supports_fanout: bool
 
     def __init__(self, connection: Any, **kwargs: Any) -> None: ...
+    @override
     def close(self) -> None: ...
 
 _Channel = Channel

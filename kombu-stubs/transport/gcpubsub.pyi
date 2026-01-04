@@ -10,6 +10,7 @@ from google.cloud.pubsub_v1 import (  # type: ignore[import-untyped]
 )
 from kombu.transport import virtual
 from kombu.utils.objects import cached_property
+from typing_extensions import override
 
 logger: Logger
 
@@ -53,8 +54,11 @@ class Channel(virtual.Channel):
 
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     def entity_name(self, name: str, table: dict[int, int] = ...) -> str: ...
+    @override
     def basic_ack(self, delivery_tag: int, multiple: bool = ...) -> None: ...
+    @override
     def after_reply_message_received(self, queue: str) -> None: ...
+    @override
     def close(self) -> None: ...
     @cached_property
     def subscriber(self) -> SubscriberClient: ...
@@ -92,9 +96,12 @@ class Transport(virtual.Transport):
     implements: Any
 
     def __init__(self, client: Any, **kwargs: Any) -> None: ...
+    @override
     def driver_version(self) -> str: ...
     @staticmethod
     def parse_uri(uri: str) -> str: ...
     @classmethod
+    @override
     def as_uri(cls, uri: str, include_password: bool = ..., mask: str = ...) -> str: ...  # pyright: ignore[reportIncompatibleMethodOverride]
+    @override
     def drain_events(self, connection: Any, timeout: float | None = ...) -> None: ...  # type: ignore[override]

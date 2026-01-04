@@ -5,6 +5,7 @@ from azure.servicebus.management import ServiceBusAdministrationClient
 from kombu.transport.virtual import Channel as VirtualChannel
 from kombu.transport.virtual import Transport as VirtualTransport
 from kombu.utils.objects import cached_property
+from typing_extensions import override
 
 PUNCTUATIONS_TO_REPLACE: set[str]
 CHARS_REPLACE_TABLE: dict[int, int]
@@ -32,12 +33,16 @@ class Channel(VirtualChannel):
     _noack_queues: set[str]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
+    @override
     def basic_consume(
         self, queue: str, no_ack: bool, *args: Any, **kwargs: Any
     ) -> str: ...
+    @override
     def basic_cancel(self, consumer_tag: str) -> None: ...
     def entity_name(self, name: str, table: dict[int, int] | None = ...) -> str: ...
+    @override
     def basic_ack(self, delivery_tag: str, multiple: bool = ...) -> None: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
+    @override
     def close(self) -> None: ...
     @cached_property
     def queue_service(self) -> ServiceBusClient: ...
@@ -74,4 +79,5 @@ class Transport(VirtualTransport):
     @staticmethod
     def parse_uri(uri: str) -> tuple[str, Any]: ...
     @classmethod
+    @override
     def as_uri(cls, uri: str, include_password: bool = ..., mask: str = ...) -> str: ...  # pyright: ignore[reportIncompatibleMethodOverride]
