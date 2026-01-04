@@ -1,6 +1,6 @@
 from collections.abc import Callable, Generator, Iterable, Mapping
 from contextlib import contextmanager
-from typing import Any, BinaryIO, TextIO, TypeVar
+from typing import Any, BinaryIO, TextIO
 from uuid import UUID
 
 from kombu.utils.functional import retry_over_time as retry_over_time
@@ -29,8 +29,6 @@ __all__ = (
 # Defined in __all__ but not actually implemented at runtime (kombu bug)
 # We define it in the stub to match __all__
 def reprkwargs(kwargs: Mapping[str, Any], sep: str = ..., fmt: str = ...) -> str: ...
-
-_T = TypeVar("_T")
 
 class EqualityDict(dict[Any, Any]): ...
 
@@ -67,7 +65,7 @@ def symbol_by_name(
     imp: Callable[[str], Any] | None = ...,
     package: str | None = ...,
     sep: str = ...,
-    default: _T | None = ...,
+    default: Any = ...,
     **kwargs: Any,
 ) -> Any: ...
 @contextmanager

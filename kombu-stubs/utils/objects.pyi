@@ -12,10 +12,18 @@ class cached_property(Generic[_T]):
     fdel: Callable[[Any], None] | None
     attrname: str | None
 
+    @overload
     def __init__(
         self,
-        fget: Callable[[Any], _T] | None = ...,
+        fget: Callable[[Any], _T],
         fset: Callable[[Any, _T], None] | None = ...,
+        fdel: Callable[[Any], None] | None = ...,
+    ) -> None: ...
+    @overload
+    def __init__(
+        self: "cached_property[Any]",
+        fget: None = ...,
+        fset: Callable[[Any, Any], None] | None = ...,
         fdel: Callable[[Any], None] | None = ...,
     ) -> None: ...
     @overload

@@ -1,5 +1,7 @@
 from typing import Any
 
+from typing_extensions import override
+
 class SASL:
     @property
     def mechanism(self) -> bytes | None: ...
@@ -11,6 +13,7 @@ class PLAIN(SASL):
     password: str
 
     def __init__(self, username: str, password: str) -> None: ...
+    @override
     def start(self, connection: Any) -> bytes: ...
 
 class AMQPLAIN(SASL):
@@ -19,11 +22,13 @@ class AMQPLAIN(SASL):
     password: str
 
     def __init__(self, username: str, password: str) -> None: ...
+    @override
     def start(self, connection: Any) -> bytes: ...
 
 class EXTERNAL(SASL):
     mechanism: bytes  # pyright: ignore[reportIncompatibleMethodOverride]
 
+    @override
     def start(self, connection: Any) -> bytes: ...
 
 class RAW(SASL):
@@ -31,6 +36,7 @@ class RAW(SASL):
     response: bytes | None
 
     def __init__(self, mechanism: bytes | None, response: bytes | None) -> None: ...
+    @override
     def start(self, connection: Any) -> bytes | None: ...
 
 class GSSAPI(SASL):
@@ -47,4 +53,5 @@ class GSSAPI(SASL):
         rdns: bool = ...,
         fail_soft: bool = ...,
     ) -> None: ...
+    @override
     def start(self) -> bytes | None: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]

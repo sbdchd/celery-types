@@ -3,10 +3,12 @@ from logging import Handler, Logger
 from typing import Any, TypeVar
 
 from amqp import promise as promise
+from typing_extensions import override
 
 _T = TypeVar("_T")
 
 class NullHandler(Handler):
+    @override
     def emit(self, record: Any) -> None: ...
 
 def bytes_to_str(s: bytes | str) -> str: ...

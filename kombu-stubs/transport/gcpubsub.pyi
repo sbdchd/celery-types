@@ -4,7 +4,7 @@ from logging import Logger
 from typing import Any
 
 from google.cloud.monitoring_v3 import MetricServiceClient
-from google.cloud.pubsub_v1 import (  # type: ignore[import-untyped]
+from google.cloud.pubsub_v1 import (  # type: ignore[import-untyped]  # pyright: ignore[reportMissingTypeStubs]
     PublisherClient,
     SubscriberClient,
 )
