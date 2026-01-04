@@ -1,6 +1,8 @@
 from collections.abc import Callable
 from types import TracebackType
-from typing import Any, Self
+from typing import Any
+
+from typing_extensions import Self
 
 __all__ = ("DummyLock", "LaxBoundedSemaphore")
 

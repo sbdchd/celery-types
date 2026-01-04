@@ -1,9 +1,10 @@
 from collections.abc import Callable
 from logging import Logger
-from typing import Any, Self
+from typing import Any
 
 from amqp.exceptions import AMQPNotImplementedError as AMQPNotImplementedError
 from amqp.exceptions import RecoverableConnectionError as RecoverableConnectionError
+from typing_extensions import Self
 from vine import promise
 
 __all__ = ("AbstractChannel",)

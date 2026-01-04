@@ -1,8 +1,10 @@
 from collections.abc import Callable, Iterator
 from datetime import datetime
 from types import TracebackType
-from typing import Any, NamedTuple, Self
+from typing import Any, NamedTuple
 from zoneinfo import ZoneInfo
+
+from typing_extensions import Self
 
 __all__ = ("Entry", "Timer", "to_timestamp")
 

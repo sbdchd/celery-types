@@ -1,6 +1,6 @@
 from collections.abc import Generator, Iterable, Iterator
 from types import TracebackType
-from typing import Any, Self
+from typing import Any
 
 from kombu.connection import Connection
 from kombu.entity import Exchange, Queue
@@ -8,6 +8,7 @@ from kombu.message import Message
 from kombu.messaging import Consumer as _Consumer
 from kombu.messaging import Producer
 from kombu.transport.base import StdChannel
+from typing_extensions import Self
 
 __all__ = ("Consumer", "Publisher")
 

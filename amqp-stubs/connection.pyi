@@ -1,8 +1,9 @@
 from collections.abc import Callable, Mapping
 from socket import socket
-from typing import Any, Self, TypeAlias
+from typing import Any, TypeAlias
 
 from amqp.channel import Channel as _ChannelType
+from typing_extensions import Self
 
 __all__ = ("Connection",)
 

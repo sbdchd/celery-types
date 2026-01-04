@@ -1,7 +1,9 @@
 from collections.abc import Callable, Mapping
 from io import BytesIO
 from types import TracebackType
-from typing import Any, Self
+from typing import Any
+
+from typing_extensions import Self
 
 __all__ = ("Headers", "Request", "Response")
 

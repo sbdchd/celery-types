@@ -2,7 +2,7 @@ import logging
 import types
 from collections import OrderedDict
 from collections.abc import Callable, Generator, Iterable
-from typing import Any, NamedTuple, Self, TypeAlias
+from typing import Any, NamedTuple, TypeAlias
 
 from kombu.connection import Connection
 from kombu.message import Message as BaseMessage
@@ -11,6 +11,7 @@ from kombu.transport.base import StdChannel
 from kombu.transport.base import Transport as BaseTransport
 from kombu.transport.virtual.exchange import ExchangeType
 from kombu.utils.scheduling import FairCycle
+from typing_extensions import Self
 
 ARRAY_TYPE_H: str
 NOT_EQUIVALENT_FMT: str

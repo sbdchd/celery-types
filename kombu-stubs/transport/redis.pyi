@@ -4,11 +4,12 @@ from logging import Logger
 from typing import Any, NamedTuple
 
 import redis as redis_module
-import redis.client
 from kombu.transport.virtual import Channel as VirtualChannel
 from kombu.transport.virtual import QoS as VirtualQoS
 from kombu.transport.virtual import Transport as VirtualTransport
 from kombu.utils.objects import cached_property
+from redis.client import Pipeline as _RedisPipeline
+from redis.client import PubSub as _RedisPubSub
 
 logger: Logger
 crit: Callable[..., None]
@@ -51,12 +52,12 @@ class PrefixedStrictRedis(GlobalKeyPrefixMixin, redis_module.Redis):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     def pubsub(self, **kwargs: Any) -> PrefixedRedisPubSub: ...
 
-class PrefixedRedisPipeline(GlobalKeyPrefixMixin, redis_module.client.Pipeline):
+class PrefixedRedisPipeline(GlobalKeyPrefixMixin, _RedisPipeline):
     global_keyprefix: str
 
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
 
-class PrefixedRedisPubSub(redis_module.client.PubSub):
+class PrefixedRedisPubSub(_RedisPubSub):
     PUBSUB_COMMANDS: tuple[str, ...]
     global_keyprefix: str
 

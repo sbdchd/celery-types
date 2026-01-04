@@ -36,7 +36,7 @@ class LRUCache(UserDict[_KT, _VT]):
 def memoize(
     maxsize: int | None = ...,
     keyfun: Callable[..., Any] | None = ...,
-    Cache: type[LRUCache[Any, Any]] = ...,
+    Cache: type[LRUCache[Any, Any] | dict[Any, Any]] = ...,
 ) -> Callable[[Callable[..., _T]], Callable[..., _T]]: ...
 
 class lazy:

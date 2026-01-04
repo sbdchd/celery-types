@@ -89,6 +89,11 @@ reportUnusedParameter = false
 reportUnusedFunction = false
 reportPrivateUsage = false
 reportUnannotatedClassAttribute = false
+# Stubs describe existing code where subclasses legitimately override
+# class variables and method signatures with different types
+reportIncompatibleVariableOverride = false
+reportIncompatibleMethodOverride = false
+reportImplicitOverride = false
 
 
 [tool.mypy]

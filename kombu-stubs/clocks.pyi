@@ -1,5 +1,7 @@
 from threading import Lock
-from typing import Any, Self
+from typing import Any
+
+from typing_extensions import Self
 
 __all__ = ("LamportClock", "timetuple")
 

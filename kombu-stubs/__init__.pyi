@@ -2,6 +2,7 @@ from collections.abc import Callable, Generator
 from typing import Any
 from uuid import UUID
 
+from kombu import pools as pools
 from kombu.connection import Connection as Connection
 from kombu.entity import Exchange as Exchange
 from kombu.entity import Queue as Queue
