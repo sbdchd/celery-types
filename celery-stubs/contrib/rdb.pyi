@@ -50,13 +50,13 @@ class Rdb(Pdb, AbstractContextManager[Rdb]):
         tb: TracebackType | None,
     ) -> bool | None: ...
     @override
-    def do_continue(self, arg: object) -> Literal[1]: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
+    def do_continue(self, arg: object) -> Literal[1]: ...  # type: ignore[override]
 
     do_cont = do_continue  # type: ignore[assignment]
     do_c = do_continue  # type: ignore[assignment]
 
     @override
-    def do_quit(self, arg: object) -> Literal[1]: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
+    def do_quit(self, arg: object) -> Literal[1]: ...  # type: ignore[override]
 
     do_exit = do_quit  # type: ignore[assignment]
     do_q = do_quit  # type: ignore[assignment]

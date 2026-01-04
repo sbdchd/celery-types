@@ -20,7 +20,7 @@ class TaskDocumenter(FunctionDocumenter):
         parent: Any,
     ) -> bool: ...
     @override
-    def format_args(self) -> str: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
+    def format_args(self) -> str: ...  # type: ignore[override]
     @override
     def document_members(self, all_members: bool = False) -> None: ...
     @override
