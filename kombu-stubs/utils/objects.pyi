@@ -21,7 +21,7 @@ class cached_property(Generic[_T]):
     ) -> None: ...
     @overload
     def __init__(
-        self: "cached_property[Any]",
+        self: cached_property[Any],
         fget: None = ...,
         fset: Callable[[Any, Any], None] | None = ...,
         fdel: Callable[[Any], None] | None = ...,

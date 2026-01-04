@@ -1,8 +1,12 @@
 from logging import Logger
 from typing import Any
 
-from confluent_kafka import KafkaException  # type: ignore[import-untyped]  # pyright: ignore[reportMissingTypeStubs,reportUnknownVariableType]
-from confluent_kafka.admin import AdminClient  # type: ignore[import-untyped]  # pyright: ignore[reportMissingTypeStubs]
+from confluent_kafka import (  # type: ignore[import-untyped]  # pyright: ignore[reportMissingTypeStubs]
+    KafkaException,  # pyright: ignore[reportUnknownVariableType]
+)
+from confluent_kafka.admin import (  # type: ignore[import-untyped]  # pyright: ignore[reportMissingTypeStubs]
+    AdminClient,
+)
 from kombu.transport.virtual import Channel as VirtualChannel
 from kombu.transport.virtual import Message as VirtualMessage
 from kombu.transport.virtual import QoS as VirtualQoS
