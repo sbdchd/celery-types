@@ -40,8 +40,8 @@ class QoS(VirtualQoS):
 _QoS = QoS
 
 class Channel(VirtualChannel):
-    QoS: type[_QoS]
-    Message: type[_Message]
+    QoS: type[_QoS]  # pyright: ignore[reportIncompatibleVariableOverride]
+    Message: type[_Message]  # pyright: ignore[reportIncompatibleVariableOverride]
 
     default_wait_time_seconds: int
     default_connection_wait_time_seconds: int
@@ -65,15 +65,15 @@ class Channel(VirtualChannel):
 _Channel = Channel
 
 class Transport(VirtualTransport):
-    Channel: type[_Channel]
+    Channel: type[_Channel]  # pyright: ignore[reportIncompatibleVariableOverride]
 
-    default_port: int
+    default_port: int  # pyright: ignore[reportIncompatibleVariableOverride]
     driver_type: str
     driver_name: str
-    recoverable_connection_errors: tuple[type[Exception], ...]
+    recoverable_connection_errors: tuple[type[Exception], ...]  # pyright: ignore[reportIncompatibleVariableOverride]
 
     def __init__(self, client: Any, **kwargs: Any) -> None: ...
-    def as_uri(  # type: ignore[override]
+    def as_uri(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self, uri: str, include_password: bool = ..., mask: str = ...
     ) -> None: ...
     def driver_version(self) -> str: ...

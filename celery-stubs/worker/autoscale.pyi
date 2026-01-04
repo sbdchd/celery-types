@@ -9,12 +9,12 @@ class WorkerComponent(StartStopStep):
     enabled: Any
     def __init__(self, w: Any, **kwargs: Any) -> None: ...
     @override
-    def create(
+    def create(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, w: Any
     ) -> Any: ...
     def register_with_event_loop(self, w: Any, hub: Any) -> None: ...
     @override
-    def info(
+    def info(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, w: Any
     ) -> Any: ...
 

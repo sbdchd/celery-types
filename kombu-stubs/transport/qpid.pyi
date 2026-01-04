@@ -31,11 +31,11 @@ _QoS = QoS
 
 class Channel(VirtualChannel):
     Message: type[_Message]
-    QoS: type[_QoS]
+    QoS: type[_QoS]  # pyright: ignore[reportIncompatibleVariableOverride]
 
     def __init__(self, connection: Any, transport: Any) -> None: ...
     def close(self) -> None: ...
-    def queue_declare(  # type: ignore[override]
+    def queue_declare(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         queue: str,
         passive: bool = ...,
@@ -45,23 +45,23 @@ class Channel(VirtualChannel):
         nowait: bool = ...,
         arguments: dict[str, Any] | None = ...,
     ) -> Any: ...
-    def exchange_declare(  # type: ignore[override]
+    def exchange_declare(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         exchange: str = ...,
         type: str = ...,
         durable: bool = ...,
         **kwargs: Any,
     ) -> None: ...
-    def exchange_delete(  # type: ignore[override]
+    def exchange_delete(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self, exchange_name: str, **kwargs: Any
     ) -> None: ...
-    def queue_bind(  # type: ignore[override]
+    def queue_bind(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self, queue: str, exchange: str, routing_key: str, **kwargs: Any
     ) -> None: ...
-    def queue_unbind(  # type: ignore[override]
+    def queue_unbind(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self, queue: str, exchange: str, routing_key: str, **kwargs: Any
     ) -> None: ...
-    def basic_qos(  # type: ignore[override]
+    def basic_qos(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self, prefetch_count: int, *args: Any
     ) -> None: ...
 
@@ -73,10 +73,10 @@ class Transport(BaseTransport):
     driver_type: str
     driver_name: str
     polling_interval: None
-    connection_errors: tuple[type[Exception] | None, ...]  # type: ignore[assignment]
-    channel_errors: tuple[type[Exception] | None, ...]  # type: ignore[assignment]
-    recoverable_connection_errors: tuple[type[BaseException] | None, ...]  # type: ignore[assignment]
-    recoverable_channel_errors: tuple[type[BaseException] | None, ...]  # type: ignore[assignment]
+    connection_errors: tuple[type[Exception] | None, ...]  # type: ignore[assignment]  # pyright: ignore[reportIncompatibleVariableOverride]
+    channel_errors: tuple[type[Exception] | None, ...]  # type: ignore[assignment]  # pyright: ignore[reportIncompatibleVariableOverride]
+    recoverable_connection_errors: tuple[type[BaseException] | None, ...]  # type: ignore[assignment]  # pyright: ignore[reportIncompatibleVariableOverride]
+    recoverable_channel_errors: tuple[type[BaseException] | None, ...]  # type: ignore[assignment]  # pyright: ignore[reportIncompatibleVariableOverride]
 
     def __del__(self) -> None: ...
     def drain_events(

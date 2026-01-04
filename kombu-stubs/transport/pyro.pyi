@@ -21,11 +21,11 @@ class Channel(VirtualChannel):
 _Channel = Channel
 
 class Transport(VirtualTransport):
-    Channel: type[_Channel]
+    Channel: type[_Channel]  # pyright: ignore[reportIncompatibleVariableOverride]
     driver_type: str
     driver_name: str
-    connection_errors: tuple[type[Exception], ...]
-    channel_errors: tuple[type[Exception], ...]
+    connection_errors: tuple[type[Exception], ...]  # pyright: ignore[reportIncompatibleVariableOverride]
+    channel_errors: tuple[type[Exception], ...]  # pyright: ignore[reportIncompatibleVariableOverride]
     global_state: BrokerState
     @cached_property
     def shared_queues(self) -> Any: ...

@@ -18,7 +18,7 @@ class Channel(VirtualChannel):
 _Channel = Channel
 
 class Transport(VirtualTransport):
-    Channel: type[_Channel]
+    Channel: type[_Channel]  # pyright: ignore[reportIncompatibleVariableOverride]
     default_port: int | None
     driver_type: str
     driver_name: str

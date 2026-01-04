@@ -15,7 +15,7 @@ __all__ = ("Consumer", "Publisher")
 def entry_to_queue(queue: str, **options: Any) -> Queue: ...
 
 class Publisher(Producer):
-    exchange: Exchange | str  # type: ignore[assignment]
+    exchange: Exchange | str  # type: ignore[assignment]  # pyright: ignore[reportIncompatibleVariableOverride]
     exchange_type: str
     routing_key: str
     durable: bool

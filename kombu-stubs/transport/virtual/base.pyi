@@ -267,7 +267,7 @@ class Channel(AbstractChannel, StdChannel):
     def cycle(self) -> FairCycle: ...
 
 class Management(BaseManagement):
-    transport: Transport
+    transport: Transport  # pyright: ignore[reportIncompatibleVariableOverride]
     channel: _ChannelType | None
 
     def __init__(self, transport: Transport) -> None: ...
@@ -277,7 +277,7 @@ class Management(BaseManagement):
 class Transport(BaseTransport):
     Channel: type[_ChannelType]
     Cycle: type[FairCycle]
-    Management: type[Management]
+    Management: type[Management]  # pyright: ignore[reportIncompatibleVariableOverride]
 
     polling_interval: float | None
     channel_max: int
@@ -288,10 +288,10 @@ class Transport(BaseTransport):
 
     def __init__(self, client: Connection, **kwargs: Any) -> None: ...
     def create_channel(self, connection: Connection) -> _ChannelType: ...
-    def close_channel(self, channel: StdChannel) -> None: ...
+    def close_channel(self, channel: StdChannel) -> None: ...  # pyright: ignore[reportIncompatibleMethodOverride]
     def establish_connection(self) -> Connection: ...
     def close_connection(self, connection: Connection) -> None: ...
-    def drain_events(  # type: ignore[override]
+    def drain_events(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self, connection: Connection, timeout: float | None = ...
     ) -> None: ...
     def on_message_ready(

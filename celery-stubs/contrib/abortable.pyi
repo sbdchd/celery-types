@@ -19,5 +19,5 @@ class AbortableTask(Task[_P, _R_co], Generic[_P, _R_co]):
     abstract: bool = True
 
     @override
-    def AsyncResult(self, task_id: str) -> AbortableAsyncResult[_R_co]: ...  # type: ignore[override]
+    def AsyncResult(self, task_id: str) -> AbortableAsyncResult[_R_co]: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
     def is_aborted(self, *, task_id: str, **kwargs: Any) -> bool: ...

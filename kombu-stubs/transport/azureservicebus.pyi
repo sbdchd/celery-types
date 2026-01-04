@@ -37,7 +37,7 @@ class Channel(VirtualChannel):
     ) -> str: ...
     def basic_cancel(self, consumer_tag: str) -> None: ...
     def entity_name(self, name: str, table: dict[int, int] | None = ...) -> str: ...
-    def basic_ack(self, delivery_tag: str, multiple: bool = ...) -> None: ...  # type: ignore[override]
+    def basic_ack(self, delivery_tag: str, multiple: bool = ...) -> None: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
     def close(self) -> None: ...
     @cached_property
     def queue_service(self) -> ServiceBusClient: ...
@@ -65,13 +65,13 @@ class Channel(VirtualChannel):
 _Channel = Channel
 
 class Transport(VirtualTransport):
-    Channel: type[_Channel]
+    Channel: type[_Channel]  # pyright: ignore[reportIncompatibleVariableOverride]
 
-    polling_interval: int
-    default_port: None
+    polling_interval: int  # pyright: ignore[reportIncompatibleVariableOverride]
+    default_port: None  # pyright: ignore[reportIncompatibleVariableOverride]
     can_parse_url: bool
 
     @staticmethod
     def parse_uri(uri: str) -> tuple[str, Any]: ...
     @classmethod
-    def as_uri(cls, uri: str, include_password: bool = ..., mask: str = ...) -> str: ...
+    def as_uri(cls, uri: str, include_password: bool = ..., mask: str = ...) -> str: ...  # pyright: ignore[reportIncompatibleMethodOverride]

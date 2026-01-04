@@ -14,7 +14,7 @@ class Message(BaseMessage):
 _Message = Message
 
 class Channel(amqp.Channel, StdChannel):
-    Message: type[_Message]  # type: ignore[assignment]
+    Message: type[_Message]  # type: ignore[assignment]  # pyright: ignore[reportIncompatibleVariableOverride]
 
     def prepare_message(
         self,
@@ -26,7 +26,7 @@ class Channel(amqp.Channel, StdChannel):
         properties: dict[str, Any] | None = ...,
         _Message: type[amqp.Message] = ...,
     ) -> amqp.Message: ...
-    def prepare_queue_arguments(  # type: ignore[override]
+    def prepare_queue_arguments(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self, arguments: dict[str, Any], **kwargs: Any
     ) -> dict[str, Any]: ...
     def message_to_python(self, raw_message: Any) -> _Message: ...
@@ -34,16 +34,16 @@ class Channel(amqp.Channel, StdChannel):
 _Connection = amqp.Connection
 
 class Connection(amqp.Connection):
-    Channel: type[Channel]
+    Channel: type[Channel]  # pyright: ignore[reportIncompatibleVariableOverride]
 
 class Transport(BaseTransport):
     Connection: type[_Connection]
-    default_port: int
+    default_port: int  # pyright: ignore[reportIncompatibleVariableOverride]
     default_ssl_port: int
-    connection_errors: tuple[type[Exception], ...]
-    channel_errors: tuple[type[Exception], ...]
-    recoverable_connection_errors: tuple[type[Exception], ...]
-    recoverable_channel_errors: tuple[type[Exception], ...]
+    connection_errors: tuple[type[Exception], ...]  # pyright: ignore[reportIncompatibleVariableOverride]
+    channel_errors: tuple[type[Exception], ...]  # pyright: ignore[reportIncompatibleVariableOverride]
+    recoverable_connection_errors: tuple[type[Exception], ...]  # pyright: ignore[reportIncompatibleVariableOverride]
+    recoverable_channel_errors: tuple[type[Exception], ...]  # pyright: ignore[reportIncompatibleVariableOverride]
     driver_name: str
     driver_type: str
 

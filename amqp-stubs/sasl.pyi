@@ -6,7 +6,7 @@ class SASL:
     def start(self, connection: Any) -> bytes | None: ...
 
 class PLAIN(SASL):
-    mechanism: bytes
+    mechanism: bytes  # pyright: ignore[reportIncompatibleMethodOverride]
     username: str
     password: str
 
@@ -14,7 +14,7 @@ class PLAIN(SASL):
     def start(self, connection: Any) -> bytes: ...
 
 class AMQPLAIN(SASL):
-    mechanism: bytes
+    mechanism: bytes  # pyright: ignore[reportIncompatibleMethodOverride]
     username: str
     password: str
 
@@ -22,19 +22,19 @@ class AMQPLAIN(SASL):
     def start(self, connection: Any) -> bytes: ...
 
 class EXTERNAL(SASL):
-    mechanism: bytes
+    mechanism: bytes  # pyright: ignore[reportIncompatibleMethodOverride]
 
     def start(self, connection: Any) -> bytes: ...
 
 class RAW(SASL):
-    mechanism: bytes | None
+    mechanism: bytes | None  # pyright: ignore[reportIncompatibleMethodOverride]
     response: bytes | None
 
     def __init__(self, mechanism: bytes | None, response: bytes | None) -> None: ...
     def start(self, connection: Any) -> bytes | None: ...
 
 class GSSAPI(SASL):
-    mechanism: bytes | None
+    mechanism: bytes | None  # pyright: ignore[reportIncompatibleMethodOverride]
     client_name: str | None
     service: bytes
     rdns: bool
@@ -47,4 +47,4 @@ class GSSAPI(SASL):
         rdns: bool = ...,
         fail_soft: bool = ...,
     ) -> None: ...
-    def start(self) -> bytes | None: ...  # type: ignore[override]
+    def start(self) -> bytes | None: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]

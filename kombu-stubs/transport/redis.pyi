@@ -121,7 +121,7 @@ class MultiChannelPoller:
 _QoS = QoS
 
 class Channel(VirtualChannel):
-    QoS: type[_QoS]
+    QoS: type[_QoS]  # pyright: ignore[reportIncompatibleVariableOverride]
 
     supports_fanout: bool
     keyprefix_queue: str
@@ -184,22 +184,22 @@ class Channel(VirtualChannel):
 _Channel = Channel
 
 class Transport(VirtualTransport):
-    Channel: type[_Channel]
+    Channel: type[_Channel]  # pyright: ignore[reportIncompatibleVariableOverride]
 
-    polling_interval: None
+    polling_interval: None  # pyright: ignore[reportIncompatibleVariableOverride]
     brpop_timeout: int
-    default_port: int
+    default_port: int  # pyright: ignore[reportIncompatibleVariableOverride]
     driver_type: str
     driver_name: str
     implements: Any
-    connection_errors: tuple[type[Exception], ...]
-    channel_errors: tuple[type[Exception], ...]
-    cycle: MultiChannelPoller | None  # type: ignore[assignment]
+    connection_errors: tuple[type[Exception], ...]  # pyright: ignore[reportIncompatibleVariableOverride]
+    channel_errors: tuple[type[Exception], ...]  # pyright: ignore[reportIncompatibleVariableOverride]
+    cycle: MultiChannelPoller | None  # type: ignore[assignment]  # pyright: ignore[reportIncompatibleVariableOverride]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     def driver_version(self) -> str: ...
     def register_with_event_loop(self, connection: Any, loop: Any) -> None: ...
-    def on_readable(self, fileno: int) -> None: ...  # type: ignore[override]
+    def on_readable(self, fileno: int) -> None: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
 
 class SentinelManagedSSLConnection:
     def __init__(self, **kwargs: Any) -> None: ...
@@ -210,5 +210,5 @@ class SentinelChannel(Channel):
     connection_class_ssl: type[Any] | None
 
 class SentinelTransport(Transport):
-    default_port: int
-    Channel: type[SentinelChannel]
+    default_port: int  # pyright: ignore[reportIncompatibleVariableOverride]
+    Channel: type[SentinelChannel]  # pyright: ignore[reportIncompatibleVariableOverride]

@@ -22,6 +22,6 @@ class Channel(VirtualChannel):
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
 
 class Transport(VirtualTransport):
-    Channel: type[Channel]
+    Channel: type[Channel]  # pyright: ignore[reportIncompatibleVariableOverride]
     driver_type: str
     driver_name: str

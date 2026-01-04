@@ -25,12 +25,12 @@ class Channel(VirtualChannel):
 _Channel = Channel
 
 class Transport(VirtualTransport):
-    Channel: type[_Channel]
+    Channel: type[_Channel]  # pyright: ignore[reportIncompatibleVariableOverride]
 
     can_parse_url: bool
-    default_port: int
+    default_port: int  # pyright: ignore[reportIncompatibleVariableOverride]
     driver_type: str
     driver_name: str
-    connection_errors: tuple[type[OperationalError], ...]
+    connection_errors: tuple[type[OperationalError], ...]  # pyright: ignore[reportIncompatibleVariableOverride]
 
     def driver_version(self) -> str: ...

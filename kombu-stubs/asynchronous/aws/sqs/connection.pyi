@@ -19,7 +19,7 @@ class AsyncSQSConnection(AsyncAWSQueryConnection):
         message_attribute_names: list[str] | None = ...,
         **kwargs: Any,
     ) -> None: ...
-    def make_request(
+    def make_request(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         operation_name: str,
         params: dict[str, Any],

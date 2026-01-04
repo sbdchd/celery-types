@@ -44,7 +44,7 @@ class Channel(VirtualChannel):
     _predefined_queue_clients: dict[str, Any]
     _queue_cache: dict[str, str]
     _noack_queues: set[str]
-    QoS: type[_QoS]
+    QoS: type[_QoS]  # pyright: ignore[reportIncompatibleVariableOverride]
     B64_REGEX: re.Pattern[bytes]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
@@ -85,7 +85,7 @@ class Channel(VirtualChannel):
     @cached_property
     def queue_name_prefix(self) -> str: ...
     @cached_property
-    def supports_fanout(self) -> bool: ...
+    def supports_fanout(self) -> bool: ...  # pyright: ignore[reportIncompatibleVariableOverride]
     @cached_property
     def region(self) -> str: ...
     @cached_property
@@ -108,13 +108,13 @@ class Channel(VirtualChannel):
 _Channel = Channel
 
 class Transport(VirtualTransport):
-    Channel: type[_Channel]
+    Channel: type[_Channel]  # pyright: ignore[reportIncompatibleVariableOverride]
 
-    polling_interval: int
+    polling_interval: int  # pyright: ignore[reportIncompatibleVariableOverride]
     wait_time_seconds: int
-    default_port: None
-    connection_errors: tuple[type[Exception], ...]
-    channel_errors: tuple[type[Exception], ...]
+    default_port: None  # pyright: ignore[reportIncompatibleVariableOverride]
+    connection_errors: tuple[type[Exception], ...]  # pyright: ignore[reportIncompatibleVariableOverride]
+    channel_errors: tuple[type[Exception], ...]  # pyright: ignore[reportIncompatibleVariableOverride]
     driver_type: str
     driver_name: str
     implements: Any

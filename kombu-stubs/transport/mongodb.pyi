@@ -42,8 +42,8 @@ class Channel(VirtualChannel):
     from_transport_options: tuple[str, ...]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
-    def get_table(self, exchange: str) -> frozenset[tuple[str, str, str]]: ...  # type: ignore[override]
-    def queue_delete(  # type: ignore[override]
+    def get_table(self, exchange: str) -> frozenset[tuple[str, str, str]]: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
+    def queue_delete(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self, queue: str, **kwargs: Any
     ) -> int | None: ...
     def prepare_queue_arguments(
@@ -64,13 +64,13 @@ class Channel(VirtualChannel):
 _Channel = Channel
 
 class Transport(VirtualTransport):
-    Channel: type[_Channel]
+    Channel: type[_Channel]  # pyright: ignore[reportIncompatibleVariableOverride]
 
     can_parse_url: bool
-    polling_interval: int
-    default_port: int
-    connection_errors: tuple[type[Exception], ...]
-    channel_errors: tuple[type[Exception], ...]
+    polling_interval: int  # pyright: ignore[reportIncompatibleVariableOverride]
+    default_port: int  # pyright: ignore[reportIncompatibleVariableOverride]
+    connection_errors: tuple[type[Exception], ...]  # pyright: ignore[reportIncompatibleVariableOverride]
+    channel_errors: tuple[type[Exception], ...]  # pyright: ignore[reportIncompatibleVariableOverride]
     driver_type: str
     driver_name: str
     implements: Any

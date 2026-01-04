@@ -31,13 +31,13 @@ class Channel(VirtualChannel):
 _Channel = Channel
 
 class Transport(VirtualTransport):
-    Channel: type[_Channel]
+    Channel: type[_Channel]  # pyright: ignore[reportIncompatibleVariableOverride]
 
-    polling_interval: int
+    polling_interval: int  # pyright: ignore[reportIncompatibleVariableOverride]
     default_port: int | None
     can_parse_url: bool
 
     @staticmethod
     def parse_uri(uri: str) -> tuple[Any, str]: ...
     @classmethod
-    def as_uri(cls, uri: str, include_password: bool = ..., mask: str = ...) -> str: ...
+    def as_uri(cls, uri: str, include_password: bool = ..., mask: str = ...) -> str: ...  # pyright: ignore[reportIncompatibleMethodOverride]

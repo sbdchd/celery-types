@@ -8,6 +8,6 @@ class HashedSeq(list[Any]):
     hashvalue: int
 
     def __init__(self, *seq: Any) -> None: ...
-    def __hash__(self) -> int: ...  # type: ignore[override]
+    def __hash__(self) -> int: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleVariableOverride]
 
 def eqhash(o: Any) -> Hashable: ...

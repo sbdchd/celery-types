@@ -19,7 +19,7 @@ class Channel(VirtualChannel):
     ) -> str: ...
     def basic_cancel(self, consumer_tag: str) -> None: ...
     def entity_name(self, name: str, table: dict[int, int] = ...) -> str: ...
-    def basic_ack(self, delivery_tag: int) -> None: ...  # type: ignore[override]
+    def basic_ack(self, delivery_tag: int) -> None: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
     def delete_message(self, queue: str, message_id: str) -> None: ...
     @property
     def visibility_timeout(self) -> int: ...
@@ -35,7 +35,7 @@ class Channel(VirtualChannel):
 _Channel = Channel
 
 class Transport(VirtualTransport):
-    Channel: type[_Channel]
+    Channel: type[_Channel]  # pyright: ignore[reportIncompatibleVariableOverride]
     driver_type: str
     driver_name: str
-    connection_errors: tuple[type[Exception] | None, ...]  # type: ignore[assignment]
+    connection_errors: tuple[type[Exception] | None, ...]  # type: ignore[assignment]  # pyright: ignore[reportIncompatibleVariableOverride]

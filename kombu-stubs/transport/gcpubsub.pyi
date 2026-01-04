@@ -82,9 +82,9 @@ class Channel(virtual.Channel):
 _Channel = Channel
 
 class Transport(virtual.Transport):
-    Channel: type[_Channel]
+    Channel: type[_Channel]  # pyright: ignore[reportIncompatibleVariableOverride]
     can_parse_url: bool
-    polling_interval: float
+    polling_interval: float  # pyright: ignore[reportIncompatibleVariableOverride]
     connection_errors: tuple[type[BaseException], ...]
     channel_errors: tuple[type[BaseException], ...]
     driver_type: str
@@ -96,5 +96,5 @@ class Transport(virtual.Transport):
     @staticmethod
     def parse_uri(uri: str) -> str: ...
     @classmethod
-    def as_uri(cls, uri: str, include_password: bool = ..., mask: str = ...) -> str: ...
+    def as_uri(cls, uri: str, include_password: bool = ..., mask: str = ...) -> str: ...  # pyright: ignore[reportIncompatibleMethodOverride]
     def drain_events(self, connection: Any, timeout: float | None = ...) -> None: ...  # type: ignore[override]

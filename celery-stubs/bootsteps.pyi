@@ -97,11 +97,11 @@ class ConsumerStep(StartStopStep):
     consumers: list[Consumer] | None
     def get_consumers(self, channel: Any) -> list[Consumer]: ...
     @override
-    def start(
+    def start(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, c: Any
     ) -> None: ...
     @override
-    def stop(
+    def stop(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, c: Any
     ) -> None: ...
     def shutdown(self, c: Any) -> None: ...

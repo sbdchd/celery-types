@@ -32,7 +32,7 @@ class ExchangeType:
     ) -> bool: ...
 
 class DirectExchange(ExchangeType):
-    type: str
+    type: str  # pyright: ignore[reportIncompatibleVariableOverride]
 
     def deliver(
         self,
@@ -43,7 +43,7 @@ class DirectExchange(ExchangeType):
     ) -> None: ...
 
 class TopicExchange(ExchangeType):
-    type: str
+    type: str  # pyright: ignore[reportIncompatibleVariableOverride]
     wildcards: dict[str, str]
 
     def key_to_pattern(self, rkey: str) -> Any: ...
@@ -56,7 +56,7 @@ class TopicExchange(ExchangeType):
     ) -> None: ...
 
 class FanoutExchange(ExchangeType):
-    type: str
+    type: str  # pyright: ignore[reportIncompatibleVariableOverride]
 
     def deliver(
         self,
