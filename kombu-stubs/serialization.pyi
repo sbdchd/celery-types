@@ -2,6 +2,8 @@ import pickle as pickle
 from collections.abc import Callable, Container, Iterable, Mapping
 from typing import Any, NamedTuple, TypeAlias
 
+__all__ = ("dumps", "loads", "pickle", "register", "unregister")
+
 pickle_load = pickle.load
 
 _Encoder: TypeAlias = Callable[[Any], str]
