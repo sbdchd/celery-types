@@ -2,7 +2,7 @@ from typing import Any, TypeVar
 
 from kombu.connection import Connection
 from kombu.transport.base import StdChannel
-from typing_extensions import Self
+from typing_extensions import Self, override
 
 __all__ = ("MaybeChannelBound", "Object")
 
@@ -17,6 +17,7 @@ class Object:
 
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     def __copy__(self) -> Self: ...
+    @override
     def __reduce__(self) -> tuple[Any, ...]: ...
     def as_dict(self, recurse: bool = ...) -> dict[str, Any]: ...
 

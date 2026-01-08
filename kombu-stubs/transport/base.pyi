@@ -5,12 +5,13 @@ from kombu.connection import Connection
 from kombu.message import Message as Message
 from kombu.messaging import Consumer, Producer
 from kombu.utils.objects import cached_property
-from typing_extensions import Self
+from typing_extensions import Self, override
 
 __all__ = ("Management", "Message", "StdChannel", "Transport")
 
 class Implements(dict[str, Any]):
     def __getattr__(self, key: str) -> Any: ...
+    @override
     def __setattr__(self, key: str, value: Any) -> None: ...
     def extend(self, **kwargs: Any) -> Implements: ...
 

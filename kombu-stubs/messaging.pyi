@@ -7,7 +7,7 @@ from kombu.connection import Connection
 from kombu.entity import Exchange, Queue
 from kombu.message import Message
 from kombu.transport.base import StdChannel
-from typing_extensions import Self
+from typing_extensions import Self, override
 
 __all__ = ("Consumer", "Exchange", "Producer", "Queue")
 
@@ -69,6 +69,7 @@ class Producer:
         exc_tb: TracebackType | None,
     ) -> None: ...
     def __reduce_args__(self) -> tuple[Any, ...]: ...
+    @override
     def __reduce__(self) -> tuple[Any, ...]: ...
     def _get_channel(self) -> StdChannel: ...
     def _set_channel(self, channel: Connection | StdChannel) -> None: ...
