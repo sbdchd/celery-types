@@ -32,11 +32,11 @@ class Channel(VirtualChannel):
     @property
     def transport_options(self) -> dict[str, Any]: ...
     @override
-    def get_table(self, exchange: str) -> list[exchange_queue_t]: ...  # type: ignore[override]
+    def get_table(self, exchange: str) -> list[exchange_queue_t]: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
     @override
-    def _get(self, queue: str) -> dict[str, Any]: ...  # type: ignore[override]
+    def _get(self, queue: str) -> dict[str, Any]: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
     @override
-    def _put(self, queue: str, payload: dict[str, Any], **kwargs: Any) -> None: ...  # type: ignore[override]
+    def _put(self, queue: str, payload: dict[str, Any], **kwargs: Any) -> None: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
     def _put_fanout(
         self, exchange: str, payload: dict[str, Any], routing_key: str, **kwargs: Any
     ) -> None: ...

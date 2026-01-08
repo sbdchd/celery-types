@@ -1,9 +1,18 @@
 # kombu.transport.librabbitmq is an optional dependency that may not be installed
 kombu.transport.librabbitmq
 
-# kombu.utils has reprkwargs in __all__ but the function is not defined at runtime (kombu bug)
-kombu.utils.__all__
+# kombu.utils.reprkwargs is in __all__ but the function is not defined at runtime (kombu bug)
+kombu.utils.reprkwargs
 
 # kombu.transport.gcpubsub.Transport.channel_errors has a complex tuple type at runtime
 # that includes dynamically imported exceptions that cannot be accurately typed
 kombu.transport.gcpubsub.Transport.channel_errors
+
+# functools.total_ordering generates comparison methods with a NotImplemented parameter
+# that is an implementation detail and should not be typed in stubs
+kombu.asynchronous.timer.Entry.__ge__
+kombu.asynchronous.timer.Entry.__gt__
+kombu.asynchronous.timer.Entry.__le__
+
+# Lock parameter accepts any callable that returns a lock-like object, not just type[Lock]
+kombu.clocks.LamportClock.__init__

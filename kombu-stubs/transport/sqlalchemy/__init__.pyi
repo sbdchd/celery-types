@@ -27,9 +27,9 @@ class Channel(VirtualChannel):
     def _engine_from_config(self) -> Engine: ...
     def _open(self) -> tuple[Engine, sessionmaker[Session]]: ...
     @override
-    def _get(self, queue: str) -> Any: ...  # type: ignore[override]
+    def _get(self, queue: str) -> Any: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
     @override
-    def _put(self, queue: str, payload: Any, **kwargs: Any) -> None: ...  # type: ignore[override]
+    def _put(self, queue: str, payload: Any, **kwargs: Any) -> None: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
     @override
     def _size(self, queue: str) -> int: ...
 
