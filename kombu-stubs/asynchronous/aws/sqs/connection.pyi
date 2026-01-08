@@ -21,7 +21,7 @@ class AsyncSQSConnection(AsyncAWSQueryConnection):
         **kwargs: Any,
     ) -> None: ...
     @override
-    def make_request(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def make_request(  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[invalid-method-override]
         self,
         operation_name: str,
         params: dict[str, Any],

@@ -9,6 +9,11 @@ from typing_extensions import Self
 
 __all__ = ("Management", "Message", "StdChannel", "Transport")
 
+class Implements(dict[str, Any]):
+    def __getattr__(self, key: str) -> Any: ...
+    def __setattr__(self, key: str, value: Any) -> None: ...
+    def extend(self, **kwargs: Any) -> Implements: ...
+
 # Forward reference for Management to avoid name collision with Transport.Management
 _ManagementType: TypeAlias = Management
 
@@ -29,7 +34,7 @@ class Transport:
     driver_name: str
     recoverable_connection_errors: tuple[type[BaseException], ...]
     recoverable_channel_errors: tuple[type[BaseException], ...]
-    implements: dict[str, Any]
+    implements: Implements
 
     def __init__(self, client: Connection, **kwargs: Any) -> None: ...
     def establish_connection(self) -> Any: ...
@@ -64,8 +69,8 @@ class Transport:
 class StdChannel:
     no_ack_consumers: set[str] | None
 
-    def Consumer(self, *args: Any, **kwargs: Any) -> Consumer: ...
-    def Producer(self, *args: Any, **kwargs: Any) -> Producer: ...
+    def Consumer(self, *args: Any, **kwargs: Any) -> Consumer: ...  # ty: ignore[invalid-type-form]
+    def Producer(self, *args: Any, **kwargs: Any) -> Producer: ...  # ty: ignore[invalid-type-form]
     def get_bindings(self) -> list[dict[str, Any]]: ...
     def after_reply_message_received(self, queue: str) -> None: ...
     def prepare_queue_arguments(

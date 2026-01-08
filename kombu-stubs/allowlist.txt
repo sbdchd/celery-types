@@ -1,0 +1,9 @@
+# kombu.transport.librabbitmq is an optional dependency that may not be installed
+kombu.transport.librabbitmq
+
+# kombu.utils has reprkwargs in __all__ but the function is not defined at runtime (kombu bug)
+kombu.utils.__all__
+
+# kombu.transport.gcpubsub.Transport.channel_errors has a complex tuple type at runtime
+# that includes dynamically imported exceptions that cannot be accurately typed
+kombu.transport.gcpubsub.Transport.channel_errors

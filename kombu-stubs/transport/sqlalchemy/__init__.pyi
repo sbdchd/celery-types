@@ -3,8 +3,9 @@ from typing import Any
 from kombu.transport.virtual import Channel as VirtualChannel
 from kombu.transport.virtual import Transport as VirtualTransport
 from kombu.utils.objects import cached_property
+from sqlalchemy.engine import Engine
 from sqlalchemy.exc import OperationalError
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 from typing_extensions import override
 
 VERSION: tuple[int, int, int]
@@ -22,6 +23,15 @@ class Channel(VirtualChannel):
     def queue_cls(self) -> type[Any]: ...
     @cached_property
     def message_cls(self) -> type[Any]: ...
+    def _configure_entity_tablenames(self, opts: dict[str, Any]) -> None: ...
+    def _engine_from_config(self) -> Engine: ...
+    def _open(self) -> tuple[Engine, sessionmaker[Session]]: ...
+    @override
+    def _get(self, queue: str) -> Any: ...  # type: ignore[override]
+    @override
+    def _put(self, queue: str, payload: Any, **kwargs: Any) -> None: ...  # type: ignore[override]
+    @override
+    def _size(self, queue: str) -> int: ...
 
 _Channel = Channel
 

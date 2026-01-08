@@ -69,6 +69,43 @@ class Producer:
         exc_tb: TracebackType | None,
     ) -> None: ...
     def __reduce_args__(self) -> tuple[Any, ...]: ...
+    def __reduce__(self) -> tuple[Any, ...]: ...
+    def _get_channel(self) -> StdChannel: ...
+    def _set_channel(self, channel: Connection | StdChannel) -> None: ...
+    def _delivery_details(
+        self,
+        exchange: Exchange | str,
+        delivery_mode: int | None = ...,
+        maybe_delivery_mode: Callable[..., int | None] = ...,
+        Exchange: type[Exchange] = ...,
+    ) -> tuple[str, int | None]: ...
+    def _prepare(
+        self,
+        body: Any,
+        serializer: str | None = ...,
+        content_type: str | None = ...,
+        content_encoding: str | None = ...,
+        compression: str | None = ...,
+        headers: dict[str, Any] | None = ...,
+    ) -> tuple[bytes, str, str]: ...
+    def _publish(
+        self,
+        body: bytes,
+        priority: int | None,
+        content_type: str | None,
+        content_encoding: str | None,
+        headers: dict[str, Any] | None,
+        properties: dict[str, Any],
+        routing_key: str,
+        mandatory: bool,
+        immediate: bool,
+        exchange: str,
+        declare: list[Any],
+        timeout: float | None = ...,
+        confirm_timeout: float | None = ...,
+        retry: bool = ...,
+        retry_policy: dict[str, Any] | None = ...,
+    ) -> None: ...
     @property
     def __connection__(self) -> Connection | None: ...
     @property
@@ -127,5 +164,14 @@ class Consumer:
         exc_val: BaseException | None,
         exc_tb: TracebackType | None,
     ) -> None: ...
+    def _add_tag(self, queue: Queue, consumer_tag: str | None = ...) -> str: ...
+    def _basic_consume(
+        self,
+        queue: Queue,
+        consumer_tag: str | None = ...,
+        no_ack: bool | None = ...,
+        nowait: bool = ...,
+    ) -> str: ...
+    def _receive_callback(self, message: Message) -> None: ...
     @property
     def connection(self) -> Connection | None: ...

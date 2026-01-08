@@ -6,7 +6,7 @@ from typing import Any, TypeAlias, TypeVar
 T = TypeVar("T")  # noqa: PYI001
 EncodedT = TypeVar("EncodedT")  # noqa: PYI001
 
-textual_types: tuple[()]
+textual_types: tuple[type, ...]
 
 class JSONEncoder(json.JSONEncoder): ...
 

@@ -84,7 +84,7 @@ class Mailbox:
     queue_exclusive: bool
     reply_queue_ttl: float | None
     reply_queue_expires: float | None
-    node_cls: builtins.type[Node]
+    node_cls: builtins.type[Node]  # ty: ignore[invalid-type-form]
 
     def __init__(
         self,
@@ -102,14 +102,14 @@ class Mailbox:
         reply_queue_ttl: float | None = ...,
         reply_queue_expires: float | None = ...,
     ) -> None: ...
-    def __call__(self, connection: Connection) -> Node: ...
+    def __call__(self, connection: Connection) -> Node: ...  # ty: ignore[invalid-type-form]
     def Node(
         self,
         hostname: str | None = ...,
         state: Any | None = ...,
         channel: StdChannel | None = ...,
         handlers: dict[str, Callable[..., Any]] | None = ...,
-    ) -> Node: ...
+    ) -> Node: ...  # ty: ignore[invalid-type-form]
     def get_queue(self, hostname: str) -> Queue: ...
     def get_reply_queue(self) -> Queue: ...
     @contextmanager
@@ -141,6 +141,54 @@ class Mailbox:
         callback: Callable[..., Any] | None = ...,
         channel: StdChannel | None = ...,
     ) -> list[Any] | None: ...
+    def _get_exchange(self, namespace: str, type: str) -> Exchange: ...
+    def _get_reply_exchange(self, namespace: str) -> Exchange: ...
+    def _broadcast(
+        self,
+        command: str,
+        arguments: dict[str, Any] | None = ...,
+        destination: Sequence[str] | None = ...,
+        reply: bool = ...,
+        timeout: float = ...,
+        limit: int | None = ...,
+        callback: Callable[..., Any] | None = ...,
+        channel: StdChannel | None = ...,
+        serializer: str | None = ...,
+        pattern: str | None = ...,
+        matcher: str | None = ...,
+    ) -> list[Any] | None: ...
+    def _collect(
+        self,
+        ticket: str,
+        limit: int | None = ...,
+        timeout: float = ...,
+        callback: Callable[..., Any] | None = ...,
+        channel: StdChannel | None = ...,
+        accept: Sequence[str] | None = ...,
+    ) -> list[Any]: ...
+    def _publish(
+        self,
+        type: str,
+        arguments: dict[str, Any],
+        destination: Sequence[str] | None = ...,
+        reply_ticket: str | None = ...,
+        channel: StdChannel | None = ...,
+        timeout: float | None = ...,
+        serializer: str | None = ...,
+        producer: Producer | None = ...,
+        pattern: str | None = ...,
+        matcher: str | None = ...,
+    ) -> None: ...
+    def _publish_reply(
+        self,
+        reply: Any,
+        exchange: str | Exchange,
+        routing_key: str,
+        ticket: str,
+        channel: StdChannel | None = ...,
+        producer: Producer | None = ...,
+        **opts: Any,
+    ) -> None: ...
     @property
     def oid(self) -> str: ...
     @cached_property
