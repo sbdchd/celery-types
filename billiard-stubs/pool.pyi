@@ -3,80 +3,14 @@ from typing import Any
 
 from billiard.common import (
     TERM_SIGNAL,
-    human_status,
-    pickle_loads,
-    reset_signals,
-    restart_state,
 )
-from billiard.compat import get_errno, mem_rss, send_offset
-from billiard.dummy import DummyProcess, Process
-from billiard.einfo import ExceptionInfo
+from billiard.dummy import DummyProcess
 from billiard.exceptions import (
-    CoroStop,
-    RestartFreqExceeded,
     SoftTimeLimitExceeded,
-    Terminated,
-    TimeLimitExceeded,
-    TimeoutError,
-    WorkerLostError,
 )
-from billiard.util import debug, warning
-from typing_extensions import override
+from typing_extensions import Self, override
 
-__all__ = [
-    "ACK",
-    "CLOSE",
-    "DEATH",
-    "EX_FAILURE",
-    "EX_OK",
-    "EX_RECYCLE",
-    "GUARANTEE_MESSAGE_CONSUMPTION_RETRY_INTERVAL",
-    "GUARANTEE_MESSAGE_CONSUMPTION_RETRY_LIMIT",
-    "LOST_WORKER_TIMEOUT",
-    "MAXMEM_USED_FMT",
-    "NACK",
-    "READY",
-    "RUN",
-    "SIGKILL",
-    "TASK",
-    "TERMINATE",
-    "TERM_SIGNAL",
-    "ApplyResult",
-    "CoroStop",
-    "DummyProcess",
-    "ExceptionInfo",
-    "IMapIterator",
-    "IMapUnorderedIterator",
-    "LaxBoundedSemaphore",
-    "Lock",
-    "MapResult",
-    "MaybeEncodingError",
-    "Pool",
-    "PoolThread",
-    "Process",
-    "RestartFreqExceeded",
-    "ResultHandler",
-    "SoftTimeLimitExceeded",
-    "Supervisor",
-    "TaskHandler",
-    "Terminated",
-    "ThreadPool",
-    "TimeLimitExceeded",
-    "TimeoutError",
-    "TimeoutHandler",
-    "Worker",
-    "WorkerLostError",
-    "WorkersJoined",
-    "debug",
-    "get_errno",
-    "human_status",
-    "mem_rss",
-    "pickle_loads",
-    "reset_signals",
-    "restart_state",
-    "send_offset",
-    "warning",
-]
+# Note: __all__ is not present at runtime
 
 MAXMEM_USED_FMT: str
 SIGKILL = TERM_SIGNAL
@@ -95,12 +29,25 @@ LOST_WORKER_TIMEOUT: float
 GUARANTEE_MESSAGE_CONSUMPTION_RETRY_LIMIT: int
 GUARANTEE_MESSAGE_CONSUMPTION_RETRY_INTERVAL: float
 Lock = threading.Lock
+PY3: bool
+SIG_SOFT_TIMEOUT: int
+TIMEOUT_MAX: float
+
+def error(msg: str, *args: Any, **kwargs: Any) -> None: ...
+
+job_counter: Any
+
+def mapstar(args: Any) -> Any: ...
+def starmapstar(args: Any) -> Any: ...
+def soft_timeout_sighandler(signum: int, frame: Any) -> None: ...
+def stop_if_not_current(thread: Any, timeout: float | None = ...) -> None: ...
 
 class LaxBoundedSemaphore(threading.Semaphore):
+    def __init__(self, value: int = ..., verbose: Any = ...) -> None: ...
     def shrink(self) -> None: ...
     def grow(self) -> None: ...
     @override
-    def release(self, n: int = ...) -> None: ...
+    def release(self) -> None: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
     def clear(self) -> None: ...
 
 class MaybeEncodingError(Exception):
@@ -109,33 +56,121 @@ class MaybeEncodingError(Exception):
 class WorkersJoined(Exception): ...
 
 class Worker:
+    def __init__(
+        self,
+        inq: Any,
+        outq: Any,
+        synq: Any = ...,
+        initializer: Any = ...,
+        initargs: tuple[Any, ...] = ...,
+        maxtasks: int | None = ...,
+        sentinel: Any = ...,
+        on_exit: Any = ...,
+        sigprotection: bool = ...,
+        wrap_exception: bool = ...,
+        max_memory_per_child: int | None = ...,
+        on_ready_counter: Any = ...,
+    ) -> None: ...
+    def __call__(self) -> None: ...
     def after_fork(self) -> None: ...
+    def contribute_to_object(self, obj: Any) -> None: ...
+    def on_loop_start(self, pid: int) -> None: ...
+    def prepare_result(self, result: Any) -> Any: ...
+    def workloop(
+        self, debug: Any = ..., now: Any = ..., pid: int | None = ...
+    ) -> None: ...
 
 class PoolThread(DummyProcess):
     daemon: bool
+    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
+    @override
+    def start(self, *args: Any, **kwargs: Any) -> None: ...
+    def stop(self, timeout: float | None = ...) -> None: ...
     def on_stop_not_started(self) -> None: ...
     def terminate(self) -> None: ...
     def close(self) -> None: ...
 
 class Supervisor(PoolThread):
+    def __init__(self, pool: Any) -> None: ...
     def body(self) -> None: ...
 
 class TaskHandler(PoolThread):
+    def __init__(
+        self, taskqueue: Any, put: Any, outqueue: Any, pool: Any, cache: Any
+    ) -> None: ...
     def body(self) -> None: ...
     def tell_others(self) -> None: ...
     @override
     def on_stop_not_started(self) -> None: ...
 
 class TimeoutHandler(PoolThread):
+    def __init__(
+        self, processes: Any, cache: Any, t_soft: float | None, t_hard: float | None
+    ) -> None: ...
     def body(self) -> None: ...
+    def handle_event(self, *args: Any) -> None: ...
+    def handle_timeouts(self) -> None: ...
+    def on_soft_timeout(self, job: Any) -> None: ...
+    def on_hard_timeout(self, job: Any) -> None: ...
 
 class ResultHandler(PoolThread):
+    def __init__(
+        self,
+        outqueue: Any,
+        get: Any,
+        cache: Any,
+        poll: Any,
+        join_exited_workers: Any,
+        putlock: Any,
+        restart_state: Any,
+        check_timeouts: Any,
+        on_job_ready: Any,
+        on_ready_counters: Any = ...,
+    ) -> None: ...
     @override
     def on_stop_not_started(self) -> None: ...
     def body(self) -> None: ...
+    def handle_event(self, fileno: int | None = ..., events: Any = ...) -> None: ...
     def finish_at_shutdown(self, handle_timeouts: bool = ...) -> None: ...
 
 class Pool:
+    def Process(self, *args: Any, **kwds: Any) -> Any: ...
+    Worker: type[Worker]
+    def WorkerProcess(self, worker: Any) -> Any: ...
+    Supervisor: type[Supervisor]
+    TaskHandler: type[TaskHandler]
+    TimeoutHandler: type[TimeoutHandler]
+    ResultHandler: type[ResultHandler]
+    SoftTimeLimitExceeded: type[SoftTimeLimitExceeded]
+
+    def __init__(
+        self,
+        processes: int | None = ...,
+        initializer: Any = ...,
+        initargs: tuple[Any, ...] = ...,
+        maxtasksperchild: int | None = ...,
+        timeout: float | None = ...,
+        soft_timeout: float | None = ...,
+        lost_worker_timeout: float | None = ...,
+        max_restarts: int | None = ...,
+        max_restart_freq: int = ...,
+        on_process_up: Any = ...,
+        on_process_down: Any = ...,
+        on_timeout_set: Any = ...,
+        on_timeout_cancel: Any = ...,
+        threads: bool = ...,
+        semaphore: Any = ...,
+        putlocks: bool = ...,
+        allow_restart: bool = ...,
+        synack: bool = ...,
+        on_process_exit: Any = ...,
+        context: Any = ...,
+        max_memory_per_child: int | None = ...,
+        enable_timeouts: bool = ...,
+        **kwargs: Any,
+    ) -> None: ...
+    def __enter__(self) -> Self: ...
+    def __exit__(self, *exc_info: object) -> None: ...
     def shrink(self, n: int = ...) -> None: ...
     def grow(self, n: int = ...) -> None: ...
     def maintain_pool(self) -> None: ...
@@ -145,15 +180,133 @@ class Pool:
     def terminate(self) -> None: ...
     def join(self) -> None: ...
     def restart(self) -> None: ...
+    def cpu_count(self) -> int: ...
+    def create_result_handler(self, **extra_kwargs: Any) -> Any: ...
+    def did_start_ok(self) -> bool: ...
+    def get_process_queues(self) -> Any: ...
+    def handle_result_event(self, *args: Any) -> None: ...
+    def apply(
+        self, func: Any, args: tuple[Any, ...] = ..., kwds: dict[str, Any] = ...
+    ) -> Any: ...
+    def apply_async(
+        self,
+        func: Any,
+        args: tuple[Any, ...] = ...,
+        kwds: dict[str, Any] = ...,
+        callback: Any = ...,
+        error_callback: Any = ...,
+        accept_callback: Any = ...,
+        timeout_callback: Any = ...,
+        waitforslot: bool | None = ...,
+        soft_timeout: float | None = ...,
+        timeout: float | None = ...,
+        lost_worker_timeout: float | None = ...,
+        callbacks_propagate: tuple[Any, ...] = ...,
+        correlation_id: Any = ...,
+    ) -> ApplyResult: ...
+    def imap(
+        self,
+        func: Any,
+        iterable: Any,
+        chunksize: int = ...,
+        lost_worker_timeout: float | None = ...,
+    ) -> IMapIterator: ...
+    def imap_unordered(
+        self,
+        func: Any,
+        iterable: Any,
+        chunksize: int = ...,
+        lost_worker_timeout: float | None = ...,
+    ) -> IMapUnorderedIterator: ...
+    def map(
+        self, func: Any, iterable: Any, chunksize: int | None = ...
+    ) -> list[Any]: ...
+    def map_async(
+        self,
+        func: Any,
+        iterable: Any,
+        chunksize: int | None = ...,
+        callback: Any = ...,
+        error_callback: Any = ...,
+    ) -> MapResult: ...
+    def starmap(
+        self, func: Any, iterable: Any, chunksize: int | None = ...
+    ) -> list[Any]: ...
+    def starmap_async(
+        self,
+        func: Any,
+        iterable: Any,
+        chunksize: int | None = ...,
+        callback: Any = ...,
+        error_callback: Any = ...,
+    ) -> MapResult: ...
+    def mark_as_worker_lost(self, job: Any, exitcode: int) -> None: ...
+    def on_grow(self, n: int) -> None: ...
+    def on_job_process_down(self, job: Any, pid_gone: bool) -> None: ...
+    def on_job_process_lost(self, job: Any, pid: int, exitcode: int) -> None: ...
+    def on_job_ready(self, job: Any, i: int, obj: Any, inqW_fd: Any) -> None: ...
+    def on_partial_read(self, job: Any, worker: Any) -> None: ...
+    def on_shrink(self, n: int) -> None: ...
+    def process_flush_queues(self, worker: Any) -> None: ...
+    @property
+    def process_sentinels(self) -> list[Any]: ...
+    def send_ack(self, response: Any, job: Any, i: int, fd: Any) -> None: ...
+    def terminate_job(self, pid: int, sig: int | None = ...) -> None: ...
 
 class ApplyResult:
+    def __init__(
+        self,
+        cache: Any,
+        callback: Any,
+        accept_callback: Any = ...,
+        timeout_callback: Any = ...,
+        error_callback: Any = ...,
+        soft_timeout: float | None = ...,
+        timeout: float | None = ...,
+        lost_worker_timeout: float = ...,
+        on_timeout_set: Any = ...,
+        on_timeout_cancel: Any = ...,
+        callbacks_propagate: tuple[Any, ...] = ...,
+        send_ack: Any = ...,
+        correlation_id: Any = ...,
+    ) -> None: ...
+    def ready(self) -> bool: ...
+    def accepted(self) -> bool: ...
+    def successful(self) -> bool: ...
+    def get(self, timeout: float | None = ...) -> Any: ...
+    def wait(self, timeout: float | None = ...) -> bool: ...
+    def terminate(self, signum: int) -> None: ...
+    def worker_pids(self) -> list[int]: ...
+    def safe_apply_callback(self, fun: Any, *args: Any, **kwargs: Any) -> None: ...
     def discard(self) -> None: ...
     def handle_timeout(self, soft: bool = ...) -> None: ...
 
-class MapResult(ApplyResult): ...
-class IMapIterator: ...
+class MapResult(ApplyResult):
+    def __init__(
+        self,
+        cache: Any,
+        chunksize: int,
+        length: int,
+        callback: Any,
+        error_callback: Any,
+    ) -> None: ...
+
+class IMapIterator:
+    def __init__(self, cache: Any, lost_worker_timeout: float = ...) -> None: ...
+    def __iter__(self) -> IMapIterator: ...
+    def __next__(self, timeout: float | None = ...) -> Any: ...
+    def next(self, timeout: float | None = ...) -> Any: ...
+    def ready(self) -> bool: ...
+    def worker_pids(self) -> list[int]: ...
+
 class IMapUnorderedIterator(IMapIterator): ...
 
 class ThreadPool(Pool):
-    Process = DummyProcess
-    def __init__(self) -> None: ...
+    Process = DummyProcess  # pyright: ignore[reportAssignmentType]
+    DummyProcess: type[DummyProcess]
+    def __init__(
+        self,
+        processes: int | None = ...,
+        initializer: Any = ...,
+        initargs: tuple[Any, ...] = ...,
+    ) -> None: ...

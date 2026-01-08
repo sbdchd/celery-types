@@ -9,6 +9,13 @@ class BaseProcess:
     name: str
     def __init__(
         self,
+        group: None = ...,
+        target: Callable[..., object] | None = ...,
+        name: str | None = ...,
+        args: tuple[object, ...] = ...,
+        kwargs: dict[str, object] = ...,
+        daemon: bool | None = ...,
+        **_kw: object,
     ) -> None: ...
     def run(self) -> None: ...
     def start(self) -> None: ...
