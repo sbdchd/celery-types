@@ -88,6 +88,28 @@ class Signature(dict[str, Any], Generic[_R_co]):
         args: tuple[Any, ...] | None = ...,
         kwargs: dict[str, Any] | None = ...,
         route_name: str | None = ...,
+        *,
+        # options (captured by **options at runtime)
+        task_id: str | None = ...,
+        producer: kombu.Producer | None = ...,
+        link: Signature[Any] | list[Signature[Any]] | None = ...,
+        link_error: Signature[Any] | list[Signature[Any]] | None = ...,
+        shadow: str | None = ...,
+        # apply_async options
+        countdown: float = ...,
+        eta: datetime | None = ...,
+        expires: float | datetime = ...,
+        retry: bool = ...,
+        retry_policy: Mapping[str, Any] = ...,
+        queue: str | kombu.Queue = ...,
+        exchange: str | kombu.Exchange = ...,
+        routing_key: str = ...,
+        priority: int = ...,
+        serializer: str = ...,
+        compression: str = ...,
+        add_to_parent: bool = ...,
+        publisher: kombu.Producer = ...,
+        headers: dict[str, str] = ...,
         **options: Any,
     ) -> celery.result.AsyncResult[_R_co]: ...
     def clone(
