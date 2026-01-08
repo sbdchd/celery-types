@@ -37,7 +37,7 @@ PROPAGATE_STATES: frozenset[str]
 
 ALL_STATES: frozenset[str]
 
-__all__ = [
+__all__ = (
     "EXCEPTION_STATES",
     "FAILURE",
     "IGNORED",
@@ -52,4 +52,4 @@ __all__ = [
     "UNREADY_STATES",
     "precedence",
     "state",
-]
+)

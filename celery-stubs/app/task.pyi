@@ -8,6 +8,8 @@ from typing import (
     overload,
 )
 
+__all__ = ("Context", "Task")
+
 import billiard
 import celery
 import celery.result
@@ -58,6 +60,8 @@ class Context:
     taskset: str | None  # compat alias to group
     timelimit: tuple[int, int] | tuple[None, None] | None
     utc: bool | None
+    stamped_headers: list[str] | None
+    stamps: dict[str, Any] | None
     def __init__(self, *args: dict[str, Any], **kwargs: Any) -> None: ...
     def update(self, *args: dict[str, Any], **kwargs: Any) -> None: ...
     def clear(self) -> None: ...
@@ -67,7 +71,19 @@ class Context:
     def children(self) -> list[str]: ...
 
 class Task(Generic[_P, _R_co]):
-    name: str
+    # Class-level references
+    MaxRetriesExceededError: type[Exception]
+    OperationalError: type[Exception]
+    Request: str
+    Strategy: str
+
+    # Flags
+    __bound__: bool
+    __trace__: Any
+    __v2_compat__: bool
+
+    # Task configuration
+    name: str | None
     typing: bool
     max_retries: int | None
     default_retry_delay: int
@@ -81,15 +97,21 @@ class Task(Generic[_P, _R_co]):
     soft_time_limit: int | None
     autoregister: bool
     track_started: bool
-    acks_late: bool
-    acks_on_failure_or_timeout: bool
-    reject_on_worker_lost: bool
+    acks_late: bool | None
+    acks_on_failure_or_timeout: bool | None
+    reject_on_worker_lost: bool | None
     throws: tuple[type[Exception], ...]
     expires: float | datetime | None
     priority: int | None
     resultrepr_maxsize: int
     request_stack: _LocalStack[Context]
     abstract: bool
+    store_eager_result: bool
+
+    # Config mapping
+    from_config: tuple[tuple[str, str], ...]
+
+    def on_replace(self, sig: Signature[Any]) -> None: ...
     @classmethod
     def bind(cls, app: Celery) -> Celery: ...
     @classmethod
@@ -143,7 +165,7 @@ class Task(Generic[_P, _R_co]):
     def signature_from_request(
         self,
         request: Context | None = ...,
-        args: tuple[Any, ...] = ...,
+        args: tuple[Any, ...] | None = ...,
         kwargs: dict[str, Any] | None = ...,
         queue: str | None = ...,
         **extra_options: Any,

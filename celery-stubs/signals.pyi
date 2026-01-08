@@ -1,6 +1,6 @@
 from celery.utils.dispatch import Signal
 
-__all__ = [
+__all__ = (
     "after_setup_logger",
     "after_setup_task_logger",
     "after_task_publish",
@@ -19,16 +19,20 @@ __all__ = [
     "task_internal_error",
     "task_postrun",
     "task_prerun",
+    "task_received",
+    "task_rejected",
     "task_retry",
     "task_revoked",
     "task_success",
+    "task_unknown",
     "worker_before_create_process",
     "worker_init",
     "worker_process_init",
+    "worker_process_shutdown",
     "worker_ready",
     "worker_shutdown",
     "worker_shutting_down",
-]
+)
 
 before_task_publish: Signal
 after_task_publish: Signal

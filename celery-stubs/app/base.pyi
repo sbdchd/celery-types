@@ -11,11 +11,12 @@ from typing import (
     overload,
 )
 
+__all__ = ("Celery",)
+
 import celery.app
 import celery.result
 import kombu
 from celery.app.amqp import AMQP
-from celery.app.beat import Beat as CeleryBeat
 from celery.app.control import Control
 from celery.app.events import Events
 from celery.app.log import Logging
@@ -24,6 +25,7 @@ from celery.app.routes import Router
 from celery.app.task import Context
 from celery.app.task import Task as CeleryTask
 from celery.app.utils import Settings
+from celery.apps.beat import Beat as CeleryBeat
 from celery.apps.worker import Worker as CeleryWorker
 from celery.backends.base import Backend
 from celery.canvas import Signature, chord
@@ -46,13 +48,38 @@ _P = ParamSpec("_P")
 _R = TypeVar("_R")
 
 class Celery(Generic[_T_Global]):
-    steps: defaultdict[str, set[Any]]
+    # Class-level constants
+    IS_WINDOWS: bool
+    IS_macOS: bool
+    SYSTEM: str
+    Pickler: type[Any]
 
+    # Configuration class names
+    amqp_cls: str | None
+    backend_cls: str | None
+    control_cls: str | None
+    events_cls: str | None
+    loader_cls: str | None
+    log_cls: str | None
+    registry_cls: str | None
+    task_cls: str | None
+
+    # Instance attributes (None at class level)
+    main: str | None
+    steps: defaultdict[str, set[Any]] | None
+    user_options: dict[str, Any] | None
+    builtin_fixups: set[str]
+
+    # Signals (always set on instances in __init__)
     on_configure: Signal
     on_after_configure: Signal
     on_after_finalize: Signal
     on_after_fork: Signal
 
+    # Reduce methods for pickling
+    def __reduce_args__(self) -> tuple[Any, ...]: ...
+    def __reduce_keys__(self) -> dict[str, Any]: ...
+    def __reduce_v1__(self) -> tuple[Any, ...]: ...
     def __init__(
         self,
         main: str | None = None,
@@ -65,7 +92,6 @@ class Celery(Generic[_T_Global]):
         set_as_current: bool = True,
         tasks: str | type[TaskRegistry] | None = None,
         broker: str | None = None,
-        imports: list[str] | tuple[str, ...] | None = None,
         include: list[str] | tuple[str, ...] | None = None,
         changes: dict[str, Any] | None = None,
         config_source: str | object | None = None,
@@ -74,80 +100,19 @@ class Celery(Generic[_T_Global]):
         autofinalize: bool = True,
         namespace: str | None = None,
         strict_typing: bool = True,
-        broker_connection_retry: bool = ...,
-        broker_connection_max_retries: int = ...,
-        broker_channel_error_retry: bool = ...,
-        broker_login_method: str = ...,
-        broker_transport_options: dict[str, Any] = ...,
-        broker_connection_retry_on_startup: bool = ...,
-        broker_connection_timeout: float = ...,
-        result_backend_transport_options: dict[str, Any] | None = ...,
-        result_extended: bool = ...,
-        result_expires: datetime.timedelta = ...,
-        beat_schedule: dict[str, Any] | None = ...,
-        task_queues: list[kombu.Queue] | None = ...,
-        task_default_queue: str = ...,
-        task_default_exchange: str = ...,
-        task_default_exchange_type: str = ...,
-        task_default_routing_key: str = ...,
-        task_default_delivery_mode: str = ...,
-        task_create_missing_queues: bool = ...,
-        task_routes: dict[Any, Any] | Sequence[Any] = ...,
-        task_acks_late: bool = ...,
-        task_time_limit: int = ...,
-        task_soft_time_limit: int = ...,
-        task_track_started: bool = ...,
-        task_serializer: str = ...,
-        worker_prefetch_multiplier: int = ...,
-        worker_max_tasks_per_child: int = ...,
-        worker_concurrency: int = ...,
-        worker_max_memory_per_child: int = ...,
-        worker_disable_rate_limits: bool = ...,
-        worker_cancel_long_running_tasks_on_connection_loss: bool = ...,
-        worker_hijack_root_logger: bool = ...,
-        worker_log_format: str = ...,
-        worker_task_log_format: str = ...,
-        worker_redirect_stdouts: bool = ...,
-        worker_redirect_stdouts_level: str = ...,
+        **kwargs: Any,
     ) -> None: ...
     def _task_from_fun(
         self,
         fun: Callable[_P, _R],
-        name: str | None = ...,
-        base: type[_T_Global] | None = ...,
-        bind: bool = ...,
-        # options
-        autoretry_for: Sequence[type[BaseException]] = ...,
-        dont_autoretry_for: Sequence[type[BaseException]] = ...,
-        retry_kwargs: dict[str, Any] = ...,
-        retry_backoff: bool | int = ...,
-        retry_backoff_max: int = ...,
-        retry_jitter: bool = ...,
-        # from task
-        typing: bool = ...,
-        max_retries: int | None = ...,
-        default_retry_delay: int = ...,
-        rate_limit: str | None = ...,
-        ignore_result: bool = ...,
-        trail: bool = ...,
-        send_events: bool = ...,
-        store_errors_even_if_ignored: bool = ...,
-        serializer: str = ...,
-        time_limit: int | None = ...,
-        soft_time_limit: int | None = ...,
-        autoregister: bool = ...,
-        track_started: bool = ...,
-        acks_late: bool = ...,
-        acks_on_failure_or_timeout: bool = ...,
-        reject_on_worker_lost: bool = ...,
-        throws: tuple[type[Exception], ...] = ...,
-        expires: float | datetime.datetime | None = ...,
-        priority: int | None = ...,
-        resultrepr_maxsize: int = ...,
-        request_stack: _LocalStack[Context] = ...,
-        abstract: bool = ...,
-        after_return: Callable[..., Any] = ...,
-        on_retry: Callable[..., Any] = ...,
+        name: str | None = None,
+        base: type[_T_Global] | None = None,
+        bind: bool = False,
+        pydantic: bool = False,
+        pydantic_strict: bool = False,
+        pydantic_context: dict[str, Any] | None = None,
+        pydantic_dump_kwargs: dict[str, Any] | None = None,
+        **options: Any,
     ) -> _T_Global: ...
     def on_init(self) -> None: ...
     def set_current(self) -> None: ...
@@ -311,9 +276,10 @@ class Celery(Generic[_T_Global]):
         self,
         allowed_serializers: set[str] | None = None,
         key: str | None = None,
+        key_password: str | None = None,
         cert: str | None = None,
         store: str | None = None,
-        digest: str = ...,
+        digest: str = "sha256",
         serializer: str = "json",
     ) -> None: ...
     def autodiscover_tasks(
@@ -340,6 +306,7 @@ class Celery(Generic[_T_Global]):
         link_error: Signature[Any] | None = None,
         add_to_parent: bool = True,
         group_id: str | None = None,
+        group_index: int | None = None,
         retries: int = 0,
         chord: chord | None = None,
         reply_to: str | None = None,
@@ -352,8 +319,6 @@ class Celery(Generic[_T_Global]):
         chain: Any | None = None,
         task_type: Any | None = None,
         replaced_task_nesting: int = 0,
-        # options
-        ignore_result: bool = ...,
         **options: Any,
     ) -> celery.result.AsyncResult[Any]: ...
     def connection_for_read(
@@ -382,7 +347,11 @@ class Celery(Generic[_T_Global]):
     broker_connection = connection
 
     def connection_or_acquire(
-        self, connection: kombu.Connection | None = None, pool: bool = True
+        self,
+        connection: kombu.Connection | None = None,
+        pool: bool = True,
+        *_: Any,
+        **__: Any,
     ) -> FallbackContext[Any, Any]: ...
 
     default_connection = connection_or_acquire
@@ -404,7 +373,7 @@ class Celery(Generic[_T_Global]):
         schedule: BaseSchedule | float,
         sig: Signature[Any],
         args: tuple[Any, ...] = (),
-        kwargs: dict[str, Any] = ...,
+        kwargs: tuple[()] = (),  # runtime uses empty tuple
         name: str | None = None,
         **opts: Any,
     ) -> str: ...

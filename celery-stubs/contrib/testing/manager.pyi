@@ -16,7 +16,7 @@ class Sentinel(Exception): ...
 class ManagerMixin:
     def _init_manager(
         self,
-        block_timeout: float = 180,
+        block_timeout: float = 1800.0,
         no_join: bool = False,
         stdout: TextIO | None = None,
         stderr: TextIO | None = None,
