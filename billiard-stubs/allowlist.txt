@@ -1,0 +1,2 @@
+# billiard.popen_spawn_win32 is Windows-only and cannot be tested on Linux
+billiard.popen_spawn_win32
