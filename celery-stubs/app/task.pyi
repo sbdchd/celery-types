@@ -223,13 +223,75 @@ class Task(Generic[_P, _R_co]):
         priority: int = ...,
     ) -> EagerResult[_R_co]: ...
     def AsyncResult(
-        self, task_id: str, **kwargs: Any
+        self,
+        task_id: str,
+        *,
+        backend: Any | None = ...,
+        app: Any | None = ...,
+        parent: celery.result.AsyncResult[Any] | None = ...,
+        **kwargs: Any,
     ) -> celery.result.AsyncResult[_R_co]: ...
     def signature(
-        self, args: tuple[Any, ...] | None = ..., *starargs: Any, **starkwargs: Any
+        self,
+        args: tuple[Any, ...] | None = ...,
+        kwargs: dict[str, Any] | None = ...,
+        *,
+        # Signature options
+        options: dict[str, Any] | None = ...,
+        type: Any | None = ...,
+        subtask_type: Any | None = ...,
+        immutable: bool = ...,
+        app: Celery | None = ...,
+        task_id: str | None = ...,
+        countdown: float = ...,
+        eta: datetime | None = ...,
+        expires: float | datetime = ...,
+        retry: bool = ...,
+        retry_policy: Mapping[str, Any] = ...,
+        queue: str = ...,
+        exchange: str = ...,
+        routing_key: str = ...,
+        priority: int = ...,
+        serializer: str = ...,
+        compression: str = ...,
+        add_to_parent: bool = ...,
+        headers: dict[str, str] = ...,
+        link: Signature[Any] | None = ...,
+        link_error: Signature[Any] | None = ...,
+        shadow: str | None = ...,
+        ignore_result: bool = ...,
+        **starkwargs: Any,
     ) -> Signature[_R_co]: ...
     def subtask(
-        self, args: tuple[Any, ...] | None = ..., *starargs: Any, **starkwargs: Any
+        self,
+        args: tuple[Any, ...] | None = ...,
+        kwargs: dict[str, Any] | None = ...,
+        *,
+        # Signature options
+        options: dict[str, Any] | None = ...,
+        type: Any | None = ...,
+        subtask_type: Any | None = ...,
+        immutable: bool = ...,
+        app: Celery | None = ...,
+        task_id: str | None = ...,
+        countdown: float = ...,
+        eta: datetime | None = ...,
+        expires: float | datetime = ...,
+        retry: bool = ...,
+        retry_policy: Mapping[str, Any] = ...,
+        queue: str = ...,
+        exchange: str = ...,
+        routing_key: str = ...,
+        priority: int = ...,
+        serializer: str = ...,
+        compression: str = ...,
+        add_to_parent: bool = ...,
+        headers: dict[str, str] = ...,
+        link: Signature[Any] | None = ...,
+        link_error: Signature[Any] | None = ...,
+        shadow: str | None = ...,
+        ignore_result: bool = ...,
+        **starkwargs: Any,
     ) -> Signature[_R_co]: ...
     def s(self, *args: Any, **kwargs: Any) -> Signature[_R_co]: ...
     def si(self, *args: _P.args, **kwargs: _P.kwargs) -> Signature[_R_co]: ...

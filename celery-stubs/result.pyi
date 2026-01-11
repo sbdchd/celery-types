@@ -94,7 +94,20 @@ class AsyncResult(ResultBase, Generic[_R_co]):
         PROPAGATE_STATES: frozenset[str] = ...,
     ) -> _R_co: ...
     def collect(
-        self, intermediate: bool = ..., **kwargs: Any
+        self,
+        intermediate: bool = ...,
+        *,
+        # options (passed through to get())
+        timeout: float | None = ...,
+        propagate: bool = ...,
+        interval: float = ...,
+        no_ack: bool = ...,
+        follow_parents: bool = ...,
+        callback: Callable[..., Any] | None = ...,
+        on_message: Callable[..., Any] | None = ...,
+        on_interval: Callable[..., Any] | None = ...,
+        disable_sync_subtasks: bool = ...,
+        **kwargs: Any,
     ) -> Iterator[tuple[AsyncResult[Any], object]]: ...
     def get_leaf(self) -> object: ...
     def iterdeps(

@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import (
     Any,
     Generic,
-    overload,
 )
 
 __all__ = (
@@ -81,6 +80,17 @@ class Signature(dict[str, Any], Generic[_R_co]):
         self,
         args: tuple[Any, ...] | None = ...,
         kwargs: dict[str, Any] | None = ...,
+        *,
+        # options (passed through to Task.apply)
+        link: Signature[Any] | list[Signature[Any]] | None = ...,
+        link_error: Signature[Any] | list[Signature[Any]] | None = ...,
+        task_id: str | None = ...,
+        retries: int | None = ...,
+        throw: bool | None = ...,
+        logfile: str | None = ...,
+        loglevel: str | None = ...,
+        headers: Mapping[str, str] | None = ...,
+        ignore_result: bool = ...,
         **options: Any,
     ) -> EagerResult[_R_co]: ...
     def apply_async(
@@ -274,6 +284,28 @@ class _chain(Signature[Any]):
         self,
         args: tuple[Any, ...] | None = ...,
         kwargs: dict[str, Any] | None = ...,
+        *,
+        # options (passed through to Signature.apply_async)
+        task_id: str | None = ...,
+        producer: kombu.Producer | None = ...,
+        link: Signature[Any] | list[Signature[Any]] | None = ...,
+        link_error: Signature[Any] | list[Signature[Any]] | None = ...,
+        shadow: str | None = ...,
+        countdown: float = ...,
+        eta: datetime | None = ...,
+        expires: float | datetime = ...,
+        retry: bool = ...,
+        retry_policy: Mapping[str, Any] = ...,
+        queue: str | kombu.Queue = ...,
+        exchange: str | kombu.Exchange = ...,
+        routing_key: str = ...,
+        priority: int = ...,
+        serializer: str = ...,
+        compression: str = ...,
+        add_to_parent: bool = ...,
+        publisher: kombu.Producer = ...,
+        headers: dict[str, str] = ...,
+        ignore_result: bool = ...,
         **options: Any,
     ) -> celery.result.AsyncResult[Any]: ...
     def prepare_steps(
@@ -307,6 +339,23 @@ class _chain(Signature[Any]):
         parent_id: str | None = None,
         app: Celery | None = None,
         group_index: int | None = None,
+        *,
+        # options (passed through to apply_async)
+        shadow: str | None = ...,
+        countdown: float = ...,
+        eta: datetime | None = ...,
+        expires: float | datetime = ...,
+        retry: bool = ...,
+        retry_policy: Mapping[str, Any] = ...,
+        queue: str | kombu.Queue = ...,
+        exchange: str | kombu.Exchange = ...,
+        routing_key: str = ...,
+        priority: int = ...,
+        serializer: str = ...,
+        compression: str = ...,
+        add_to_parent: bool = ...,
+        headers: dict[str, str] = ...,
+        ignore_result: bool = ...,
         **options: Any,
     ) -> celery.result.AsyncResult[Any]: ...
     def unchain_tasks(self) -> list[Signature[Any]]: ...
@@ -352,6 +401,28 @@ class _basemap(Signature[Any]):
         self,
         args: tuple[Any, ...] | None = ...,
         kwargs: dict[str, Any] | None = ...,
+        *,
+        # options (passed through to Signature.apply_async)
+        task_id: str | None = ...,
+        producer: kombu.Producer | None = ...,
+        link: Signature[Any] | list[Signature[Any]] | None = ...,
+        link_error: Signature[Any] | list[Signature[Any]] | None = ...,
+        shadow: str | None = ...,
+        countdown: float = ...,
+        eta: datetime | None = ...,
+        expires: float | datetime = ...,
+        retry: bool = ...,
+        retry_policy: Mapping[str, Any] = ...,
+        queue: str | kombu.Queue = ...,
+        exchange: str | kombu.Exchange = ...,
+        routing_key: str = ...,
+        priority: int = ...,
+        serializer: str = ...,
+        compression: str = ...,
+        add_to_parent: bool = ...,
+        publisher: kombu.Producer = ...,
+        headers: dict[str, str] = ...,
+        ignore_result: bool = ...,
         **opts: Any,
     ) -> celery.result.AsyncResult[Any]: ...
 
@@ -402,12 +473,59 @@ class chunks(Signature[Any]):
         app: Celery | None = ...,
     ) -> list[Any]: ...
     @override
-    def __call__(self, **options: Any) -> Any: ...
+    def __call__(
+        self,
+        *,
+        # options (passed through to apply_async)
+        task_id: str | None = ...,
+        producer: kombu.Producer | None = ...,
+        link: Signature[Any] | list[Signature[Any]] | None = ...,
+        link_error: Signature[Any] | list[Signature[Any]] | None = ...,
+        shadow: str | None = ...,
+        countdown: float = ...,
+        eta: datetime | None = ...,
+        expires: float | datetime = ...,
+        retry: bool = ...,
+        retry_policy: Mapping[str, Any] = ...,
+        queue: str | kombu.Queue = ...,
+        exchange: str | kombu.Exchange = ...,
+        routing_key: str = ...,
+        priority: int = ...,
+        serializer: str = ...,
+        compression: str = ...,
+        add_to_parent: bool = ...,
+        publisher: kombu.Producer = ...,
+        headers: dict[str, str] = ...,
+        ignore_result: bool = ...,
+        **options: Any,
+    ) -> Any: ...
     @override
     def apply_async(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         args: tuple[Any, ...] | None = ...,
         kwargs: dict[str, Any] | None = ...,
+        *,
+        # options (passed through to Signature.apply_async)
+        task_id: str | None = ...,
+        producer: kombu.Producer | None = ...,
+        link: Signature[Any] | list[Signature[Any]] | None = ...,
+        link_error: Signature[Any] | list[Signature[Any]] | None = ...,
+        shadow: str | None = ...,
+        countdown: float = ...,
+        eta: datetime | None = ...,
+        expires: float | datetime = ...,
+        retry: bool = ...,
+        retry_policy: Mapping[str, Any] = ...,
+        queue: str | kombu.Queue = ...,
+        exchange: str | kombu.Exchange = ...,
+        routing_key: str = ...,
+        priority: int = ...,
+        serializer: str = ...,
+        compression: str = ...,
+        add_to_parent: bool = ...,
+        publisher: kombu.Producer = ...,
+        headers: dict[str, str] = ...,
+        ignore_result: bool = ...,
         **opts: Any,
     ) -> celery.result.AsyncResult[Any]: ...
     def group(self) -> _group: ...
@@ -415,16 +533,12 @@ class chunks(Signature[Any]):
 class group(Signature[Any]):
     @property
     def tasks(self) -> list[Signature[Any]]: ...
-    @overload
     def __init__(
         self,
-        *tasks: group | abstract.CallableSignature | Iterable[Signature[Any]],
-        **options: Any,
-    ) -> None: ...
-    @overload
-    def __init__(
-        self,
-        *tasks: Signature[Any],
+        *tasks: group
+        | abstract.CallableSignature
+        | Iterable[Signature[Any]]
+        | Signature[Any],
         # Signature extras
         args: tuple[Any, ...] | None = ...,
         kwargs: dict[str, Any] | None = ...,
@@ -452,6 +566,7 @@ class group(Signature[Any]):
         add_to_parent: bool = ...,
         publisher: kombu.Producer = ...,
         headers: dict[str, str] = ...,
+        **options_: Any,
     ) -> None: ...
     def skew(
         self, start: float = ..., stop: float | None = ..., step: float = ...
@@ -465,6 +580,24 @@ class group(Signature[Any]):
         producer: kombu.Producer | None = ...,
         link: Signature[Any] | list[Signature[Any]] | None = ...,
         link_error: Signature[Any] | list[Signature[Any]] | None = ...,
+        *,
+        # options (passed through to Signature.apply_async)
+        task_id: str | None = ...,
+        shadow: str | None = ...,
+        countdown: float = ...,
+        eta: datetime | None = ...,
+        expires: float | datetime = ...,
+        retry: bool = ...,
+        retry_policy: Mapping[str, Any] = ...,
+        queue: str | kombu.Queue = ...,
+        exchange: str | kombu.Exchange = ...,
+        routing_key: str = ...,
+        priority: int = ...,
+        serializer: str = ...,
+        compression: str = ...,
+        publisher: kombu.Producer = ...,
+        headers: dict[str, str] = ...,
+        ignore_result: bool = ...,
         **options: Any,
     ) -> celery.result.AsyncResult[Any]: ...
     @override
@@ -534,6 +667,26 @@ class chord(Signature[Any]):
         eager: bool = ...,
         task_id: str | None = ...,
         kwargs: dict[str, Any] | None = ...,
+        *,
+        # options (passed through to apply_async)
+        producer: kombu.Producer | None = ...,
+        link: Signature[Any] | list[Signature[Any]] | None = ...,
+        link_error: Signature[Any] | list[Signature[Any]] | None = ...,
+        shadow: str | None = ...,
+        eta: datetime | None = ...,
+        expires: float | datetime = ...,
+        retry: bool = ...,
+        retry_policy: Mapping[str, Any] = ...,
+        queue: str | kombu.Queue = ...,
+        exchange: str | kombu.Exchange = ...,
+        routing_key: str = ...,
+        priority: int = ...,
+        serializer: str = ...,
+        compression: str = ...,
+        add_to_parent: bool = ...,
+        publisher: kombu.Producer = ...,
+        headers: dict[str, str] = ...,
+        ignore_result: bool = ...,
         **options: Any,
     ) -> Any: ...
     def __length_hint__(self) -> int: ...
@@ -544,6 +697,17 @@ class chord(Signature[Any]):
         kwargs: dict[str, Any] | None = ...,
         propagate: bool = ...,
         body: Signature[Any] | None = ...,
+        *,
+        # options (passed through to Task.apply)
+        link: Signature[Any] | list[Signature[Any]] | None = ...,
+        link_error: Signature[Any] | list[Signature[Any]] | None = ...,
+        task_id: str | None = ...,
+        retries: int | None = ...,
+        throw: bool | None = ...,
+        logfile: str | None = ...,
+        loglevel: str | None = ...,
+        headers: Mapping[str, str] | None = ...,
+        ignore_result: bool = ...,
         **options: Any,
     ) -> EagerResult[Any]: ...
     @override
@@ -557,6 +721,25 @@ class chord(Signature[Any]):
         connection: kombu.Connection | None = ...,
         router: Any | None = ...,
         result_cls: type[celery.result.AsyncResult[Any]] | None = ...,
+        *,
+        # options (passed through to Signature.apply_async)
+        link: Signature[Any] | list[Signature[Any]] | None = ...,
+        link_error: Signature[Any] | list[Signature[Any]] | None = ...,
+        shadow: str | None = ...,
+        countdown: float = ...,
+        eta: datetime | None = ...,
+        expires: float | datetime = ...,
+        retry: bool = ...,
+        retry_policy: Mapping[str, Any] = ...,
+        queue: str | kombu.Queue = ...,
+        exchange: str | kombu.Exchange = ...,
+        routing_key: str = ...,
+        priority: int = ...,
+        serializer: str = ...,
+        compression: str = ...,
+        add_to_parent: bool = ...,
+        headers: dict[str, str] = ...,
+        ignore_result: bool = ...,
         **options: Any,
     ) -> celery.result.AsyncResult[Any]: ...
     @override
@@ -572,6 +755,28 @@ class chord(Signature[Any]):
     def __call__(
         self,
         body: Signature[Any] | None = ...,
+        *,
+        # options (passed through to apply_async)
+        task_id: str | None = ...,
+        producer: kombu.Producer | None = ...,
+        link: Signature[Any] | list[Signature[Any]] | None = ...,
+        link_error: Signature[Any] | list[Signature[Any]] | None = ...,
+        shadow: str | None = ...,
+        countdown: float = ...,
+        eta: datetime | None = ...,
+        expires: float | datetime = ...,
+        retry: bool = ...,
+        retry_policy: Mapping[str, Any] = ...,
+        queue: str | kombu.Queue = ...,
+        exchange: str | kombu.Exchange = ...,
+        routing_key: str = ...,
+        priority: int = ...,
+        serializer: str = ...,
+        compression: str = ...,
+        add_to_parent: bool = ...,
+        publisher: kombu.Producer = ...,
+        headers: dict[str, str] = ...,
+        ignore_result: bool = ...,
         **options: Any,
     ) -> celery.result.AsyncResult[Any]: ...
 
