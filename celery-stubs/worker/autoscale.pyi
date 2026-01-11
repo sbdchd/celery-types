@@ -1,5 +1,7 @@
 from typing import Any
 
+__all__ = ("Autoscaler", "WorkerComponent")
+
 from celery.bootsteps import StartStopStep
 from celery.concurrency.base import BasePool
 from celery.utils.threads import bgThread
@@ -9,12 +11,12 @@ class WorkerComponent(StartStopStep):
     enabled: Any
     def __init__(self, w: Any, **kwargs: Any) -> None: ...
     @override
-    def create(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def create(  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[invalid-method-override]
         self, w: Any
     ) -> Any: ...
     def register_with_event_loop(self, w: Any, hub: Any) -> None: ...
     @override
-    def info(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def info(  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[invalid-method-override]
         self, w: Any
     ) -> Any: ...
 

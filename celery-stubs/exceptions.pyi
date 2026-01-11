@@ -9,13 +9,18 @@ from billiard.exceptions import (
     WorkerLostError,
 )
 from celery.canvas import Signature
+from click.exceptions import ClickException
 from kombu.exceptions import OperationalError
 
-__all__ = [
+__all__ = (
     "AlreadyRegistered",
     "AlwaysEagerIgnored",
+    "BackendError",
+    "BackendGetMetaError",
+    "BackendStoreError",
     "CDeprecationWarning",
     "CPendingDeprecationWarning",
+    "CeleryCommandException",
     "CeleryError",
     "CeleryWarning",
     "ChordError",
@@ -33,6 +38,7 @@ __all__ = [
     "Reject",
     "Retry",
     "SecurityError",
+    "SecurityWarning",
     "SoftTimeLimitExceeded",
     "TaskError",
     "TaskPredicate",
@@ -43,7 +49,8 @@ __all__ = [
     "WorkerLostError",
     "WorkerShutdown",
     "WorkerTerminate",
-]
+    "reraise",
+)
 
 class CeleryWarning(UserWarning): ...
 class AlwaysEagerIgnored(CeleryWarning): ...
@@ -101,3 +108,12 @@ class WorkerTerminate(SystemExit): ...
 SystemTerminate = WorkerTerminate
 
 class WorkerShutdown(SystemExit): ...
+class BackendError(Exception): ...
+class BackendGetMetaError(BackendError): ...
+class BackendStoreError(BackendError): ...
+class SecurityWarning(CeleryWarning): ...
+
+def reraise(tp: type[BaseException], value: BaseException, tb: Any = None) -> None: ...
+
+class CeleryCommandException(ClickException):
+    def __init__(self, message: str, exit_code: int) -> None: ...

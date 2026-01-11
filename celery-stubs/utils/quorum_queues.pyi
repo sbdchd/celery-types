@@ -1,0 +1,3 @@
+from celery.app.base import Celery
+
+def detect_quorum_queues(app: Celery, driver_type: str) -> tuple[bool, str]: ...

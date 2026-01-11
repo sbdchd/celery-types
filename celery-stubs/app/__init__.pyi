@@ -8,13 +8,54 @@ from typing import (
     overload,
 )
 
-from celery.app import beat as beat
 from celery.app import control as control
 from celery.app import events as events
 from celery.app import task as task
+from celery.app.base import Celery
 from celery.app.task import Context, Task
 from celery.utils.threads import _LocalStack
 from typing_extensions import ParamSpec
+
+__all__ = (
+    "AppPickler",
+    "Celery",
+    "app_or_default",
+    "bugreport",
+    "default_app",
+    "disable_trace",
+    "enable_trace",
+    "pop_current_task",
+    "push_current_task",
+    "shared_task",
+)
+
+class AppPickler:
+    def __call__(self, cls: type[Celery], *args: Any) -> Celery: ...
+    def build_kwargs(self, *args: Any) -> dict[str, Any]: ...
+    def build_standard_kwargs(
+        self,
+        main: str | None,
+        changes: dict[str, Any] | None,
+        loader: Any,
+        backend: Any,
+        amqp: Any,
+        events: Any,  # noqa: F811
+        log: Any,
+        control: Any,  # noqa: F811
+        accept_magic_kwargs: bool,
+        config_source: Any | None = None,
+    ) -> dict[str, Any]: ...
+    def construct(self, cls: type[Celery], **kwargs: Any) -> Celery: ...
+    def prepare(self, app: Celery, **kwargs: Any) -> dict[str, Any]: ...
+
+def app_or_default(app: Celery | None = ...) -> Celery: ...
+def bugreport(app: Celery | None = ...) -> str: ...
+def enable_trace() -> None: ...
+def disable_trace() -> None: ...
+def push_current_task(obj: Task[Any, Any]) -> None: ...
+def pop_current_task() -> Task[Any, Any] | None: ...
+
+default_app: Celery
 
 _T = TypeVar("_T", bound=Task[Any, Any])
 _P = ParamSpec("_P")

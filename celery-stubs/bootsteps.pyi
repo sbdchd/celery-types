@@ -1,5 +1,7 @@
 from typing import Any, ClassVar
 
+__all__ = ("Blueprint", "ConsumerStep", "StartStopStep", "Step")
+
 from celery.utils.graph import GraphFormatter
 from kombu import Consumer
 from typing_extensions import override
@@ -8,8 +10,11 @@ class StepFormatter(GraphFormatter):
     blueprint_prefix: str
     conditional_prefix: str
     blueprint_scheme: dict[str, str]
-    def label(self, step: Any) -> Any: ...
+    @override
+    def label(self, step: Any) -> Any: ...  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[invalid-method-override]
+    @override
     def node(self, obj: Any, **attrs: Any) -> Any: ...
+    @override
     def edge(self, a: Any, b: Any, **attrs: Any) -> Any: ...
 
 class Blueprint:
@@ -17,7 +22,7 @@ class Blueprint:
     name: ClassVar[str | None]
     state: Any
     started: int
-    default_steps: list[str]
+    default_steps: set[Any]
     state_to_name: Any
     types: Any
     on_start: Any
@@ -65,7 +70,7 @@ class Blueprint:
 
 class StepType(type):
     name: ClassVar[str | None]
-    requires: tuple[type[Step] | str, ...]
+    requires: tuple[type[Step] | str, ...] | None
     def __new__(cls, name: Any, bases: Any, attrs: Any) -> Any: ...
 
 class Step(metaclass=StepType):
@@ -97,11 +102,11 @@ class ConsumerStep(StartStopStep):
     consumers: list[Consumer] | None
     def get_consumers(self, channel: Any) -> list[Consumer]: ...
     @override
-    def start(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def start(  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[invalid-method-override]
         self, c: Any
     ) -> None: ...
     @override
-    def stop(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def stop(  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[invalid-method-override]
         self, c: Any
     ) -> None: ...
     def shutdown(self, c: Any) -> None: ...

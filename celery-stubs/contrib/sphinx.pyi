@@ -1,4 +1,4 @@
-from typing import Any, Literal
+from typing import Any, ClassVar, Literal
 
 from celery.app.task import Task as BaseTask
 from docutils import nodes
@@ -7,8 +7,8 @@ from sphinx.ext.autodoc import Documenter, FunctionDocumenter
 from typing_extensions import override
 
 class TaskDocumenter(FunctionDocumenter):
-    objtype: str = "task"
-    member_order: int = 11
+    objtype: ClassVar[str]
+    member_order: ClassVar[int]
 
     @override
     @classmethod

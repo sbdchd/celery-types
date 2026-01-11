@@ -1,7 +1,16 @@
 import numbers
 from collections.abc import Callable
-from datetime import datetime, timedelta
-from typing import Literal, NamedTuple, TypeAlias
+from datetime import datetime, timedelta, tzinfo
+from typing import Any, Literal, NamedTuple, TypeAlias
+
+__all__ = (
+    "ParseException",
+    "crontab",
+    "crontab_parser",
+    "maybe_schedule",
+    "schedule",
+    "solar",
+)
 
 import ephem
 from celery.app.base import Celery
@@ -26,7 +35,7 @@ class BaseSchedule:
     def now(self) -> datetime: ...
     def remaining_estimate(self, last_run_at: datetime) -> timedelta: ...
     def is_due(self, last_run_at: datetime) -> schedstate: ...
-    def maybe_make_aware(self, dt: datetime) -> datetime: ...
+    def maybe_make_aware(self, dt: datetime, naive_as_utc: bool = True) -> datetime: ...
     @property
     def app(self) -> Celery: ...
     @app.setter
@@ -40,6 +49,7 @@ class BaseSchedule:
     def __eq__(self, other: object) -> bool: ...
 
 class schedule(BaseSchedule):
+    relative: bool
     def __init__(
         self,
         run_every: float | timedelta | None = ...,
@@ -55,26 +65,37 @@ class schedule(BaseSchedule):
 _ModuleLevelParseException = ParseException
 
 class crontab_parser:
-    ParseException: _ModuleLevelParseException
+    ParseException: type[ParseException]
     def __init__(self, max_: int = ..., min_: int = ...) -> None: ...
     def parse(self, spec: str) -> set[int]: ...
+
+Cronspec: TypeAlias = str | int | list[int]
 
 class crontab(BaseSchedule):
     def __init__(
         self,
-        minute: str | int | list[int] = ...,
-        hour: str | int | list[int] = ...,
-        day_of_week: str | int | list[int] = ...,
-        day_of_month: str | int | list[int] = ...,
-        month_of_year: str | int | list[int] = ...,
-        nowfun: Callable[[], datetime] | None = ...,
-        app: Celery | None = ...,
+        minute: Cronspec = "*",
+        hour: Cronspec = "*",
+        day_of_week: Cronspec = "*",
+        day_of_month: Cronspec = "*",
+        month_of_year: Cronspec = "*",
+        **kwargs: Any,
     ) -> None: ...
+    @classmethod
+    def from_string(cls, crontab: str) -> crontab: ...
     def remaining_delta(
-        self, last_run_at: datetime, tz: str | None = ..., ffwd: ffwd = ...
-    ) -> tuple[datetime, timedelta, datetime]: ...
+        self, last_run_at: datetime, tz: tzinfo | None = None, ffwd: type[ffwd] = ...
+    ) -> tuple[datetime, Any, datetime]: ...
+    @override
+    def remaining_estimate(
+        self, last_run_at: datetime, ffwd: type[ffwd] = ...
+    ) -> timedelta: ...
 
-def maybe_schedule(s: numbers.Number | timedelta | BaseSchedule) -> schedule: ...
+def maybe_schedule(
+    s: numbers.Number | timedelta | BaseSchedule,
+    relative: bool = False,
+    app: Celery | None = None,
+) -> float | timedelta | BaseSchedule: ...
 
 _SolarEvent: TypeAlias = Literal[
     "dawn_astronomical",
@@ -98,6 +119,5 @@ class solar(BaseSchedule):
         event: _SolarEvent,
         lat: float,
         lon: float,
-        nowfun: Callable[[], datetime] | None = ...,
-        app: Celery | None = ...,
+        **kwargs: Any,
     ) -> None: ...

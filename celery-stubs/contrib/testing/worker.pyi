@@ -16,6 +16,7 @@ test_worker_stopped: Signal
 
 class TestWorkController(WorkController):
     __test__: bool
+    logger_queue: Any
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
 
     class QueueHandler(handlers.QueueHandler):
@@ -24,7 +25,9 @@ class TestWorkController(WorkController):
         @override
         def handleError(self, record: LogRecord) -> None: ...
 
+    @override
     def start(self) -> Any: ...
+    @override
     def on_consumer_ready(self, consumer: Any) -> None: ...
     def ensure_started(self) -> None: ...
 

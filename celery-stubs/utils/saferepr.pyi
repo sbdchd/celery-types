@@ -2,7 +2,7 @@ from collections import deque
 from collections.abc import Callable, Iterator
 from typing import Any
 
-__all__ = ["reprstream", "saferepr"]
+__all__ = ("reprstream", "saferepr")
 
 def saferepr(
     o: Any, maxlen: int | None = ..., maxlevels: int = ..., seen: set[int] | None = ...

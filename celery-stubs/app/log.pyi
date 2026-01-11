@@ -1,8 +1,7 @@
 from logging import Logger, LogRecord
-from typing import Any
+from typing import Any, ClassVar
 
 from celery.app.base import Celery
-from celery.local import class_property
 from celery.utils.log import ColorFormatter, LoggingProxy
 from celery.utils.term import colored
 from typing_extensions import override
@@ -60,7 +59,7 @@ class Logging:
     ) -> bool: ...
     def colored(
         self, logfile: Any | None = ..., enabled: bool | None = ...
-    ) -> colored: ...
+    ) -> colored: ...  # ty: ignore[invalid-type-form]
     def setup_handlers(
         self,
         logger: Logger,
@@ -71,7 +70,4 @@ class Logging:
         **kwargs: Any,
     ) -> Logger: ...
     def get_default_logger(self, name: str = ..., **kwargs: Any) -> Logger: ...
-    @class_property
-    def already_setup(self) -> bool: ...  # pyright: ignore[reportRedeclaration]
-    @already_setup.setter  # type: ignore[no-redef]
-    def already_setup(self, was_setup: bool) -> None: ...
+    already_setup: ClassVar[bool]
