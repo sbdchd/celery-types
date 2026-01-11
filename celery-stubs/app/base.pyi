@@ -391,6 +391,15 @@ class Celery(Generic[_T_Global]):
         chain: Any | None = None,
         task_type: Any | None = None,
         replaced_task_nesting: int = 0,
+        *,
+        # Options (passed through **options at runtime)
+        ignore_result: bool = ...,
+        priority: int | None = ...,
+        queue: str | None = ...,
+        exchange: str | None = ...,
+        routing_key: str | None = ...,
+        exchange_type: str | None = ...,
+        stamped_headers: list[str] | None = ...,
         **options: Any,
     ) -> celery.result.AsyncResult[Any]: ...
     def connection_for_read(
@@ -445,7 +454,7 @@ class Celery(Generic[_T_Global]):
         schedule: BaseSchedule | float,
         sig: Signature[Any],
         args: tuple[Any, ...] = (),
-        kwargs: tuple[()] = (),  # runtime uses empty tuple
+        kwargs: dict[str, Any] | None = None,
         name: str | None = None,
         **opts: Any,
     ) -> str: ...

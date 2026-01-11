@@ -55,9 +55,6 @@ def maybe_patch_concurrency(
     patches: dict[str, Any] | None = ...,
 ) -> None: ...
 
-# Note: These are lazy module proxies at runtime
-# log, execute, registry, messaging are module-level lazy proxies
-
 __all__ = (
     "SERIES",
     "VERSION",
