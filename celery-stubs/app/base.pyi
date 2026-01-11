@@ -64,10 +64,10 @@ class Celery(Generic[_T_Global]):
     registry_cls: str | None
     task_cls: str | None
 
-    # Instance attributes (None at class level)
-    main: str | None
-    steps: defaultdict[str, set[Any]] | None
-    user_options: dict[str, Any] | None
+    # Instance attributes (always set in __init__)
+    main: str
+    steps: defaultdict[str, set[Any]]
+    user_options: defaultdict[str, set[Any]]
     builtin_fixups: set[str]
 
     # Signals (always set on instances in __init__)
