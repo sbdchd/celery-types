@@ -83,7 +83,7 @@ class Task(Generic[_P, _R_co]):
     __v2_compat__: bool
 
     # Task configuration
-    name: str | None
+    name: str  # None at class level, always set on instances
     typing: bool
     max_retries: int | None
     default_retry_delay: int

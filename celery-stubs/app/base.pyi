@@ -64,7 +64,8 @@ class Celery(Generic[_T_Global]):
     registry_cls: str | None
     task_cls: str | None
 
-    # Instance attributes (always set in __init__)
+    # Instance attributes: None at class level, but always set in __init__
+    # Typed as non-optional since users work with instances, not the class
     main: str
     steps: defaultdict[str, set[Any]]
     user_options: defaultdict[str, set[Any]]

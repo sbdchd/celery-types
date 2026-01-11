@@ -6,7 +6,7 @@ __all__ = ("Signal",)
 _F = TypeVar("_F", bound=Callable[..., Any])
 
 class Signal:
-    receivers: list[tuple[Any, Any]] | None
+    receivers: list[tuple[Any, Any]]  # None at class level, always set on instances
 
     def __init__(
         self,

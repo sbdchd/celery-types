@@ -42,7 +42,7 @@ _R_co = TypeVar("_R_co", covariant=True)
 class AsyncResult(ResultBase, Generic[_R_co]):
     TimeoutError: type[CeleryTimeoutError]
     app: Celery | None
-    id: str | None
+    id: str  # None at class level, always set on instances
     backend: Backend | None
     parent: ResultBase | None
     on_ready: promise
