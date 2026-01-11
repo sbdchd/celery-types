@@ -97,8 +97,10 @@ class Task(Generic[_P, _R_co]):
     soft_time_limit: int | None
     autoregister: bool
     track_started: bool
-    acks_late: bool | None
-    acks_on_failure_or_timeout: bool | None
+    acks_late: bool  # None at class level, resolved from config on instances
+    acks_on_failure_or_timeout: (
+        bool  # None at class level, resolved from config on instances
+    )
     reject_on_worker_lost: bool | None
     throws: tuple[type[Exception], ...]
     expires: float | datetime | None
