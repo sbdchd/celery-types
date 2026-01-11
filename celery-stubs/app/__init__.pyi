@@ -13,7 +13,6 @@ from celery.app import events as events
 from celery.app import task as task
 from celery.app.base import Celery
 from celery.app.task import Context, Task
-from celery.local import Proxy
 from celery.utils.threads import _LocalStack
 from typing_extensions import ParamSpec
 
@@ -56,7 +55,7 @@ def disable_trace() -> None: ...
 def push_current_task(obj: Task[Any, Any]) -> None: ...
 def pop_current_task() -> Task[Any, Any] | None: ...
 
-default_app: Proxy[Celery]
+default_app: Celery
 
 _T = TypeVar("_T", bound=Task[Any, Any])
 _P = ParamSpec("_P")
