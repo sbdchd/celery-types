@@ -1,0 +1,3 @@
+__all__ = ("maybe_s_to_ms",)
+
+def maybe_s_to_ms(v: float | None) -> int | None: ...

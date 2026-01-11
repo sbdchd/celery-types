@@ -1,10 +1,13 @@
 import pickle
 from signal import _HANDLER, _SIGNUM, Signals
+from typing import Any
 
 from billiard.exceptions import RestartFreqExceeded as _RestartFreqExceeded
 
 pickle_load = pickle.load
-pickle_loads = pickle.loads
+
+def pickle_loads(s: Any, load: Any = ...) -> Any: ...
+
 SIGMAP: dict[Signals, str]
 TERM_SIGNAL: Signals
 TERM_SIGNAME: str
