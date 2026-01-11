@@ -28,6 +28,14 @@ class FallbackContext(
     fallback: Callable[_P, AbstractContextManager[_T_co]] | None
     fb_args: tuple[Any, ...]
     fb_kwargs: dict[str, Any]
+
+    def __init__(
+        self,
+        provided: _T_co | None,
+        fallback: Callable[_P, AbstractContextManager[_T_co]] | None,
+        *fb_args: Any,
+        **fb_kwargs: Any,
+    ) -> None: ...
     @overload
     def __new__(
         cls,

@@ -11,11 +11,12 @@ from typing import (
     overload,
 )
 
+__all__ = ("Celery",)
+
 import celery.app
 import celery.result
 import kombu
 from celery.app.amqp import AMQP
-from celery.app.beat import Beat as CeleryBeat
 from celery.app.control import Control
 from celery.app.events import Events
 from celery.app.log import Logging
@@ -24,6 +25,7 @@ from celery.app.routes import Router
 from celery.app.task import Context
 from celery.app.task import Task as CeleryTask
 from celery.app.utils import Settings
+from celery.apps.beat import Beat as CeleryBeat
 from celery.apps.worker import Worker as CeleryWorker
 from celery.backends.base import Backend
 from celery.canvas import Signature, chord
@@ -46,13 +48,38 @@ _P = ParamSpec("_P")
 _R = TypeVar("_R")
 
 class Celery(Generic[_T_Global]):
-    steps: defaultdict[str, set[Any]]
+    # Class-level constants
+    IS_WINDOWS: bool
+    IS_macOS: bool
+    SYSTEM: str
+    Pickler: type[Any]
 
+    # Configuration class names
+    amqp_cls: str | None
+    backend_cls: str | None
+    control_cls: str | None
+    events_cls: str | None
+    loader_cls: str | None
+    log_cls: str | None
+    registry_cls: str | None
+    task_cls: str | None
+
+    # Instance attributes: None at class level, but always set in __init__
+    # Typed as non-optional since users work with instances, not the class
+    main: str
+    steps: defaultdict[str, set[Any]]
+    user_options: defaultdict[str, set[Any]]
+    builtin_fixups: set[str]
+
+    # Signals (always set on instances in __init__)
     on_configure: Signal
     on_after_configure: Signal
     on_after_finalize: Signal
     on_after_fork: Signal
 
+    def __reduce_args__(self) -> tuple[Any, ...]: ...
+    def __reduce_keys__(self) -> dict[str, Any]: ...
+    def __reduce_v1__(self) -> tuple[Any, ...]: ...
     def __init__(
         self,
         main: str | None = None,
@@ -65,7 +92,6 @@ class Celery(Generic[_T_Global]):
         set_as_current: bool = True,
         tasks: str | type[TaskRegistry] | None = None,
         broker: str | None = None,
-        imports: list[str] | tuple[str, ...] | None = None,
         include: list[str] | tuple[str, ...] | None = None,
         changes: dict[str, Any] | None = None,
         config_source: str | object | None = None,
@@ -74,6 +100,9 @@ class Celery(Generic[_T_Global]):
         autofinalize: bool = True,
         namespace: str | None = None,
         strict_typing: bool = True,
+        *,
+        # Config kwargs that can be passed directly (captured by **kwargs at runtime)
+        imports: list[str] | tuple[str, ...] | None = ...,
         broker_connection_retry: bool = ...,
         broker_connection_max_retries: int = ...,
         broker_channel_error_retry: bool = ...,
@@ -109,21 +138,28 @@ class Celery(Generic[_T_Global]):
         worker_task_log_format: str = ...,
         worker_redirect_stdouts: bool = ...,
         worker_redirect_stdouts_level: str = ...,
+        **kwargs: Any,
     ) -> None: ...
     def _task_from_fun(
         self,
         fun: Callable[_P, _R],
-        name: str | None = ...,
-        base: type[_T_Global] | None = ...,
-        bind: bool = ...,
-        # options
+        name: str | None = None,
+        base: type[_T_Global] | None = None,
+        bind: bool = False,
+        # pydantic options (new in celery 5.4+)
+        pydantic: bool = False,
+        pydantic_strict: bool = False,
+        pydantic_context: dict[str, Any] | None = None,
+        pydantic_dump_kwargs: dict[str, Any] | None = None,
+        *,
+        # autoretry options (captured by **options at runtime)
         autoretry_for: Sequence[type[BaseException]] = ...,
         dont_autoretry_for: Sequence[type[BaseException]] = ...,
         retry_kwargs: dict[str, Any] = ...,
         retry_backoff: bool | int = ...,
         retry_backoff_max: int = ...,
         retry_jitter: bool = ...,
-        # from task
+        # task options
         typing: bool = ...,
         max_retries: int | None = ...,
         default_retry_delay: int = ...,
@@ -148,6 +184,7 @@ class Celery(Generic[_T_Global]):
         abstract: bool = ...,
         after_return: Callable[..., Any] = ...,
         on_retry: Callable[..., Any] = ...,
+        **options: Any,
     ) -> _T_Global: ...
     def on_init(self) -> None: ...
     def set_current(self) -> None: ...
@@ -311,9 +348,10 @@ class Celery(Generic[_T_Global]):
         self,
         allowed_serializers: set[str] | None = None,
         key: str | None = None,
+        key_password: str | None = None,
         cert: str | None = None,
         store: str | None = None,
-        digest: str = ...,
+        digest: str = "sha256",
         serializer: str = "json",
     ) -> None: ...
     def autodiscover_tasks(
@@ -340,6 +378,7 @@ class Celery(Generic[_T_Global]):
         link_error: Signature[Any] | None = None,
         add_to_parent: bool = True,
         group_id: str | None = None,
+        group_index: int | None = None,
         retries: int = 0,
         chord: chord | None = None,
         reply_to: str | None = None,
@@ -352,8 +391,15 @@ class Celery(Generic[_T_Global]):
         chain: Any | None = None,
         task_type: Any | None = None,
         replaced_task_nesting: int = 0,
-        # options
+        *,
+        # Options (passed through **options at runtime)
         ignore_result: bool = ...,
+        priority: int | None = ...,
+        queue: str | None = ...,
+        exchange: str | None = ...,
+        routing_key: str | None = ...,
+        exchange_type: str | None = ...,
+        stamped_headers: list[str] | None = ...,
         **options: Any,
     ) -> celery.result.AsyncResult[Any]: ...
     def connection_for_read(
@@ -382,7 +428,11 @@ class Celery(Generic[_T_Global]):
     broker_connection = connection
 
     def connection_or_acquire(
-        self, connection: kombu.Connection | None = None, pool: bool = True
+        self,
+        connection: kombu.Connection | None = None,
+        pool: bool = True,
+        *_: Any,
+        **__: Any,
     ) -> FallbackContext[Any, Any]: ...
 
     default_connection = connection_or_acquire
@@ -404,7 +454,7 @@ class Celery(Generic[_T_Global]):
         schedule: BaseSchedule | float,
         sig: Signature[Any],
         args: tuple[Any, ...] = (),
-        kwargs: dict[str, Any] = ...,
+        kwargs: dict[str, Any] | None = None,
         name: str | None = None,
         **opts: Any,
     ) -> str: ...

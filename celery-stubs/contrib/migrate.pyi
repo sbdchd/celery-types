@@ -52,7 +52,7 @@ _T = TypeVar("_T")
 
 def filter_callback(
     callback: Callable[[Mapping[str, Any], Message], _T],
-    tasks: Container[str] | None = None,
+    tasks: Container[str],
 ) -> Callable[[Mapping[str, Any], Message], _T | None]: ...
 def migrate_tasks(
     source: Sequence[str],

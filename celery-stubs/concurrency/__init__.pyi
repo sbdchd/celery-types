@@ -1,0 +1,6 @@
+from typing import Any
+
+__all__ = ("get_available_pool_names", "get_implementation")
+
+def get_implementation(cls: str | type[Any]) -> type[Any]: ...
+def get_available_pool_names() -> set[str]: ...
