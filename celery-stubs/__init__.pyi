@@ -24,7 +24,6 @@ from celery.canvas import maybe_signature as maybe_signature
 from celery.canvas import signature as subtask
 from celery.utils import uuid
 
-# These are lazy module proxies at runtime
 log: ModuleType
 registry: ModuleType
 
