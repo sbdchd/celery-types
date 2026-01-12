@@ -32,3 +32,18 @@ jobs:
 
       - name: Type check (mypy)
         run: uv run mypy tests
+
+      - name: Stub test (celery)
+        run: uv run stubtest celery --allowlist celery-stubs/allowlist.txt
+
+      - name: Stub test (kombu)
+        run: uv run stubtest kombu --allowlist kombu-stubs/allowlist.txt
+
+      - name: Stub test (billiard)
+        run: uv run stubtest billiard --allowlist billiard-stubs/allowlist.txt
+
+      - name: Stub test (amqp)
+        run: uv run stubtest amqp
+
+      - name: Stub test (vine)
+        run: uv run stubtest vine

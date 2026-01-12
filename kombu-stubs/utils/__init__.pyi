@@ -7,8 +7,6 @@ from kombu.utils.functional import reprkwargs as reprkwargs
 from kombu.utils.functional import retry_over_time as retry_over_time
 from kombu.utils.objects import cached_property as cached_property
 
-# Note: runtime __all__ includes reprkwargs but it's not actually imported in kombu (kombu bug)
-# We include it here to match runtime __all__, stubtest allowlist handles the missing definition
 __all__ = (
     "EqualityDict",
     "cached_property",

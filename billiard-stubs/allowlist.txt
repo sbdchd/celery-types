@@ -1,2 +1,27 @@
+# Billiard stubtest allowlist
+# ===========================
+
+# -----------------------------------------------------------------------------
+# Platform-specific modules
+# -----------------------------------------------------------------------------
+
 # billiard.popen_spawn_win32 is Windows-only and cannot be tested on Linux
 billiard.popen_spawn_win32
+
+# -----------------------------------------------------------------------------
+# Lock type mismatches (Python < 3.13)
+# -----------------------------------------------------------------------------
+# threading.Lock was a factory function (allocate_lock) until Python 3.13,
+# where it became a proper class. Since CI runs on Python 3.10, stubtest sees
+# the function while the stub types it as a class (matching typeshed and user
+# expectations for type annotations).
+
+billiard.dummy.Lock
+billiard.pool.Lock
+
+# -----------------------------------------------------------------------------
+# Disjoint base classes
+# -----------------------------------------------------------------------------
+# AuthenticationString uses __slots__ which makes it a disjoint base.
+
+billiard.process.AuthenticationString
