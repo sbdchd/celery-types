@@ -12,7 +12,7 @@ from celery.exceptions import Reject
 from celery.result import AsyncResult, allow_join_result, denied_join_result
 from celery.schedules import crontab
 from celery.utils.log import get_task_logger
-from typing_extensions import override
+from typing_extensions import assert_type, override
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -56,18 +56,24 @@ class DatabaseTask(Task[Any, Any]):
 
 @app.task(base=DatabaseTask)
 def process_rows(param_1: int) -> None:
+    assert_type(process_rows, DatabaseTask)
+
     for row in process_rows.db.table.all():
         print(row)
 
 
 @shared_task(base=DatabaseTask)
 def process_rows_2(param_1: int) -> None:
+    assert_type(process_rows_2, DatabaseTask)
+
     for row in process_rows_2.db.table.all():
         print(row)
 
 
 @shared_task(base=DatabaseTask, bind=True)
 def process_rows_3(self: DatabaseTask, param_1: int) -> None:
+    assert_type(process_rows_3, DatabaseTask)
+
     for row in process_rows_3.db.table.all():
         print(row)
 
@@ -76,6 +82,8 @@ def process_rows_3(self: DatabaseTask, param_1: int) -> None:
 # pyright and mypy will report that the typeignore is unnecessary.
 @shared_task(base=DatabaseTask, bind=True)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
 def process_rows_4(self: int, param_1: int) -> None:
+    assert_type(process_rows_4, DatabaseTask)
+
     for row in process_rows_4.db.table.all():
         print(row)
 
@@ -83,28 +91,45 @@ def process_rows_4(self: int, param_1: int) -> None:
 database_app = Celery[DatabaseTask]()
 
 
-@database_app.task(name="main.process_rows_4")
-def process_rows_5(param_1: int) -> None:
+@database_app.task(name="main.process_rows_5")
+def process_rows_5(param_1: DatabaseTask) -> None:
+    assert_type(process_rows_5, DatabaseTask)
     for row in process_rows_5.db.table.all():
         print(row)
 
 
-@database_app.task(name="main.process_rows_5", bind=True)
+@database_app.task(name="main.process_rows_6", bind=True)
 def process_rows_6(self: DatabaseTask, param_1: int) -> None:
+    assert_type(process_rows_6, DatabaseTask)
+
     for row in process_rows_6.db.table.all():
         print(row)
 
 
 # Here, a typeignore is needed so that when the overload stops working correctly,
 # pyright and mypy will report that the typeignore is unnecessary.
-@database_app.task(name="main.process_rows_5", bind=True)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+@database_app.task(name="main.process_rows_7", bind=True)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
 def process_rows_7(self: int, param_1: int) -> None:
+    assert_type(process_rows_7, DatabaseTask)
+
     for row in process_rows_7.db.table.all():
         print(row)
 
 
+# Here, a typeignore is needed so that when the overload stops working correctly,
+# pyright and mypy will report that the typeignore is unnecessary.
+@database_app.task(name="main.process_rows_8", bind=True, base=Task[..., None])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+def binded_task_8_fail(self: int, param_1: int) -> None:
+    pass
+
+
+@database_app.task(name="main.process_rows_8", bind=True, base=Task[[int], None])
+def binded_task_8_ok(self: Task[[int], None], param_1: int) -> None:
+    assert_type(binded_task_8_ok, Task[[int], None])
+
+
 @app.task(bind=True, default_retry_delay=10)
-def send_twitter_status(self: Task[Any, Any], oauth: str, tweet: str) -> None:
+def send_twitter_status(self: Task[[str, str], Any], oauth: str, tweet: str) -> None:
     try:
         print("fetch stuff")
     except KeyError as exc:
@@ -150,7 +175,7 @@ def foo() -> None:
     print("foo")
 
 
-foo.name
+assert_type(foo.name, str)
 
 app_2 = celery.Celery("worker")
 
@@ -319,7 +344,7 @@ with denied_join_result():
 
 
 def test_celery_top_level_exports() -> None:
-    celery.Celery
+    celery.Celery[Task[Any, Any]]
     celery.Signature[Any]
     celery.Task[Any, Any]
     celery.chain
