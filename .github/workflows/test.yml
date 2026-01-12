@@ -22,28 +22,62 @@ jobs:
         run: uv sync
 
       - name: Format check
+        id: format
+        continue-on-error: true
         run: uv run ruff format --check
 
       - name: Lint
+        id: lint
+        continue-on-error: true
         run: uv run ruff check
 
       - name: Type check (basedpyright)
+        id: basedpyright
+        continue-on-error: true
         run: uv run basedpyright typings tests
 
       - name: Type check (mypy)
+        id: mypy
+        continue-on-error: true
         run: uv run mypy tests
 
       - name: Stub test (celery)
+        id: stubtest-celery
+        continue-on-error: true
         run: uv run stubtest celery --allowlist celery-stubs/allowlist.txt
 
       - name: Stub test (kombu)
+        id: stubtest-kombu
+        continue-on-error: true
         run: uv run stubtest kombu --allowlist kombu-stubs/allowlist.txt
 
       - name: Stub test (billiard)
+        id: stubtest-billiard
+        continue-on-error: true
         run: uv run stubtest billiard --allowlist billiard-stubs/allowlist.txt
 
       - name: Stub test (amqp)
+        id: stubtest-amqp
+        continue-on-error: true
         run: uv run stubtest amqp
 
       - name: Stub test (vine)
+        id: stubtest-vine
+        continue-on-error: true
         run: uv run stubtest vine
+
+      - name: Check results
+        if: always()
+        run: |
+          if [[ "${{ steps.format.outcome }}" == "failure" ]] || \
+             [[ "${{ steps.lint.outcome }}" == "failure" ]] || \
+             [[ "${{ steps.basedpyright.outcome }}" == "failure" ]] || \
+             [[ "${{ steps.mypy.outcome }}" == "failure" ]] || \
+             [[ "${{ steps.stubtest-celery.outcome }}" == "failure" ]] || \
+             [[ "${{ steps.stubtest-kombu.outcome }}" == "failure" ]] || \
+             [[ "${{ steps.stubtest-billiard.outcome }}" == "failure" ]] || \
+             [[ "${{ steps.stubtest-amqp.outcome }}" == "failure" ]] || \
+             [[ "${{ steps.stubtest-vine.outcome }}" == "failure" ]]; then
+            echo "One or more checks failed"
+            exit 1
+          fi
