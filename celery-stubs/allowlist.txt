@@ -1,0 +1,141 @@
+# Celery stubtest allowlist
+# =========================
+# This file contains stubtest errors that are intentional design choices.
+
+# -----------------------------------------------------------------------------
+# Class-level vs instance-level attributes
+# -----------------------------------------------------------------------------
+# These attributes are None at class level but always set on instances.
+# We type them as non-optional since users work with instances, not classes.
+# This provides better IDE autocomplete and type checking for the common case.
+
+# Celery app instance attributes (always set in __init__)
+celery.app.base.Celery.main
+celery.app.base.Celery.steps
+celery.app.base.Celery.user_options
+
+# Celery signal attributes (Signal instances, not None, on app instances)
+celery.app.base.Celery.on_configure
+celery.app.base.Celery.on_after_configure
+celery.app.base.Celery.on_after_finalize
+celery.app.base.Celery.on_after_fork
+
+# Task instance attributes (always set when task is bound)
+celery.app.task.Task.app
+celery.app.task.Task.name
+celery.Task.acks_late
+celery.Task.acks_on_failure_or_timeout
+celery.Task.app
+celery.Task.name
+
+# AsyncResult instance attributes (always resolved in __init__)
+celery.result.AsyncResult.app
+celery.result.AsyncResult.backend
+celery.result.AsyncResult.id
+
+# Signal.receivers (always initialized as list in __init__)
+celery.utils.dispatch.Signal.receivers
+celery.utils.dispatch.signal.Signal.receivers
+
+# Proxy objects for current app/task (always return app/task, not None)
+celery._state.current_app
+celery._state.current_task
+celery.current_app
+celery.current_task
+celery.app.default_app
+
+# -----------------------------------------------------------------------------
+# getitem_property descriptor issues
+# -----------------------------------------------------------------------------
+# Celery uses a custom getitem_property descriptor that provides both
+# dict-style access (sig['args']) and attribute access (sig.args).
+# stubtest cannot reconcile @property stubs with this runtime descriptor.
+# The @property typing is correct for users who access these as attributes.
+
+celery.canvas.Signature.args
+celery.canvas.Signature.id
+celery.canvas.Signature.immutable
+celery.canvas.Signature.kwargs
+celery.canvas.Signature.options
+celery.canvas.Signature.parent_id
+celery.canvas.Signature.root_id
+celery.canvas.Signature.task
+celery.canvas._chain.tasks
+celery.canvas.group.tasks
+
+# Re-exports of Signature (same getitem_property issues)
+celery.Signature.args
+celery.Signature.id
+celery.Signature.immutable
+celery.Signature.kwargs
+celery.Signature.options
+celery.Signature.parent_id
+celery.Signature.root_id
+celery.Signature.task
+celery.group.tasks
+
+# -----------------------------------------------------------------------------
+# SQLAlchemy model metaclass issues
+# -----------------------------------------------------------------------------
+# SQLAlchemy models use a metaclass that creates class-level descriptors.
+# stubtest cannot properly introspect these InstrumentedAttribute types.
+
+celery.backends.database.models.Task
+celery.backends.database.models.TaskExtended
+celery.backends.database.models.TaskSet
+
+# -----------------------------------------------------------------------------
+# Intentionally stricter signatures
+# -----------------------------------------------------------------------------
+
+# Control.__init__: runtime has app=None but immediately crashes if None is
+# passed because it accesses app.conf. Our stub correctly requires app.
+celery.app.control.Control.__init__
+
+# add_periodic_task: runtime uses tuple() as falsy default for kwargs, which
+# gets converted to {} internally. We type as dict | None for clarity.
+celery.app.base.Celery.add_periodic_task
+celery.app.Celery.add_periodic_task
+celery.Celery.add_periodic_task
+
+# -----------------------------------------------------------------------------
+# Module __all__ differences
+# -----------------------------------------------------------------------------
+# Runtime __all__ includes standard module attributes (__path__, __package__,
+# __file__, __doc__) which are not meaningful in type stubs.
+
+celery.__all__
+
+# -----------------------------------------------------------------------------
+# Re-exports (duplicate errors from base modules)
+# -----------------------------------------------------------------------------
+# These are re-exported from submodules, same issues as originals above.
+
+celery.app.Celery.main
+celery.app.Celery.steps
+celery.app.Celery.user_options
+celery.app.Celery.on_configure
+celery.app.Celery.on_after_configure
+celery.app.Celery.on_after_finalize
+celery.app.Celery.on_after_fork
+celery.Celery.main
+celery.Celery.steps
+celery.Celery.user_options
+celery.Celery.on_configure
+celery.Celery.on_after_configure
+celery.Celery.on_after_finalize
+celery.Celery.on_after_fork
+
+# -----------------------------------------------------------------------------
+# @functools.total_ordering generated methods (Python 3.10 only)
+# -----------------------------------------------------------------------------
+# These comparison methods are generated by @total_ordering and have an
+# internal NotImplemented=NotImplemented parameter in Python 3.10.
+
+celery.beat.ScheduleEntry.__ge__
+celery.beat.ScheduleEntry.__gt__
+celery.beat.ScheduleEntry.__le__
+celery.utils.timer2.Entry.__ge__
+celery.utils.timer2.Entry.__gt__
+celery.utils.timer2.Entry.__le__
+

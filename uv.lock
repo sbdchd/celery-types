@@ -225,6 +225,7 @@ dev = [
     { name = "django-types" },
     { name = "google-cloud-monitoring" },
     { name = "google-cloud-pubsub" },
+    { name = "kombu" },
     { name = "mypy" },
     { name = "prek" },
     { name = "pycurl" },
@@ -256,6 +257,7 @@ dev = [
     { name = "django-types", specifier = ">=0.3.1,<0.4" },
     { name = "google-cloud-monitoring", specifier = ">=2.28.0" },
     { name = "google-cloud-pubsub", specifier = ">=2.34.0" },
+    { name = "kombu", specifier = ">=5.6.2" },
     { name = "mypy", specifier = ">=1.19.0" },
     { name = "prek", specifier = ">=0.2.23" },
     { name = "pycurl", specifier = ">=7.45.7" },
@@ -983,7 +985,7 @@ wheels = [
 
 [[package]]
 name = "kombu"
-version = "5.6.1"
+version = "5.6.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "amqp" },
@@ -991,9 +993,9 @@ dependencies = [
     { name = "tzdata" },
     { name = "vine" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ac/05/749ada8e51718445d915af13f1d18bc4333848e8faa0cb234028a3328ec8/kombu-5.6.1.tar.gz", hash = "sha256:90f1febb57ad4f53ca327a87598191b2520e0c793c75ea3b88d98e3b111282e4", size = 471548, upload-time = "2025-11-25T11:07:33.504Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b6/a5/607e533ed6c83ae1a696969b8e1c137dfebd5759a2e9682e26ff1b97740b/kombu-5.6.2.tar.gz", hash = "sha256:8060497058066c6f5aed7c26d7cd0d3b574990b09de842a8c5aaed0b92cc5a55", size = 472594, upload-time = "2025-12-29T20:30:07.779Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/14/d6/943cf84117cd9ddecf6e1707a3f712a49fc64abdb8ac31b19132871af1dd/kombu-5.6.1-py3-none-any.whl", hash = "sha256:b69e3f5527ec32fc5196028a36376501682973e9620d6175d1c3d4eaf7e95409", size = 214141, upload-time = "2025-11-25T11:07:31.54Z" },
+    { url = "https://files.pythonhosted.org/packages/fb/0f/834427d8c03ff1d7e867d3db3d176470c64871753252b21b4f4897d1fa45/kombu-5.6.2-py3-none-any.whl", hash = "sha256:efcfc559da324d41d61ca311b0c64965ea35b4c55cc04ee36e55386145dace93", size = 214219, upload-time = "2025-12-29T20:30:05.74Z" },
 ]
 
 [[package]]
