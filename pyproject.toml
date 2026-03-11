@@ -59,6 +59,7 @@ dev = [
     "pycurl>=7.45.7",
     "confluent-kafka>=2.12.2",
     "google-cloud-monitoring>=2.28.0",
+    "ty>=0.0.11",
 ]
 
 
@@ -119,6 +120,17 @@ warn_return_any = true
 warn_unreachable = true
 strict_equality = true
 ignore_missing_imports = false
+
+[tool.ty.environment]
+python-version = "3.10"
+
+[tool.ty.analysis]
+# Don't respect `type: ignore` comments - those are for mypy.
+# ty should only use `ty: ignore` comments.
+respect-type-ignore-comments = false
+
+[tool.ty.rules]
+unused-ignore-comment = "error"
 
 [tool.ruff.lint]
 select = ["ALL"]
