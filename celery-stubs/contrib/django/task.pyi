@@ -41,6 +41,6 @@ class DjangoTask(Task[_P, _R_co]):
         publisher: kombu.Producer = ...,
         headers: dict[str, str] = ...,
         ignore_result: bool = ...,
-        time_limit: int = ...,
-        soft_time_limit: int = ...,
+        time_limit: float | None = ...,
+        soft_time_limit: float | None = ...,
     ) -> celery.result.AsyncResult[_R_co]: ...

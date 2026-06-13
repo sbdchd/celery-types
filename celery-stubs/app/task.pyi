@@ -93,8 +93,8 @@ class Task(Generic[_P, _R_co]):
     send_events: bool
     store_errors_even_if_ignored: bool
     serializer: str
-    time_limit: int | None
-    soft_time_limit: int | None
+    time_limit: float | None
+    soft_time_limit: float | None
     autoregister: bool
     track_started: bool
     acks_late: bool  # None at class level, resolved from config on instances
@@ -158,8 +158,8 @@ class Task(Generic[_P, _R_co]):
         publisher: kombu.Producer = ...,
         headers: dict[str, str] = ...,
         ignore_result: bool = ...,
-        time_limit: int = ...,
-        soft_time_limit: int = ...,
+        time_limit: float | None = ...,
+        soft_time_limit: float | None = ...,
     ) -> celery.result.AsyncResult[_R_co]: ...
     def shadow_name(
         self, args: tuple[Any, ...], kwargs: dict[str, Any], options: dict[str, Any]
@@ -202,8 +202,8 @@ class Task(Generic[_P, _R_co]):
         publisher: kombu.Producer = ...,
         headers: dict[str, str] = ...,
         ignore_result: bool = ...,
-        time_limit: int = ...,
-        soft_time_limit: int = ...,
+        time_limit: float | None = ...,
+        soft_time_limit: float | None = ...,
     ) -> Retry: ...
     def apply(
         self,
