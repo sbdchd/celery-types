@@ -78,6 +78,7 @@ uv run ruff check --fix
 uv run ruff format
 uv run basedpyright typings tests
 uv run mypy tests
+uv run ty typings tests
 ```
 ```shell
 # build and publish
@@ -101,6 +102,7 @@ uv run prek run --all-files
 - [ruff](https://docs.astral.sh/ruff/) — formatting and linting
 - [basedpyright](https://docs.basedpyright.com/) — type checking
 - [mypy](https://mypy.readthedocs.io/) — type checking
+- [ty](https://docs.astral.sh/ty/) — type checking
 
 ## related
 
