@@ -22,7 +22,21 @@ repos:
     hooks:
       - id: basedpyright
         name: basedpyright check
-        entry: uv run basedpyright
+        entry: uv run basedpyright typings tests
+        language: system
+        types_or: [python, pyi]
+        pass_filenames: false
+        require_serial: true
+      - id: ty
+        name: ty check
+        entry: uv run ty check typings tests
+        language: system
+        types_or: [python, pyi]
+        pass_filenames: false
+        require_serial: true
+      - id: mypy
+        name: mypy check
+        entry: uv run mypy tests
         language: system
         types_or: [python, pyi]
         pass_filenames: false
