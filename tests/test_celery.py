@@ -408,3 +408,7 @@ def test_djangotask(task: DjangoTask[[int, int], Any]) -> None:
 
 def test_abortabletask(task: AbortableTask[[], None]) -> None:
     task.is_aborted()
+
+
+def test_async_result_as_list(result: AsyncResult[None]) -> None:
+    assert_type(result.as_list(), list[str])
