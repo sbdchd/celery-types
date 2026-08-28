@@ -19,7 +19,7 @@ from celery.app.base import Celery
 from celery.backends.base import Backend
 from celery.canvas import Signature, xmap, xstarmap
 from celery.exceptions import Retry
-from celery.result import EagerResult
+from celery.result import AsyncResult, EagerResult
 from celery.utils.threads import _LocalStack
 from celery.worker.request import _DeliveryInfo
 from typing_extensions import ParamSpec
@@ -68,7 +68,7 @@ class Context:
     def get(self, key: str, default: Any = ...) -> Any: ...
     def as_execution_options(self) -> dict[str, Any]: ...
     @property
-    def children(self) -> list[str]: ...
+    def children(self) -> list[AsyncResult[Any]]: ...
 
 class Task(Generic[_P, _R_co]):
     # Class-level references
