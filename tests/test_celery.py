@@ -410,5 +410,14 @@ def test_abortabletask(task: AbortableTask[[], None]) -> None:
     task.is_aborted()
 
 
+@app.task(bind=True)
+def add_6(self: Task[Any, Any], x: int, y: int) -> None:
+    # `Context.children` holds the `AsyncResult`s of any subtasks started by
+    # this task (populated via `Task.add_trail`), not their string ids.
+    assert_type(self.request.children, list[AsyncResult[Any]])
+    for child in self.request.children:
+        assert_type(child, AsyncResult[Any])
+
+
 def test_async_result_as_list(result: AsyncResult[None]) -> None:
     assert_type(result.as_list(), list[str])
