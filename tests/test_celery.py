@@ -464,3 +464,7 @@ def add_6(self: Task[Any, Any], x: int, y: int) -> None:
     assert_type(self.request.children, list[AsyncResult[Any]])
     for child in self.request.children:
         assert_type(child, AsyncResult[Any])
+
+
+def test_async_result_as_list(result: AsyncResult[None]) -> None:
+    assert_type(result.as_list(), list[str])
