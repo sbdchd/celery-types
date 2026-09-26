@@ -8,6 +8,7 @@ import celery
 from celery import Celery, shared_task, signature
 from celery.app.task import Task
 from celery.canvas import Signature, chord
+from celery.contrib.django.task import DjangoTask
 from celery.exceptions import Reject
 from celery.result import AsyncResult, allow_join_result, denied_join_result
 from celery.schedules import crontab
@@ -18,7 +19,6 @@ if TYPE_CHECKING:
     from collections.abc import Callable, Iterator
 
     from celery.contrib.abortable import AbortableTask
-    from celery.contrib.django.task import DjangoTask
 
 P = ParamSpec("P")
 R = TypeVar("R")
@@ -404,6 +404,53 @@ def test_celery_top_level_exports() -> None:
 def test_djangotask(task: DjangoTask[[int, int], Any]) -> None:
     task.delay_on_commit(1, 2)
     task.apply_async_on_commit((1, 2), countdown=10.0)
+
+
+def test_djangotask_base_decorator_signature(func: Callable[P, R]) -> None:
+    """
+    `base=DjangoTask` keeps the function signature on the new task, unlike an
+    arbitrary `base=` which can only name the bare base type.
+    """
+
+    @shared_task(base=DjangoTask)
+    def shared_passthrough(*args: P.args, **kwargs: P.kwargs) -> R:
+        return func(*args, **kwargs)
+
+    @app.task(base=DjangoTask)
+    def app_passthrough(*args: P.args, **kwargs: P.kwargs) -> R:
+        return func(*args, **kwargs)
+
+    assert_type(shared_passthrough, DjangoTask[P, R])
+    assert_type(app_passthrough, DjangoTask[P, R])
+
+
+@shared_task(base=DjangoTask)
+def add_on_commit(x: int, y: int) -> int:
+    return x + y
+
+
+def test_djangotask_base_methods() -> None:
+    assert_type(add_on_commit.delay_on_commit(1, 2), AsyncResult[int])
+    assert_type(
+        add_on_commit.apply_async_on_commit((1, 2), countdown=10.0), AsyncResult[int]
+    )
+
+
+def test_djangotask_base_bound_decorator_signature(func: Callable[P, R]) -> None:
+    @shared_task(base=DjangoTask, bind=True)
+    def shared_passthrough(
+        self: DjangoTask[Any, Any], *args: P.args, **kwargs: P.kwargs
+    ) -> R:
+        return func(*args, **kwargs)
+
+    @app.task(base=DjangoTask, bind=True)
+    def app_passthrough(
+        self: DjangoTask[Any, Any], *args: P.args, **kwargs: P.kwargs
+    ) -> R:
+        return func(*args, **kwargs)
+
+    assert_type(shared_passthrough, DjangoTask[P, R])
+    assert_type(app_passthrough, DjangoTask[P, R])
 
 
 def test_abortabletask(task: AbortableTask[[], None]) -> None:

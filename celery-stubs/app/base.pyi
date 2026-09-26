@@ -29,6 +29,7 @@ from celery.apps.beat import Beat as CeleryBeat
 from celery.apps.worker import Worker as CeleryWorker
 from celery.backends.base import Backend
 from celery.canvas import Signature, chord
+from celery.contrib.django.task import DjangoTask
 from celery.loaders.base import BaseLoader
 from celery.schedules import BaseSchedule
 from celery.utils.dispatch import Signal
@@ -218,6 +219,88 @@ class Celery(Generic[_T_Global]):
     ) -> CeleryTask[_P, _R]: ...
     @overload
     def task(self, fun: Callable[_P, _R]) -> _T_Global: ...
+    @overload
+    def task(
+        self,
+        *,
+        name: str = ...,
+        serializer: str = ...,
+        bind: Literal[False] = False,
+        autoretry_for: Sequence[type[BaseException]] = ...,
+        dont_autoretry_for: Sequence[type[BaseException]] = ...,
+        max_retries: int | None = ...,
+        default_retry_delay: int = ...,
+        acks_late: bool = ...,
+        ignore_result: bool = ...,
+        soft_time_limit: float | None = ...,
+        time_limit: float | None = ...,
+        base: type[DjangoTask[Any, Any]],
+        retry_kwargs: dict[str, Any] = ...,
+        retry_backoff: bool | int = ...,
+        retry_backoff_max: int = ...,
+        retry_jitter: bool = ...,
+        typing: bool = ...,
+        rate_limit: str | None = ...,
+        trail: bool = ...,
+        send_events: bool = ...,
+        store_errors_even_if_ignored: bool = ...,
+        autoregister: bool = ...,
+        track_started: bool = ...,
+        acks_on_failure_or_timeout: bool = ...,
+        reject_on_worker_lost: bool = ...,
+        throws: tuple[type[Exception], ...] = ...,
+        expires: float | datetime.datetime | None = ...,
+        priority: int | None = ...,
+        resultrepr_maxsize: int = ...,
+        request_stack: _LocalStack[Context] = ...,
+        abstract: bool = ...,
+        queue: str = ...,
+        after_return: Callable[..., Any] = ...,
+        on_retry: Callable[..., Any] = ...,
+        **options: Any,
+    ) -> Callable[[Callable[_P, _R]], DjangoTask[_P, _R]]: ...
+    @overload
+    def task(
+        self,
+        *,
+        name: str = ...,
+        serializer: str = ...,
+        bind: Literal[True],
+        autoretry_for: Sequence[type[BaseException]] = ...,
+        dont_autoretry_for: Sequence[type[BaseException]] = ...,
+        max_retries: int | None = ...,
+        default_retry_delay: int = ...,
+        acks_late: bool = ...,
+        ignore_result: bool = ...,
+        soft_time_limit: float | None = ...,
+        time_limit: float | None = ...,
+        base: type[DjangoTask[Any, Any]],
+        retry_kwargs: dict[str, Any] = ...,
+        retry_backoff: bool | int = ...,
+        retry_backoff_max: int = ...,
+        retry_jitter: bool = ...,
+        typing: bool = ...,
+        rate_limit: str | None = ...,
+        trail: bool = ...,
+        send_events: bool = ...,
+        store_errors_even_if_ignored: bool = ...,
+        autoregister: bool = ...,
+        track_started: bool = ...,
+        acks_on_failure_or_timeout: bool = ...,
+        reject_on_worker_lost: bool = ...,
+        throws: tuple[type[Exception], ...] = ...,
+        expires: float | datetime.datetime | None = ...,
+        priority: int | None = ...,
+        resultrepr_maxsize: int = ...,
+        request_stack: _LocalStack[Context] = ...,
+        abstract: bool = ...,
+        queue: str = ...,
+        after_return: Callable[..., Any] = ...,
+        on_retry: Callable[..., Any] = ...,
+        **options: Any,
+    ) -> Callable[
+        [Callable[Concatenate[DjangoTask[Any, Any], _P], _R]], DjangoTask[_P, _R]
+    ]: ...
     @overload
     def task(
         self,
