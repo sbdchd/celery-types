@@ -26,7 +26,7 @@ def cronfield(s: str | None) -> str: ...
 class ParseException(Exception): ...
 
 class BaseSchedule:
-    nowfunc: Callable[[], datetime]
+    nowfun: Callable[[], datetime] | None
     def __init__(
         self,
         nowfun: Callable[[], datetime] | None = ...,

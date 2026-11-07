@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import errno
 import sys
+from collections.abc import Callable
+from datetime import datetime
 from typing import TYPE_CHECKING, Any, ParamSpec, Protocol, TypeVar
 
 import celery
@@ -16,7 +18,7 @@ from celery.utils.log import get_task_logger
 from typing_extensions import assert_type, override
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterator
+    from collections.abc import Iterator
 
     from celery.contrib.abortable import AbortableTask
 
@@ -464,3 +466,9 @@ def add_6(self: Task[Any, Any], x: int, y: int) -> None:
     assert_type(self.request.children, list[AsyncResult[Any]])
     for child in self.request.children:
         assert_type(child, AsyncResult[Any])
+
+
+def test_schedule_nowfun(now: Callable[[], datetime]) -> None:
+    schedule = crontab(nowfun=now)
+    assert_type(schedule.nowfun, Callable[[], datetime] | None)
+    schedule.nowfun = now
