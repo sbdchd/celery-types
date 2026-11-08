@@ -453,6 +453,13 @@ def test_djangotask_base_bound_decorator_signature(func: Callable[P, R]) -> None
     assert_type(app_passthrough, DjangoTask[P, R])
 
 
+def test_push_request(task: Task[[int, int], None]) -> None:
+    # push_request builds a `Context` from its fields, not the task's arguments.
+    task.push_request(retries=3)
+    task.push_request({"id": "abc"}, retries=1)
+    task.pop_request()
+
+
 def test_abortabletask(task: AbortableTask[[], None]) -> None:
     task.is_aborted()
 
