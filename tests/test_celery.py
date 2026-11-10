@@ -453,6 +453,44 @@ def test_djangotask_base_bound_decorator_signature(func: Callable[P, R]) -> None
     assert_type(app_passthrough, DjangoTask[P, R])
 
 
+django_app = Celery[DjangoTask[Any, Any]]()
+
+
+def test_djangotask_app_constructor_signature(func: Callable[P, R]) -> None:
+    task_from_constructor = django_app.task(func)
+    assert_type(task_from_constructor, DjangoTask[P, R])
+
+
+def test_djangotask_app_decorator_signature(func: Callable[P, R]) -> None:
+    @django_app.task(max_retries=1)
+    def signature_passthrough(*args: P.args, **kwargs: P.kwargs) -> R:
+        return func(*args, **kwargs)
+
+    assert_type(signature_passthrough, DjangoTask[P, R])
+
+
+def test_djangotask_app_bound_decorator_signature(func: Callable[P, R]) -> None:
+    @django_app.task(bind=True)
+    def signature_passthrough(
+        self: DjangoTask[Any, Any], *args: P.args, **kwargs: P.kwargs
+    ) -> R:
+        return func(*args, **kwargs)
+
+    assert_type(signature_passthrough, DjangoTask[P, R])
+
+
+@django_app.task
+def add_on_commit_2(x: int, y: int) -> int:
+    return x + y
+
+
+def test_djangotask_app_methods() -> None:
+    assert_type(add_on_commit_2.delay_on_commit(1, 2), AsyncResult[int])
+    assert_type(
+        add_on_commit_2.apply_async_on_commit((1, 2), countdown=10.0), AsyncResult[int]
+    )
+
+
 def test_push_request(task: Task[[int, int], None]) -> None:
     # push_request builds a `Context` from its fields, not the task's arguments.
     task.push_request(retries=3)
