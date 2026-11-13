@@ -10,6 +10,7 @@ from celery.schedules import BaseSchedule
 from typing_extensions import override
 
 __all__ = (
+    "BeatPidbox",
     "EmbeddedService",
     "PersistentScheduler",
     "ScheduleEntry",
@@ -153,10 +154,34 @@ class PersistentScheduler(Scheduler):
     @override
     def info(self) -> str: ...
 
+class BeatPidbox:
+    service: Service
+    app: Celery
+    hostname: str
+    thread: Thread | None
+    first_connection_attempt: bool
+    retry_interval: float
+    join_timeout: float
+    min_tick_age: float
+
+    def __init__(self, service: Service) -> None: ...
+    @property
+    def max_tick_age(self) -> float: ...
+    def tick_age(self) -> float | None: ...
+    def is_stale(self) -> bool: ...
+    def on_message(self, body: Any, message: Any) -> None: ...
+    def fanout_support(self) -> tuple[bool, Any]: ...
+    def start(self) -> None: ...
+    def stop(self) -> None: ...
+
 class Service:
     scheduler_cls: type[PersistentScheduler]
     app: Celery
     max_interval: int | None
+    remote_control: bool
+    hostname: str | None
+    schedule_filename: str
+    effective_max_interval: int | None
 
     def __init__(
         self,
@@ -164,6 +189,8 @@ class Service:
         max_interval: int | None = None,
         schedule_filename: str | None = None,
         scheduler_cls: type[Scheduler] | None = None,
+        remote_control: bool | None = None,
+        hostname: str | None = None,
     ) -> None: ...
     def start(self, embedded_process: bool = ...) -> None: ...
     def sync(self) -> None: ...
