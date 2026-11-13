@@ -21,6 +21,7 @@ from celery.canvas import Signature, xmap, xstarmap
 from celery.exceptions import Retry
 from celery.result import AsyncResult, EagerResult
 from celery.utils.threads import _LocalStack
+from celery.worker.request import Request as _Request
 from celery.worker.request import _DeliveryInfo
 from typing_extensions import ParamSpec
 
@@ -74,7 +75,7 @@ class Task(Generic[_P, _R_co]):
     # Class-level references
     MaxRetriesExceededError: type[Exception]
     OperationalError: type[Exception]
-    Request: str
+    Request: str | type[_Request]
     Strategy: str
 
     # Flags

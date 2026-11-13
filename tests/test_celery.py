@@ -14,6 +14,7 @@ from celery.fixups.django import DjangoFixup, DjangoWorkerFixup
 from celery.result import AsyncResult, allow_join_result, denied_join_result
 from celery.schedules import crontab
 from celery.utils.log import get_task_logger
+from celery.worker.request import Request
 from typing_extensions import assert_type, override
 
 if TYPE_CHECKING:
@@ -247,6 +248,17 @@ def add_3(x: int, y: int) -> None:
 
 
 add_3.foo()
+
+
+def test_task_request_class() -> None:
+    class MyRequest(Request):
+        pass
+
+    class CustomRequestTask(Task[Any, Any]):
+        Request = MyRequest
+
+    assert_type(Task[Any, Any].Request, str | type[Request])
+    CustomRequestTask()
 
 
 def test_celery_register_task() -> None:
