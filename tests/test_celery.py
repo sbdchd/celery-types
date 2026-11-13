@@ -10,6 +10,7 @@ from celery.app.task import Task
 from celery.canvas import Signature, chord
 from celery.contrib.django.task import DjangoTask
 from celery.exceptions import Reject
+from celery.fixups.django import DjangoFixup, DjangoWorkerFixup
 from celery.result import AsyncResult, allow_join_result, denied_join_result
 from celery.schedules import crontab
 from celery.utils.log import get_task_logger
@@ -525,3 +526,18 @@ def add_6(self: Task[Any, Any], x: int, y: int) -> None:
 
 def test_async_result_as_list(result: AsyncResult[None]) -> None:
     assert_type(result.as_list(), list[str])
+
+
+def test_django_fixup(fixup: DjangoFixup) -> None:
+    assert_type(fixup.install(), DjangoFixup)
+    assert_type(fixup.autodiscover_tasks(), list[str])
+    assert_type(fixup.worker_fixup, DjangoWorkerFixup)
+    fixup.worker_fixup = DjangoWorkerFixup(fixup.app)
+
+
+def test_django_worker_fixup(worker_fixup: DjangoWorkerFixup) -> None:
+    assert_type(worker_fixup.install(), DjangoWorkerFixup)
+    assert_type(worker_fixup.db_reuse_max, int | None)
+    worker_fixup.validate_models()
+    worker_fixup.close_database()
+    worker_fixup.close_cache()
