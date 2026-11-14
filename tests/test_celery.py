@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any, ParamSpec, Protocol, TypeVar
 import celery
 from celery import Celery, shared_task, signature
 from celery.app.task import Task
+from celery.beat import BeatPidbox, Service
 from celery.canvas import Signature, chord
 from celery.contrib.django.task import DjangoTask
 from celery.exceptions import Reject
@@ -509,6 +510,24 @@ def test_push_request(task: Task[[int, int], None]) -> None:
     task.push_request(retries=3)
     task.push_request({"id": "abc"}, retries=1)
     task.pop_request()
+
+
+def test_beat_service_remote_control() -> None:
+    # Service takes the beat remote-control options added in celery 5.7,
+    # and BeatPidbox is the mailbox node that answers `celery inspect ping`
+    # for beat.
+    service = Service(app, remote_control=True, hostname="beat@host")
+    assert_type(service.remote_control, bool)
+    assert_type(service.hostname, str | None)
+    assert_type(service.schedule_filename, str)
+    pidbox = BeatPidbox(service)
+    assert_type(pidbox.service, Service)
+    assert_type(pidbox.app, Celery)
+    assert_type(pidbox.hostname, str)
+    assert_type(pidbox.max_tick_age, float)
+    assert_type(pidbox.tick_age(), float | None)
+    assert_type(pidbox.is_stale(), bool)
+    assert_type(pidbox.fanout_support(), tuple[bool, Any])
 
 
 def test_abortabletask(task: AbortableTask[[], None]) -> None:
