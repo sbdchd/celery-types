@@ -2,26 +2,40 @@ from __future__ import annotations
 
 import errno
 import sys
+from collections.abc import Callable, Hashable, Mapping
+from threading import Lock
 from typing import TYPE_CHECKING, Any, ParamSpec, Protocol, TypeVar
+from weakref import ReferenceType
 
 import celery
 from celery import Celery, shared_task, signature
 from celery.app.task import Task
+from celery.backends.base import Backend
 from celery.beat import BeatPidbox, Service
 from celery.canvas import Signature, chord
 from celery.contrib.django.task import DjangoTask
 from celery.exceptions import Reject
 from celery.fixups.django import DjangoFixup, DjangoWorkerFixup
-from celery.result import AsyncResult, allow_join_result, denied_join_result
+from celery.result import (
+    AsyncResult,
+    EagerResult,
+    GroupResult,
+    ResultBase,
+    allow_join_result,
+    denied_join_result,
+    result_from_tuple,
+)
 from celery.schedules import crontab
 from celery.utils.log import get_task_logger
 from celery.worker.request import Request
 from typing_extensions import assert_type, override
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterator
+    from collections.abc import Iterator
+    from weakref import WeakMethod
 
     from celery.contrib.abortable import AbortableTask
+    from celery.utils.dispatch import Signal
 
 P = ParamSpec("P")
 R = TypeVar("R")
@@ -43,6 +57,43 @@ def add(x: int, y: int) -> int:
 @app.task(name="main.sub")
 def sub(x: int, y: int) -> int:
     return x - y
+
+
+def test_app_finalized(celery_app: Celery, *, finalized: bool) -> None:
+    assert_type(celery_app.finalized, bool)
+    celery_app.finalized = finalized
+    assert_type(celery_app.finalized, bool)
+
+
+def test_app_finalized_rejects_non_boolean(celery_app: Celery) -> None:
+    # Expected error: the writable lifecycle flag is boolean, not arbitrary data.
+    # Unused-ignore checks catch a regression that widens its type.
+    celery_app.finalized = "yes"  # type: ignore[assignment]  # pyright: ignore[reportAttributeAccessIssue]  # ty: ignore[invalid-assignment]
+
+
+def test_task_send_event(task: Task[P, R]) -> None:
+    assert_type(task.send_event("task-progress"), None)
+    assert_type(
+        task.send_event(
+            "task-progress", retry=False, retry_policy={"max_retries": 1}, progress=50
+        ),
+        None,
+    )
+
+
+def test_task_send_event_override() -> None:
+    class MonitoredTask(Task[Any, Any]):
+        @override
+        def send_event(
+            self,
+            type_: str,
+            retry: bool = True,
+            retry_policy: Mapping[str, int] | None = None,
+            **fields: Any,
+        ) -> None:
+            super().send_event(type_, retry=retry, retry_policy=retry_policy, **fields)
+
+    assert_type(MonitoredTask().send_event("task-progress"), None)
 
 
 def test_task_constructor_signature(func: Callable[P, R]) -> None:
@@ -300,6 +351,52 @@ def test_celery_calling_task() -> None:
     celery.group(add.s(1, 1), add.s(1, 2), add.s(1, 3))
 
 
+def test_signature_args_are_writable(sig: Signature[R]) -> None:
+    assert_type(sig.args, tuple[Any, ...])
+    sig.args = (1, "value")
+    sig.args = ()
+    assert_type(sig.delay(), AsyncResult[R])
+
+
+def test_signature_kwargs_are_writable(sig: Signature[R]) -> None:
+    assert_type(sig.kwargs, dict[str, Any])
+    sig.kwargs = {"value": 1}
+    sig.kwargs = {}
+    assert_type(sig.delay(), AsyncResult[R])
+
+
+def test_signature_options_are_writable(sig: Signature[R]) -> None:
+    assert_type(sig.options, dict[str, Any])
+    sig.options = {"countdown": 1, "label": "example"}
+    sig.options = {}
+    assert_type(sig.delay(), AsyncResult[R])
+
+
+def test_signature_argument_assignments_reject_invalid_types(
+    sig: Signature[int],
+) -> None:
+    # Expected type errors: args is a tuple; kwargs and options are dictionaries.
+    # If invalid values start passing, unused-ignore checks flag these markers.
+    sig.args = 42  # type: ignore[assignment]  # pyright: ignore[reportAttributeAccessIssue]  # ty: ignore[invalid-assignment]
+    sig.kwargs = 42  # type: ignore[assignment]  # pyright: ignore[reportAttributeAccessIssue]  # ty: ignore[invalid-assignment]
+    sig.options = 42  # type: ignore[assignment]  # pyright: ignore[reportAttributeAccessIssue]  # ty: ignore[invalid-assignment]
+
+
+def test_signature_set_accepts_custom_options(sig: Signature[R]) -> None:
+    assert_type(sig.set(label="example"), Signature[R])
+    assert_type(
+        sig.set(countdown=1, label="example", custom_metadata={"enabled": True}),
+        Signature[R],
+    )
+    assert_type(sig.set(True, label="example"), Signature[R])
+
+
+def test_signature_set_checks_known_option_types(sig: Signature[int]) -> None:
+    # Custom options must not weaken the types of known options such as countdown.
+    # This call must fail; unused-ignore checks flag it if it starts passing.
+    sig.set(countdown="soon", label="example")  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]  # ty: ignore[invalid-argument-type]
+
+
 def test_celery_signals() -> None:
     app = Celery()
 
@@ -547,6 +644,119 @@ def test_async_result_as_list(result: AsyncResult[None]) -> None:
     assert_type(result.as_list(), list[str])
 
 
+def test_async_result_children(result: AsyncResult[R]) -> None:
+    assert_type(
+        result.children,
+        list[AsyncResult[Any] | GroupResult | tuple[object, ...] | list[object]] | None,
+    )
+    for child in result.children or []:
+        # Narrow away serialized metadata before using the result-object API.
+        if isinstance(child, (AsyncResult, GroupResult)):
+            assert_type(child.id, str | None)
+            assert_type(child.ready(), bool)
+
+
+def test_async_result_state_and_status(result: AsyncResult[R]) -> None:
+    assert_type(result.state, str)
+    assert_type(result.status, str)
+    assert_type(result.state == "REVOKED", bool)
+    assert_type(result.status == "PROGRESS", bool)
+
+
+def test_eager_result_state_and_status(result: EagerResult[R]) -> None:
+    assert_type(result.state, str)
+    assert_type(result.status, str)
+    assert_type(result.state == "REVOKED", bool)
+    assert_type(result.status == "PROGRESS", bool)
+
+
+def test_async_result_traceback(result: AsyncResult[R]) -> None:
+    traceback = result.traceback
+    assert_type(traceback, str | None)
+    if traceback is not None:
+        assert_type(traceback.splitlines(), list[str])
+
+
+def test_eager_result_traceback(result: EagerResult[R]) -> None:
+    traceback = result.traceback
+    assert_type(traceback, str | None)
+    if traceback is not None:
+        assert_type(traceback.splitlines(), list[str])
+
+
+def test_async_result_reduce_args(result: AsyncResult[R]) -> None:
+    assert_type(
+        result.__reduce_args__(), tuple[str, Backend, None, None, ResultBase | None]
+    )
+    assert_type(result.__copy__(), AsyncResult[R])
+
+
+def test_eager_result_reduce_args(result: EagerResult[R]) -> None:
+    # Failed eager tasks serialize their captured exception as the result payload.
+    # Older versions omit the final task-name argument.
+    assert_type(
+        result.__reduce_args__(),
+        tuple[str, R | BaseException, str, str | None]
+        | tuple[str, R | BaseException, str, str | None, str | None],
+    )
+    assert_type(result.__copy__(), EagerResult[R])
+
+
+def test_async_result_transport_tuple(result: AsyncResult[R]) -> None:
+    data = result.as_tuple()
+    header, children = data
+    task_id, parent = header
+    assert_type(task_id, str)
+    assert_type(children, None)
+    assert_type(result_from_tuple(data), AsyncResult[Any])
+    if parent is not None:
+        restored_parent: ResultBase = result_from_tuple(parent)
+        assert_type(restored_parent.parent, ResultBase | None)
+
+
+def test_group_result_transport_tuple(group: GroupResult, leaf: AsyncResult[R]) -> None:
+    data = group.as_tuple()
+    header, children = data
+    group_id, _parent = header
+    assert_type(group_id, str | None)
+    assert_type(result_from_tuple(data), GroupResult)
+    children.append(leaf.as_tuple())
+    for child in children:
+        assert_type(result_from_tuple(child), AsyncResult[Any] | GroupResult)
+
+
+def test_result_from_tuple_preserves_result_objects(
+    result: AsyncResult[R], eager: EagerResult[R], group: GroupResult, base: ResultBase
+) -> None:
+    assert_type(result_from_tuple(result), AsyncResult[R])
+    assert_type(result_from_tuple(eager), EagerResult[R])
+    assert_type(result_from_tuple(group), GroupResult)
+    assert_type(result_from_tuple(base), ResultBase)
+
+
+def test_result_from_tuple_accepts_dynamic_data(
+    data: tuple[object, ...] | list[object], result: AsyncResult[R]
+) -> None:
+    assert_type(result_from_tuple(data), AsyncResult[Any] | GroupResult)
+    for child in result.children or []:
+        assert_type(result_from_tuple(child), AsyncResult[Any] | GroupResult)
+
+
+def test_result_from_tuple_recognizes_tuple_kinds(result: AsyncResult[R]) -> None:
+    assert_type(result_from_tuple(("leaf-id", None)), AsyncResult[Any])
+    assert_type(result_from_tuple(("empty-group-id", [])), GroupResult)
+    assert_type(result_from_tuple((None, [])), GroupResult)
+    children = [result.as_tuple()]
+    assert_type(result_from_tuple((("group-id", None), children)), GroupResult)
+
+
+def test_result_from_tuple_rejects_scalar_inputs() -> None:
+    # Expected type errors: only result objects or tuple/list records are valid.
+    # Unused-ignore checks catch a regression that starts accepting scalars.
+    result_from_tuple("not-a-record")  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue, reportArgumentType]  # ty: ignore[no-matching-overload]
+    result_from_tuple(None)  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue, reportArgumentType]  # ty: ignore[no-matching-overload]
+
+
 def test_django_fixup(fixup: DjangoFixup) -> None:
     assert_type(fixup.install(), DjangoFixup)
     assert_type(fixup.autodiscover_tasks(), list[str])
@@ -560,3 +770,71 @@ def test_django_worker_fixup(worker_fixup: DjangoWorkerFixup) -> None:
     worker_fixup.validate_models()
     worker_fixup.close_database()
     worker_fixup.close_cache()
+
+
+def test_signal_dispatch_ids(
+    signal: Signal, receiver: Callable[P, R], custom_uid: Hashable
+) -> None:
+    dispatch_ids: tuple[Hashable | None, ...] = (
+        "receiver",
+        42,
+        ("receiver", 42),
+        None,
+        custom_uid,
+    )
+    for dispatch_uid in dispatch_ids:
+        assert_type(signal.connect(receiver, dispatch_uid=dispatch_uid), Callable[P, R])
+        assert_type(signal.connect(dispatch_uid=dispatch_uid)(receiver), Callable[P, R])
+        assert_type(signal.disconnect(receiver, dispatch_uid=dispatch_uid), bool)
+
+    assert_type(signal.connect(receiver), Callable[P, R])
+    assert_type(signal.connect()(receiver), Callable[P, R])
+    assert_type(signal.disconnect(receiver), bool)
+
+
+def test_signal_dispatch_ids_reject_unhashable_values(
+    signal: Signal, receiver: Callable[..., object]
+) -> None:
+    # Expected errors in mypy/pyright: dispatch IDs must be hashable, not lists/dicts.
+    # ty currently misses these errors; no ty ignores are needed.
+    # Unused-ignore checks flag a regression if the other checkers accept them.
+    signal.connect(receiver, dispatch_uid=[1])  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType]
+    signal.connect(dispatch_uid={"id": 1})  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType]
+    signal.disconnect(receiver, dispatch_uid=[1])  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+
+
+def test_signal_lock(signal: Signal) -> None:
+    lock = signal.lock
+    assert_type(lock, Lock)
+    acquired = lock.acquire(blocking=False)
+    assert_type(acquired, bool)
+    if acquired:
+        lock.release()
+    with lock:
+        assert_type(lock.locked(), bool)
+
+
+def test_signal_receiver_entries(signal: Signal) -> None:
+    assert_type(
+        signal.receivers,
+        list[
+            tuple[
+                tuple[Hashable, Hashable],
+                Callable[..., Any] | ReferenceType[Callable[..., Any]],
+            ]
+        ],
+    )
+
+
+def test_signal_receiver_storage_types(
+    signal: Signal,
+    receiver: Callable[..., int],
+    weak_receiver: ReferenceType[Callable[..., int]],
+    bound_receiver: WeakMethod[Callable[..., str]],
+) -> None:
+    # Check the internal storage shapes, not a replacement for connect().
+    signal.receivers = [
+        ((1, 2), receiver),
+        ((("dispatch", 1), "sender"), weak_receiver),
+        ((b"dispatch", b"sender"), bound_receiver),
+    ]

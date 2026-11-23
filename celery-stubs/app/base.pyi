@@ -72,6 +72,9 @@ class Celery(Generic[_T_Global]):
     user_options: defaultdict[str, set[Any]]
     builtin_fixups: set[str]
 
+    # Application lifecycle state
+    finalized: bool
+
     # Signals (always set on instances in __init__)
     on_configure: Signal
     on_after_configure: Signal
