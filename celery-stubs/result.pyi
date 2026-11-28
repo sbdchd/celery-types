@@ -1,13 +1,12 @@
-from collections.abc import Callable, Iterator, Mapping
+from collections.abc import Callable, Iterator, Mapping, Sequence
 from contextlib import contextmanager
 from datetime import datetime
-from types import TracebackType
 from typing import (
     Any,
     Generic,
-    Literal,
     TypeAlias,
     TypeVar,
+    overload,
 )
 
 __all__ = (
@@ -35,7 +34,17 @@ def allow_join_result() -> Iterator[None]: ...
 class ResultBase:
     parent: ResultBase | None
 
-_State: TypeAlias = Literal["PENDING", "STARTED", "RETRY", "FAILURE", "SUCCESS"]
+_ResultT = TypeVar("_ResultT", bound=ResultBase)
+
+# Transport records have an (id, parent) header and optional group members.
+# Nested wire data remains opaque until result_from_tuple reconstructs it.
+_ResultTuple: TypeAlias = tuple[
+    tuple[str | None, object],
+    Sequence[object] | None,
+]
+
+# Task.update_state permits custom state names, so this is not a closed set.
+_State: TypeAlias = str
 
 _R_co = TypeVar("_R_co", covariant=True)
 
@@ -58,7 +67,9 @@ class AsyncResult(ResultBase, Generic[_R_co]):
     ) -> None: ...
     def __copy__(self) -> AsyncResult[_R_co]: ...
     def __del__(self) -> None: ...
-    def __reduce_args__(self) -> tuple[str, Backend]: ...
+    def __reduce_args__(
+        self,
+    ) -> tuple[str, Backend, None, None, ResultBase | None]: ...
     @property
     def ignored(self) -> bool: ...
     @ignored.setter
@@ -69,9 +80,10 @@ class AsyncResult(ResultBase, Generic[_R_co]):
         on_error: Callable[..., Any] | None = ...,
         weak: bool = ...,
     ) -> promise: ...
+    # A falsey parent survives `parent and parent.as_tuple()` unchanged.
     def as_tuple(
         self,
-    ) -> tuple[int, tuple[int, Any | None, None] | None, None]: ...
+    ) -> tuple[tuple[str, _ResultTuple | ResultBase | None], None]: ...
     def forget(self) -> None: ...
     def revoke(
         self,
@@ -156,16 +168,20 @@ class AsyncResult(ResultBase, Generic[_R_co]):
     def graph(self) -> DependencyGraph: ...
     @property
     def supports_native_join(self) -> bool: ...
+    # Ready metadata is deserialized into results; unfinished metadata can still
+    # contain serialized tuples or lists, depending on the backend serializer.
     @property
     def children(
         self,
-    ) -> list[tuple[int, tuple[int, Any | None, None] | None, None]] | None: ...
+    ) -> (
+        list[AsyncResult[Any] | GroupResult | tuple[object, ...] | list[object]] | None
+    ): ...
     @property
     def result(self) -> _R_co | BaseException: ...
     @property
     def info(self) -> Any: ...
     @property
-    def traceback(self) -> TracebackType | None: ...
+    def traceback(self) -> str | None: ...
     @property
     def state(self) -> _State: ...
     @property
@@ -202,8 +218,15 @@ class EagerResult(AsyncResult[_R_co]):
     ) -> None: ...
     @override
     def __copy__(self) -> EagerResult[_R_co]: ...
+    # Older Celery versions omit the task-name slot. Both layouts differ from
+    # AsyncResult's constructor tuple, matching the incompatible runtime override.
     @override
-    def __reduce_args__(self) -> tuple[str, _R_co, str, str | None]: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __reduce_args__(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
+        self,
+    ) -> (
+        tuple[str, _R_co | BaseException, str, str | None]
+        | tuple[str, _R_co | BaseException, str, str | None, str | None]
+    ): ...
     @override
     def get(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
@@ -311,9 +334,25 @@ class ResultSet(ResultBase):
     def update(self, results: list[AsyncResult[Any]]) -> None: ...
     def waiting(self) -> bool: ...
 
+@overload
+def result_from_tuple(r: _ResultT, app: Celery | None = ...) -> _ResultT: ...
+@overload
 def result_from_tuple(
-    r: tuple[Any, ...], app: Celery | None = ...
+    r: tuple[str | tuple[str, _ResultTuple | ResultBase | None], None],
+    app: Celery | None = ...,
 ) -> AsyncResult[Any]: ...
+@overload
+def result_from_tuple(
+    r: tuple[
+        str | None | tuple[str | None, _ResultTuple | ResultBase | None],
+        Sequence[object],
+    ],
+    app: Celery | None = ...,
+) -> GroupResult: ...
+@overload
+def result_from_tuple(
+    r: tuple[Any, ...] | list[Any], app: Celery | None = ...
+) -> AsyncResult[Any] | GroupResult: ...
 
 class GroupResult(ResultSet):
     id: str | None
@@ -326,7 +365,11 @@ class GroupResult(ResultSet):
     ) -> None: ...
     def __bool__(self) -> bool: ...
     def __reduce_args__(self) -> tuple[str | None, list[AsyncResult[Any]] | None]: ...
-    def as_tuple(self) -> tuple[str | None, list[tuple[Any, ...]] | None]: ...
+    def as_tuple(
+        self,
+    ) -> tuple[
+        tuple[str | None, _ResultTuple | ResultBase | None], list[_ResultTuple]
+    ]: ...
     @classmethod
     def restore(
         cls,

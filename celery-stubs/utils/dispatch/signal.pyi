@@ -1,12 +1,22 @@
-from collections.abc import Callable, Sequence
-from typing import Any, TypeVar, overload
+from collections.abc import Callable, Hashable, Sequence
+from threading import Lock
+from typing import Any, TypeAlias, TypeVar, overload
+from weakref import ReferenceType
 
 __all__ = ("Signal",)
 
 _F = TypeVar("_F", bound=Callable[..., Any])
 
+# Receiver return types vary, and weak references are invariant in their target.
+_Receiver: TypeAlias = Callable[..., Any]
+# ((receiver/dispatch key, sender key), strong callable or weak reference).
+_ReceiverEntry: TypeAlias = tuple[
+    tuple[Hashable, Hashable], _Receiver | ReferenceType[_Receiver]
+]
+
 class Signal:
-    receivers: list[tuple[Any, Any]]  # None at class level, always set on instances
+    receivers: list[_ReceiverEntry]  # None at class level, always set on instances
+    lock: Lock
 
     def __init__(
         self,
@@ -20,7 +30,7 @@ class Signal:
         receiver: _F,
         sender: Any | None = ...,
         weak: bool = ...,
-        dispatch_uid: str = ...,
+        dispatch_uid: Hashable | None = ...,
         retry: bool = ...,
     ) -> _F: ...
     @overload
@@ -29,7 +39,7 @@ class Signal:
         *,
         sender: Any | None = ...,
         weak: bool = ...,
-        dispatch_uid: str = ...,
+        dispatch_uid: Hashable | None = ...,
         retry: bool = ...,
     ) -> Callable[[_F], _F]: ...
     def disconnect(
@@ -37,7 +47,7 @@ class Signal:
         receiver: Callable[..., Any] | None = None,
         sender: Any | None = None,
         weak: bool | None = None,
-        dispatch_uid: str | None = None,
+        dispatch_uid: Hashable | None = None,
     ) -> bool: ...
     def has_listeners(self, sender: Any | None = None) -> bool: ...
     def send(
